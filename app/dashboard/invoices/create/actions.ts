@@ -25,10 +25,11 @@ export async function createInvoice(formData: FormData) {
       },
     });
 
-    revalidatePath("/dashboard/invoices");
-    redirect("/dashboard/invoices");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
-    throw new Error("Database Error: Failed to create invoice.");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    throw new Error(error);
   }
+
+  revalidatePath("/dashboard/invoices");
+  redirect("/dashboard/invoices");
 }

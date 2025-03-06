@@ -15,7 +15,15 @@ export default async function Page() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Customers</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Customers</h1>
+        <a
+          href="/dashboard/customers/create"
+          className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+        >
+          Create Customer
+        </a>
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white divide-y divide-gray-200">
           <thead className="bg-gray-50">
