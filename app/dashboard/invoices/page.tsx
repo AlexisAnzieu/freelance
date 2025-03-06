@@ -1,8 +1,8 @@
 import prisma from "@/app/lib/prisma";
 import Link from "next/link";
 import Search from "./search";
-import { InvoicesTable } from "@/app/ui/invoices-table";
-import { Pagination } from "@/app/ui/pagination";
+import { InvoicesTable } from "@/app/dashboard/invoices/invoices-table";
+import { Pagination } from "@/app/dashboard/invoices/pagination";
 const ITEMS_PER_PAGE = 10;
 
 export default async function Page(props: {
