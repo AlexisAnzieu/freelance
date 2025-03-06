@@ -6,11 +6,12 @@ import { DownloadButton } from "./download-button";
 export default async function InvoicePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const invoice = await prisma.invoice.findUnique({
     where: {
-      id: params.id,
+      id,
     },
     include: {
       customer: true,
