@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  companyName String
+  contactName String
+  email       String    @unique
+  phone       String?
+  address     String
+  city        String
+  state       String?
+  postalCode  String
+  country     String
+  taxId       String?
+  notes       String?
+  invoices    Invoice[]
+}
+
+model Invoice {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  number      String   @unique
+  date        DateTime
+  dueDate     DateTime
+  status      String // 'draft', 'sent', 'paid', 'overdue'
+  amount      Float
+  tax         Float    @default(0)
+  totalAmount Float
+  customer    Customer @relation(fields: [customerId], references: [id])
+  customerId  String
+}

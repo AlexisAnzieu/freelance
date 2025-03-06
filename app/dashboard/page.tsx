@@ -1,3 +1,9 @@
+import RevenuesCard from "@/app/ui/dashboard/revenues";
+
 export default function Page() {
-  return <p>Dashboard Page</p>;
+  return (
+    <div className="p-6">
+      <RevenuesCard />
+    </div>
+  );
 }
