@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import prisma from "@/app/lib/prisma";
 import { formatDistanceToNow } from "date-fns";
+import { DownloadButton } from "./download-button";
 
 export default async function InvoicePage({
   params,
@@ -31,9 +32,12 @@ export default async function InvoicePage({
     <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl">
       <div className="space-y-8 bg-white p-10 rounded-lg shadow">
         <div className="border-b border-gray-200 pb-5">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-            Invoice #{invoice.number}
-          </h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+              Invoice #{invoice.number}
+            </h1>
+            <DownloadButton invoice={invoice} />
+          </div>
         </div>
 
         <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
