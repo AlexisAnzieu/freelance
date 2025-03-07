@@ -1,8 +1,18 @@
 import { type Customer } from "@prisma/client";
 import prisma from "../../lib/prisma";
+import { auth } from "@/auth";
 
 async function getCustomers() {
+  const session = await auth();
+
+  if (!session?.user?.teamId) {
+    throw new Error("Unauthorized: No team access");
+  }
+
   const customers = await prisma.customer.findMany({
+    where: {
+      teamId: session.user.teamId,
+    },
     orderBy: {
       companyName: "asc",
     },

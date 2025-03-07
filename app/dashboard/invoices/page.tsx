@@ -3,6 +3,7 @@ import Link from "next/link";
 import Search from "./search";
 import { InvoicesTable } from "@/app/dashboard/invoices/invoices-table";
 import { Pagination } from "@/app/dashboard/invoices/pagination";
+import { auth } from "@/auth";
 const ITEMS_PER_PAGE = 10;
 
 export default async function Page(props: {
@@ -17,12 +18,23 @@ export default async function Page(props: {
 
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
 
+  const session = await auth();
+
+  if (!session?.user?.teamId) {
+    throw new Error("Unauthorized: No team access");
+  }
+
   const [invoices, total] = await Promise.all([
     prisma.invoice.findMany({
       where: {
-        OR: [
-          { number: { contains: query } },
-          { customer: { companyName: { contains: query } } },
+        AND: [
+          { teamId: session.user.teamId },
+          {
+            OR: [
+              { number: { contains: query } },
+              { customer: { companyName: { contains: query } } },
+            ],
+          },
         ],
       },
       include: {
@@ -40,9 +52,14 @@ export default async function Page(props: {
     }),
     prisma.invoice.count({
       where: {
-        OR: [
-          { number: { contains: query } },
-          { customer: { companyName: { contains: query } } },
+        AND: [
+          { teamId: session.user.teamId },
+          {
+            OR: [
+              { number: { contains: query } },
+              { customer: { companyName: { contains: query } } },
+            ],
+          },
         ],
       },
     }),

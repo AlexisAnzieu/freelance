@@ -1,8 +1,21 @@
 import prisma from "@/app/lib/prisma";
 import { Invoice } from "@prisma/client";
+import { auth } from "@/auth";
 
 async function getInvoiceStats() {
-  const invoices = await prisma.invoice.findMany();
+  const session = await auth();
+
+  console.log("OOOPS", session);
+
+  if (!session?.user?.teamId) {
+    throw new Error("Unauthorized: No team access");
+  }
+
+  const invoices = await prisma.invoice.findMany({
+    where: {
+      teamId: session.user.teamId,
+    },
+  });
 
   const totalRevenue = invoices
     .filter((invoice: Invoice) => invoice.status === "paid")

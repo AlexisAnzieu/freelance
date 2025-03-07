@@ -3,11 +3,19 @@
 import prisma from "@/app/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 
 export async function createCustomer(formData: FormData) {
+  const session = await auth();
+
+  if (!session?.user?.teamId) {
+    throw new Error("Unauthorized: No team access");
+  }
+
   try {
     await prisma.customer.create({
       data: {
+        teamId: session.user.teamId,
         companyName: formData.get("companyName") as string,
         contactName: formData.get("contactName") as string,
         email: formData.get("email") as string,

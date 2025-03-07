@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import prisma from "@/app/lib/prisma";
 import { formatDistanceToNow } from "date-fns";
 import { PDFSection } from "./pdf-section";
+import { auth } from "@/auth";
 
 export default async function InvoicePage({
   params,
@@ -9,9 +10,15 @@ export default async function InvoicePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const invoice = await prisma.invoice.findUnique({
+  const session = await auth();
+
+  if (!session?.user?.teamId) {
+    throw new Error("Unauthorized: No team access");
+  }
+
+  const invoice = await prisma.invoice.findFirst({
     where: {
-      id,
+      AND: [{ id }, { teamId: session.user.teamId }],
     },
     include: {
       customer: true,

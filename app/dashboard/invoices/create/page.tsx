@@ -1,8 +1,18 @@
 import prisma from "@/app/lib/prisma";
 import { Form } from "./create-form";
+import { auth } from "@/auth";
 
 export default async function Page() {
+  const session = await auth();
+
+  if (!session?.user?.teamId) {
+    throw new Error("Unauthorized: No team access");
+  }
+
   const customers = await prisma.customer.findMany({
+    where: {
+      teamId: session.user.teamId,
+    },
     orderBy: {
       companyName: "asc",
     },

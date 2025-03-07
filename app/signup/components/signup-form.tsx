@@ -16,12 +16,6 @@ export default function SignupForm() {
 
   return (
     <form action={formAction} className="space-y-6">
-      {state && state !== "success" && (
-        <div className="rounded-md bg-red-50 p-4">
-          <p className="text-sm text-red-700">{state}</p>
-        </div>
-      )}
-
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label

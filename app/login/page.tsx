@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import LoginForm from "./components/login-form";
 
 export default function LoginPage() {
@@ -17,7 +18,9 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <LoginForm />
+        <Suspense>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   );

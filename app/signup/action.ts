@@ -3,7 +3,6 @@
 import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
 import prisma from "@/app/lib/prisma";
-import bcrypt from "bcryptjs";
 
 type SignupResult =
   | "success"
@@ -49,12 +48,17 @@ export async function signup(
       },
     });
 
-    // Hash password and create user
-    const passwordHash = await bcrypt.hash(password, 10);
+    // Hash password using SHA-256
+    const encoder = new TextEncoder();
+    const passwordHash = await crypto.subtle.digest(
+      "SHA-256",
+      encoder.encode(password)
+    );
+    const hashedPassword = Buffer.from(passwordHash).toString("hex");
     await prisma.user.create({
       data: {
         email,
-        passwordHash,
+        passwordHash: hashedPassword,
         firstName,
         lastName,
         teamId: team.id,
