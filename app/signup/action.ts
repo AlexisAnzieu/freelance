@@ -34,15 +34,6 @@ export async function signup(
       return "User with this email already exists";
     }
 
-    // Create team
-    const teamName = `${firstName} ${lastName} team`;
-
-    const team = await prisma.team.create({
-      data: {
-        name: teamName,
-      },
-    });
-
     // Hash password using SHA-256
     const encoder = new TextEncoder();
     const passwordHash = await crypto.subtle.digest(
@@ -50,14 +41,36 @@ export async function signup(
       encoder.encode(password)
     );
     const hashedPassword = Buffer.from(passwordHash).toString("hex");
-    await prisma.user.create({
-      data: {
-        email,
-        passwordHash: hashedPassword,
-        firstName,
-        lastName,
-        teamId: team.id,
-      },
+
+    // Create everything in a single transaction
+    const teamName = `${firstName} ${lastName} team`;
+
+    await prisma.$transaction(async (prisma) => {
+      // Create team
+      const team = await prisma.team.create({
+        data: {
+          name: teamName,
+        },
+      });
+
+      // Create user
+      const user = await prisma.user.create({
+        data: {
+          email,
+          passwordHash: hashedPassword,
+          firstName,
+          lastName,
+        },
+      });
+
+      // Create team membership
+      await prisma.userTeam.create({
+        data: {
+          userId: user.id,
+          teamId: team.id,
+          role: "ADMIN",
+        },
+      });
     });
 
     // Sign in the user

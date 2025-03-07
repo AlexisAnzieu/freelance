@@ -20,22 +20,20 @@ model Team {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   name      String
-  users     User[]
+  users     UserTeam[]
   customers Customer[]
   invoices  Invoice[]
 }
 
 model User {
-  id           String    @id @default(cuid())
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  email        String    @unique
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  email        String     @unique
   passwordHash String
   firstName    String
   lastName     String
-  role         UserRole  @default(MEMBER)
-  team         Team      @relation(fields: [teamId], references: [id])
-  teamId       String
+  teams        UserTeam[]
   avatarUrl    String?
   lastLoginAt  DateTime?
 }
@@ -75,4 +73,17 @@ model Invoice {
   customerId  String
   team        Team     @relation(fields: [teamId], references: [id])
   teamId      String
+}
+
+model UserTeam {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      UserRole @default(MEMBER)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+
+  @@unique([userId, teamId])
 }
