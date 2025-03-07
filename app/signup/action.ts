@@ -36,15 +36,10 @@ export async function signup(
 
     // Create team
     const teamName = `${firstName} ${lastName} team`;
-    const teamSlug = teamName
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
 
     const team = await prisma.team.create({
       data: {
         name: teamName,
-        slug: teamSlug,
       },
     });
 
