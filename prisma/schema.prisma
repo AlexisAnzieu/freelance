@@ -10,6 +10,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  MEMBER
+}
+
+model Team {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  name      String
+  slug      String     @unique
+  users     User[]
+  customers Customer[]
+  invoices  Invoice[]
+}
+
+model User {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  email        String    @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  role         UserRole  @default(MEMBER)
+  team         Team      @relation(fields: [teamId], references: [id])
+  teamId       String
+  avatarUrl    String?
+  lastLoginAt  DateTime?
+}
+
 model Customer {
   id          String    @id @default(cuid())
   createdAt   DateTime  @default(now())
@@ -25,6 +56,8 @@ model Customer {
   country     String
   taxId       String?
   notes       String?
+  team        Team      @relation(fields: [teamId], references: [id])
+  teamId      String
   invoices    Invoice[]
 }
 
@@ -41,4 +74,6 @@ model Invoice {
   totalAmount Float
   customer    Customer @relation(fields: [customerId], references: [id])
   customerId  String
+  team        Team     @relation(fields: [teamId], references: [id])
+  teamId      String
 }
