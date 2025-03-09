@@ -7,13 +7,13 @@ async function getInvoiceStats() {
 
   console.log("OOOPS", session);
 
-  if (!session?.user?.teamId) {
+  if (!session?.teamId) {
     throw new Error("Unauthorized: No team access");
   }
 
   const invoices = await prisma.invoice.findMany({
     where: {
-      teamId: session.user.teamId,
+      teamId: session.teamId,
     },
   });
 

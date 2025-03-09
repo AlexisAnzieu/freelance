@@ -1,11 +1,19 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "./app/lib/prisma";
 declare module "next-auth" {
   interface User {
-    teamId: string;
+    teams: string[];
     firstName: string;
     lastName: string;
+  }
+
+  interface Session {
+    teamId: string;
+    user: {
+      firstName: string;
+      lastName: string;
+    };
   }
 }
 
@@ -16,12 +24,12 @@ export const { auth, signIn, signOut } = NextAuth({
         email: { type: "email" },
         password: { type: "password" },
       },
-      async authorize(credentials): Promise<{
-        email: string;
-        firstName: string;
-        lastName: string;
-        teamId: string;
-      } | null> {
+      async authorize(credentials): Promise<
+        | ({
+            email: string;
+          } & User)
+        | null
+      > {
         if (!credentials || !credentials.email || !credentials.password) {
           return null;
         }
@@ -29,6 +37,13 @@ export const { auth, signIn, signOut } = NextAuth({
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email as string,
+          },
+          include: {
+            teams: {
+              select: {
+                id: true,
+              },
+            },
           },
         });
 
@@ -53,7 +68,7 @@ export const { auth, signIn, signOut } = NextAuth({
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          teamId: user.teamId,
+          teams: user.teams.map((team) => team.id),
         };
       },
     }),
@@ -65,9 +80,9 @@ export const { auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       return {
         ...session,
+        teamId: (token.teams as string[])[0],
         user: {
           ...session.user,
-          teamId: token.teamId as string,
           firstName: token.firstName as string,
           lastName: token.lastName as string,
         },

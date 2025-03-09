@@ -8,14 +8,14 @@ import { auth } from "@/auth";
 export async function createCustomer(formData: FormData) {
   const session = await auth();
 
-  if (!session?.user?.teamId) {
+  if (!session?.teamId) {
     throw new Error("Unauthorized: No team access");
   }
 
   try {
     await prisma.customer.create({
       data: {
-        teamId: session.user.teamId,
+        teamId: session.teamId,
         companyName: formData.get("companyName") as string,
         contactName: formData.get("contactName") as string,
         email: formData.get("email") as string,

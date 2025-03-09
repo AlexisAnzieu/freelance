@@ -8,7 +8,7 @@ import { auth } from "@/auth";
 export async function createInvoice(formData: FormData) {
   const session = await auth();
 
-  if (!session?.user?.teamId) {
+  if (!session?.teamId) {
     throw new Error("Unauthorized: No team access");
   }
 
@@ -21,7 +21,7 @@ export async function createInvoice(formData: FormData) {
   try {
     await prisma.invoice.create({
       data: {
-        teamId: session.user.teamId,
+        teamId: session.teamId,
         number: formData.get("number") as string,
         date: new Date(formData.get("date") as string),
         dueDate: new Date(formData.get("dueDate") as string),

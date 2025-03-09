@@ -20,7 +20,7 @@ export default async function Page(props: {
 
   const session = await auth();
 
-  if (!session?.user?.teamId) {
+  if (!session?.teamId) {
     throw new Error("Unauthorized: No team access");
   }
 
@@ -28,7 +28,7 @@ export default async function Page(props: {
     prisma.invoice.findMany({
       where: {
         AND: [
-          { teamId: session.user.teamId },
+          { teamId: session.teamId },
           {
             OR: [
               { number: { contains: query } },
@@ -53,7 +53,7 @@ export default async function Page(props: {
     prisma.invoice.count({
       where: {
         AND: [
-          { teamId: session.user.teamId },
+          { teamId: session.teamId },
           {
             OR: [
               { number: { contains: query } },

@@ -5,13 +5,13 @@ import { auth } from "@/auth";
 export default async function Page() {
   const session = await auth();
 
-  if (!session?.user?.teamId) {
+  if (!session?.teamId) {
     throw new Error("Unauthorized: No team access");
   }
 
   const customers = await prisma.customer.findMany({
     where: {
-      teamId: session.user.teamId,
+      teamId: session.teamId,
     },
     orderBy: {
       companyName: "asc",

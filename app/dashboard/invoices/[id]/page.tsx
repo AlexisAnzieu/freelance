@@ -12,13 +12,13 @@ export default async function InvoicePage({
   const { id } = await params;
   const session = await auth();
 
-  if (!session?.user?.teamId) {
+  if (!session?.teamId) {
     throw new Error("Unauthorized: No team access");
   }
 
   const invoice = await prisma.invoice.findFirst({
     where: {
-      AND: [{ id }, { teamId: session.user.teamId }],
+      AND: [{ id }, { teamId: session.teamId }],
     },
     include: {
       customer: true,
