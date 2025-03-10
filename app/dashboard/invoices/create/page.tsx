@@ -9,9 +9,14 @@ export default async function Page() {
     throw new Error("Unauthorized: No team access");
   }
 
-  const customers = await prisma.customer.findMany({
+  const customers = await prisma.company.findMany({
     where: {
       teamId: session.teamId,
+      types: {
+        some: {
+          name: "customer",
+        },
+      },
     },
     orderBy: {
       companyName: "asc",

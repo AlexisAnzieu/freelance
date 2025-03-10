@@ -7,7 +7,7 @@ import { InvoicePDF } from "./invoice-pdf";
 
 interface PDFSectionProps {
   invoice: Invoice & {
-    customer: {
+    company: {
       companyName: string;
     };
   };

@@ -21,7 +21,7 @@ model Team {
   updatedAt DateTime   @updatedAt
   name      String
   users     UserTeam[]
-  customers Customer[]
+  companies Company[]
   invoices  Invoice[]
 }
 
@@ -38,13 +38,13 @@ model User {
   lastLoginAt  DateTime?
 }
 
-model Customer {
-  id          String    @id @default(cuid())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+model Company {
+  id          String        @id @default(cuid())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   companyName String
   contactName String
-  email       String    @unique
+  email       String        @unique
   phone       String?
   address     String
   city        String
@@ -53,25 +53,31 @@ model Customer {
   country     String
   taxId       String?
   notes       String?
-  team        Team      @relation(fields: [teamId], references: [id])
+  team        Team          @relation(fields: [teamId], references: [id])
   teamId      String
   invoices    Invoice[]
+  types       CompanyType[]
+}
+
+model CompanyType {
+  id        String    @id @default(cuid())
+  name      String    @unique // 'customer', 'contractor'
+  companies Company[]
 }
 
 model Invoice {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  number      String   @unique
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  number      String    @unique
   date        DateTime
   dueDate     DateTime
   status      String // 'draft', 'sent', 'paid', 'overdue'
   amount      Float
-  tax         Float    @default(0)
+  tax         Float     @default(0)
   totalAmount Float
-  customer    Customer @relation(fields: [customerId], references: [id])
-  customerId  String
-  team        Team     @relation(fields: [teamId], references: [id])
+  companies   Company[]
+  team        Team      @relation(fields: [teamId], references: [id])
   teamId      String
 }
 

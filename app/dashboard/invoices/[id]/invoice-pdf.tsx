@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
 
 interface InvoicePDFProps {
   invoice: Invoice & {
-    customer: {
+    company: {
       companyName: string;
     };
   };
@@ -50,8 +50,8 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
 
         <View style={styles.section}>
           <View style={styles.row}>
-            <Text style={styles.label}>Customer:</Text>
-            <Text style={styles.value}>{invoice.customer.companyName}</Text>
+            <Text style={styles.label}>Company:</Text>
+            <Text style={styles.value}>{invoice.company.companyName}</Text>
           </View>
 
           <View style={styles.row}>

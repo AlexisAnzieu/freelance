@@ -32,13 +32,13 @@ export default async function Page(props: {
           {
             OR: [
               { number: { contains: query } },
-              { customer: { companyName: { contains: query } } },
+              { company: { companyName: { contains: query } } },
             ],
           },
         ],
       },
       include: {
-        customer: {
+        company: {
           select: {
             companyName: true,
           },
@@ -57,7 +57,7 @@ export default async function Page(props: {
           {
             OR: [
               { number: { contains: query } },
-              { customer: { companyName: { contains: query } } },
+              { company: { companyName: { contains: query } } },
             ],
           },
         ],

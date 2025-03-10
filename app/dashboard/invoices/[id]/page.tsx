@@ -21,7 +21,7 @@ export default async function InvoicePage({
       AND: [{ id }, { teamId: session.teamId }],
     },
     include: {
-      customer: true,
+      company: true,
     },
   });
 
@@ -47,9 +47,9 @@ export default async function InvoicePage({
 
         <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
           <div className="sm:col-span-1">
-            <dt className="text-sm font-medium text-gray-500">Customer</dt>
+            <dt className="text-sm font-medium text-gray-500">Company</dt>
             <dd className="mt-1 text-sm text-gray-900">
-              {invoice.customer.companyName}
+              {invoice.company.companyName}
             </dd>
           </div>
 

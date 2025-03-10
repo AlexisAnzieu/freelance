@@ -1,8 +1,8 @@
-import { Customer } from "@prisma/client";
+import { Company } from "@prisma/client";
 import { createInvoice } from "./actions";
 
 interface FormProps {
-  customers: Customer[];
+  customers: Company[];
 }
 
 export function Form({ customers }: FormProps) {
@@ -23,9 +23,9 @@ export function Form({ customers }: FormProps) {
             required
           >
             <option value="">Select a customer</option>
-            {customers.map((customer) => (
-              <option key={customer.id} value={customer.id}>
-                {customer.companyName}
+            {customers.map((company) => (
+              <option key={company.id} value={company.id}>
+                {company.companyName}
               </option>
             ))}
           </select>

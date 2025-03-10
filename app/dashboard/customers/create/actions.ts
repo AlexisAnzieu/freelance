@@ -13,7 +13,7 @@ export async function createCustomer(formData: FormData) {
   }
 
   try {
-    await prisma.customer.create({
+    await prisma.company.create({
       data: {
         teamId: session.teamId,
         companyName: formData.get("companyName") as string,
@@ -27,6 +27,11 @@ export async function createCustomer(formData: FormData) {
         country: formData.get("country") as string,
         taxId: (formData.get("taxId") as string) || null,
         notes: (formData.get("notes") as string) || null,
+        types: {
+          connect: {
+            name: "customer",
+          },
+        },
       },
     });
 

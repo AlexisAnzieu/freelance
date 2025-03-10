@@ -1,4 +1,4 @@
-import { type Customer } from "@prisma/client";
+import { type Company } from "@prisma/client";
 import prisma from "../../lib/prisma";
 import { auth } from "@/auth";
 
@@ -9,7 +9,7 @@ async function getCustomers() {
     throw new Error("Unauthorized: No team access");
   }
 
-  const customers = await prisma.customer.findMany({
+  const customers = await prisma.company.findMany({
     where: {
       teamId: session.teamId,
     },
@@ -31,7 +31,7 @@ export default async function Page() {
           href="/dashboard/customers/create"
           className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         >
-          Create Customer
+          Create Company
         </a>
       </div>
       <div className="overflow-x-auto">
@@ -53,34 +53,30 @@ export default async function Page() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {customers.map((customer: Customer) => (
-              <tr key={customer.id}>
+            {customers.map((company: Company) => (
+              <tr key={company.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
-                    {customer.companyName}
+                    {company.companyName}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {customer.contactName}
+                    {company.contactName}
                   </div>
-                  {customer.phone && (
-                    <div className="text-sm text-gray-500">
-                      {customer.phone}
-                    </div>
+                  {company.phone && (
+                    <div className="text-sm text-gray-500">{company.phone}</div>
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{customer.email}</div>
+                  <div className="text-sm text-gray-900">{company.email}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {customer.city}, {customer.country}
+                    {company.city}, {company.country}
                   </div>
-                  {customer.state && (
-                    <div className="text-sm text-gray-500">
-                      {customer.state}
-                    </div>
+                  {company.state && (
+                    <div className="text-sm text-gray-500">{company.state}</div>
                   )}
                 </td>
               </tr>

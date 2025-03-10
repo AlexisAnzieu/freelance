@@ -41,7 +41,7 @@ export const { auth, signIn, signOut } = NextAuth({
           include: {
             teams: {
               select: {
-                id: true,
+                teamId: true,
               },
             },
           },
@@ -68,7 +68,7 @@ export const { auth, signIn, signOut } = NextAuth({
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          teams: user.teams.map((team) => team.id),
+          teams: user.teams.map((team) => team.teamId),
         };
       },
     }),
