@@ -1,123 +1,101 @@
+import Image from "next/image";
+
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="text-center">
-          <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
-            <span className="block">Freelance Tooling</span>
-            <span className="block text-blue-600 dark:text-blue-400">
-              Streamline Your Business
-            </span>
-          </h1>
-          <p className="mt-3 max-w-md mx-auto text-base text-gray-500 dark:text-gray-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-            Elevate your freelance journey with our comprehensive suite of
-            tools. From invoice management to client tracking, we&apos;ve got
-            everything you need to succeed.
-          </p>
-          <div className="mt-10 flex gap-4 justify-center">
-            <a
-              href="/signup"
-              className="rounded-md bg-blue-600 px-8 py-3 text-base font-medium text-white hover:bg-blue-700 md:py-4 md:px-10"
-            >
-              Get Started
-            </a>
-            <a
-              href="/login"
-              className="rounded-md bg-gray-100 dark:bg-gray-700 px-8 py-3 text-base font-medium text-gray-800 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600 md:py-4 md:px-10"
-            >
-              Sign In
-            </a>
+    <div className="min-h-screen">
+      <div className="relative h-[90vh] bg-gradient-to-br from-black to-gray-900">
+        <Image
+          src="https://images.unsplash.com/photo-1664575599736-c5197c684128?q=80&auto=format"
+          alt="Freelancer working"
+          fill
+          className="object-cover opacity-40 transition-opacity duration-700 hover:opacity-50"
+          priority
+        />
+        <div className="absolute inset-0 flex items-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center text-white space-y-6">
+              <h1 className="text-5xl tracking-tight font-extrabold sm:text-6xl md:text-7xl animate-fade-in">
+                <span className="block bg-gradient-to-r from-white to-gray-300 text-transparent bg-clip-text">
+                  Freelance Tooling
+                </span>
+                <span className="block bg-gradient-to-r from-blue-400 to-blue-600 text-transparent bg-clip-text mt-2">
+                  Streamline Your Business
+                </span>
+              </h1>
+              <p className="mt-6 max-w-md mx-auto text-lg sm:text-xl md:mt-8 md:text-2xl md:max-w-3xl text-gray-300 leading-relaxed">
+                Elevate your freelance journey with our comprehensive suite of
+                tools. From invoice management to client tracking, we&apos;ve
+                got everything you need to succeed.
+              </p>
+              <div className="mt-12 flex gap-6 justify-center">
+                <a
+                  href="/signup"
+                  className="transform transition-all duration-300 hover:scale-105 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 text-lg font-medium text-white hover:from-blue-700 hover:to-blue-800 md:py-5 md:px-12 shadow-lg hover:shadow-xl"
+                >
+                  Get Started
+                </a>
+                <a
+                  href="/login"
+                  className="transform transition-all duration-300 hover:scale-105 rounded-lg backdrop-blur-md bg-white/10 px-8 py-4 text-lg font-medium text-white hover:bg-white/20 md:py-5 md:px-12 border border-white/30"
+                >
+                  Sign In
+                </a>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div className="mt-32">
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="pt-6">
-              <div className="flow-root bg-white dark:bg-gray-800 rounded-lg px-6 pb-8">
-                <div className="-mt-6">
-                  <div className="inline-flex items-center justify-center rounded-md bg-blue-500 p-3 shadow-lg">
-                    <svg
-                      className="h-6 w-6 text-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                      />
-                    </svg>
+      <div className="bg-gradient-to-b from-gray-50 to-white py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Feature cards */}
+            {[
+              {
+                title: "Invoice Management",
+                description:
+                  "Create and manage professional invoices effortlessly. Track payments and send automatic reminders.",
+                image:
+                  "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&auto=format",
+              },
+              {
+                title: "Client Management",
+                description:
+                  "Keep track of your clients, projects, and communications all in one place.",
+                image:
+                  "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&auto=format",
+              },
+              {
+                title: "Analytics Dashboard",
+                description:
+                  "Get insights into your business with detailed analytics and reporting tools.",
+                image:
+                  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&auto=format",
+              },
+            ].map((feature, index) => (
+              <div
+                key={index}
+                className="group relative transform transition-all duration-300 hover:scale-105"
+              >
+                <div className="h-72 w-full relative rounded-xl overflow-hidden shadow-lg">
+                  <Image
+                    src={feature.image}
+                    alt={feature.title}
+                    fill
+                    className="rounded-xl object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute bottom-0 p-6 text-white">
+                    <h3 className="text-xl font-bold tracking-tight">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-3 text-sm text-gray-300 leading-relaxed">
+                      {feature.description}
+                    </p>
                   </div>
-                  <h3 className="mt-8 text-lg font-medium text-gray-900 dark:text-white tracking-tight">
-                    Invoice Management
-                  </h3>
-                  <p className="mt-5 text-base text-gray-500 dark:text-gray-400">
-                    Create and manage professional invoices effortlessly. Track
-                    payments and send automatic reminders.
-                  </p>
                 </div>
               </div>
-            </div>
-
-            <div className="pt-6">
-              <div className="flow-root bg-white dark:bg-gray-800 rounded-lg px-6 pb-8">
-                <div className="-mt-6">
-                  <div className="inline-flex items-center justify-center rounded-md bg-blue-500 p-3 shadow-lg">
-                    <svg
-                      className="h-6 w-6 text-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="mt-8 text-lg font-medium text-gray-900 dark:text-white tracking-tight">
-                    Client Management
-                  </h3>
-                  <p className="mt-5 text-base text-gray-500 dark:text-gray-400">
-                    Keep track of your clients, projects, and communications all
-                    in one place.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-6">
-              <div className="flow-root bg-white dark:bg-gray-800 rounded-lg px-6 pb-8">
-                <div className="-mt-6">
-                  <div className="inline-flex items-center justify-center rounded-md bg-blue-500 p-3 shadow-lg">
-                    <svg
-                      className="h-6 w-6 text-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="mt-8 text-lg font-medium text-gray-900 dark:text-white tracking-tight">
-                    Analytics Dashboard
-                  </h3>
-                  <p className="mt-5 text-base text-gray-500 dark:text-gray-400">
-                    Get insights into your business with detailed analytics and
-                    reporting tools.
-                  </p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

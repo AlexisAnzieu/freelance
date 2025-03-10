@@ -5,8 +5,6 @@ import { auth } from "@/auth";
 async function getInvoiceStats() {
   const session = await auth();
 
-  console.log("OOOPS", session);
-
   if (!session?.teamId) {
     throw new Error("Unauthorized: No team access");
   }
