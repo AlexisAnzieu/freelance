@@ -2,18 +2,9 @@
 
 import { useState } from "react";
 import { PDFViewer, pdf } from "@react-pdf/renderer";
-import type { Invoice } from "@prisma/client";
-import { InvoicePDF } from "./invoice-pdf";
+import { InvoicePDF, InvoicePDFProps } from "./invoice-pdf";
 
-interface PDFSectionProps {
-  invoice: Invoice & {
-    company: {
-      companyName: string;
-    };
-  };
-}
-
-export function PDFSection({ invoice }: PDFSectionProps) {
+export function PDFSection({ invoice }: InvoicePDFProps) {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleDownload = async () => {

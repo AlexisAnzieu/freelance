@@ -21,7 +21,16 @@ export default async function InvoicePage({
       AND: [{ id }, { teamId: session.teamId }],
     },
     include: {
-      company: true,
+      companies: {
+        select: {
+          companyName: true,
+          types: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -36,6 +45,14 @@ export default async function InvoicePage({
     overdue: "bg-red-100 text-red-800",
   };
 
+  const filterCompaniesByType = (type: string) =>
+    invoice.companies.filter((company) =>
+      company.types.some((t) => t.name === type)
+    );
+
+  const contractors = filterCompaniesByType("contractor");
+  const customers = filterCompaniesByType("customer");
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl">
       <div className="space-y-8 bg-white p-10 rounded-lg shadow">
@@ -47,9 +64,16 @@ export default async function InvoicePage({
 
         <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
           <div className="sm:col-span-1">
-            <dt className="text-sm font-medium text-gray-500">Company</dt>
+            <dt className="text-sm font-medium text-gray-500">Customer</dt>
             <dd className="mt-1 text-sm text-gray-900">
-              {invoice.company.companyName}
+              {customers[0]?.companyName || "N/A"}
+            </dd>
+          </div>
+
+          <div className="sm:col-span-1">
+            <dt className="text-sm font-medium text-gray-500">Contractor</dt>
+            <dd className="mt-1 text-sm text-gray-900">
+              {contractors[0]?.companyName || "N/A"}
             </dd>
           </div>
 

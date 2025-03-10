@@ -1,7 +1,6 @@
 import prisma from "@/app/lib/prisma";
 import Link from "next/link";
 import Search from "./search";
-import { InvoicesTable } from "@/app/dashboard/invoices/invoices-table";
 import { Pagination } from "@/app/dashboard/invoices/pagination";
 import { auth } from "@/auth";
 const ITEMS_PER_PAGE = 10;
@@ -24,21 +23,19 @@ export default async function Page(props: {
     throw new Error("Unauthorized: No team access");
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [invoices, total] = await Promise.all([
     prisma.invoice.findMany({
       where: {
         AND: [
           { teamId: session.teamId },
           {
-            OR: [
-              { number: { contains: query } },
-              { company: { companyName: { contains: query } } },
-            ],
+            OR: [{ number: { contains: query } }],
           },
         ],
       },
       include: {
-        company: {
+        companies: {
           select: {
             companyName: true,
           },
@@ -55,10 +52,7 @@ export default async function Page(props: {
         AND: [
           { teamId: session.teamId },
           {
-            OR: [
-              { number: { contains: query } },
-              { company: { companyName: { contains: query } } },
-            ],
+            OR: [{ number: { contains: query } }],
           },
         ],
       },
@@ -89,7 +83,6 @@ export default async function Page(props: {
           </div>
         </div>
       </div>
-      <InvoicesTable invoices={invoices} />
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}

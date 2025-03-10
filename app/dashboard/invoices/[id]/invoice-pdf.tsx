@@ -2,6 +2,17 @@ import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { formatDistanceToNow } from "date-fns";
 import type { Invoice } from "@prisma/client";
 
+export interface InvoicePDFProps {
+  invoice: Invoice & {
+    companies: {
+      companyName: string;
+      types: {
+        name: string;
+      }[];
+    }[];
+  };
+}
+
 const styles = StyleSheet.create({
   page: {
     fontFamily: "Helvetica",
@@ -30,17 +41,44 @@ const styles = StyleSheet.create({
   amount: {
     marginTop: 20,
   },
+  companiesSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 30,
+  },
+  companyBox: {
+    width: "45%",
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 4,
+  },
+  companyTitle: {
+    fontSize: 12,
+    color: "#4B5563",
+    marginBottom: 8,
+    fontWeight: "bold",
+  },
+  companyName: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+    marginVertical: 20,
+  },
 });
 
-interface InvoicePDFProps {
-  invoice: Invoice & {
-    company: {
-      companyName: string;
-    };
-  };
-}
-
 export function InvoicePDF({ invoice }: InvoicePDFProps) {
+  const filterCompaniesByType = (type: string) =>
+    invoice.companies.filter((company) =>
+      company.types.some((t) => t.name === type)
+    );
+
+  const contractors = filterCompaniesByType("contractor");
+  const customers = filterCompaniesByType("customer");
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -48,10 +86,27 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
           <Text>Invoice #{invoice.number}</Text>
         </View>
 
+        <View style={styles.companiesSection}>
+          <View style={styles.companyBox}>
+            <Text style={styles.companyTitle}>From:</Text>
+            <Text style={styles.companyName}>
+              {contractors[0]?.companyName || "N/A"}
+            </Text>
+          </View>
+          <View style={styles.companyBox}>
+            <Text style={styles.companyTitle}>To:</Text>
+            <Text style={styles.companyName}>
+              {customers[0]?.companyName || "N/A"}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
         <View style={styles.section}>
           <View style={styles.row}>
             <Text style={styles.label}>Company:</Text>
-            <Text style={styles.value}>{invoice.company.companyName}</Text>
+            <Text style={styles.value}>{customers[0].companyName}</Text>
           </View>
 
           <View style={styles.row}>

@@ -29,7 +29,11 @@ export async function createInvoice(formData: FormData) {
         amount,
         tax,
         totalAmount,
-        customerId: formData.get("customerId") as string,
+        companies: {
+          connect: {
+            id: formData.get("customerId") as string,
+          },
+        },
       },
     });
 

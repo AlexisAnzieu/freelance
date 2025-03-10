@@ -4,7 +4,7 @@ import { Invoice } from "@prisma/client";
 
 interface InvoicesTableProps {
   invoices: (Invoice & {
-    company: {
+    companies: {
       companyName: string;
     };
   })[];
@@ -68,7 +68,7 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                     </Link>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {invoice.company.companyName}
+                    {/* {invoice.company.companyName} */}
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     $
