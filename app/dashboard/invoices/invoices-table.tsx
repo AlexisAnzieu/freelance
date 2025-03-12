@@ -6,7 +6,7 @@ interface InvoicesTableProps {
   invoices: (Invoice & {
     companies: {
       companyName: string;
-    };
+    }[];
   })[];
 }
 

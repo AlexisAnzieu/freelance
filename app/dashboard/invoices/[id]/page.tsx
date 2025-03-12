@@ -3,6 +3,7 @@ import prisma from "@/app/lib/prisma";
 import { formatDistanceToNow } from "date-fns";
 import { PDFSection } from "./pdf-section";
 import { auth } from "@/auth";
+import { filterCompaniesByType } from "@/app/lib/db";
 
 export default async function InvoicePage({
   params,
@@ -40,13 +41,8 @@ export default async function InvoicePage({
     overdue: "bg-red-100 text-red-800",
   };
 
-  const filterCompaniesByType = (type: string) =>
-    invoice.companies.filter((company) =>
-      company.types.some((t) => t.name === type)
-    );
-
-  const contractors = filterCompaniesByType("contractor");
-  const customers = filterCompaniesByType("customer");
+  const contractors = filterCompaniesByType(invoice.companies, "contractor");
+  const customers = filterCompaniesByType(invoice.companies, "customer");
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl">

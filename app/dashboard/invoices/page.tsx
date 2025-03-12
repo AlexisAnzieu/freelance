@@ -3,6 +3,7 @@ import Link from "next/link";
 import Search from "./search";
 import { Pagination } from "@/app/dashboard/invoices/pagination";
 import { auth } from "@/auth";
+import { InvoicesTable } from "./invoices-table";
 const ITEMS_PER_PAGE = 10;
 
 export default async function Page(props: {
@@ -23,7 +24,6 @@ export default async function Page(props: {
     throw new Error("Unauthorized: No team access");
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [invoices, total] = await Promise.all([
     prisma.invoice.findMany({
       where: {
@@ -83,6 +83,7 @@ export default async function Page(props: {
           </div>
         </div>
       </div>
+      <InvoicesTable invoices={invoices} />
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
