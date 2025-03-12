@@ -22,13 +22,8 @@ export default async function InvoicePage({
     },
     include: {
       companies: {
-        select: {
-          companyName: true,
-          types: {
-            select: {
-              name: true,
-            },
-          },
+        include: {
+          types: true,
         },
       },
     },

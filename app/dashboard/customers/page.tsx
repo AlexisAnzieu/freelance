@@ -12,6 +12,11 @@ async function getCustomers() {
   const customers = await prisma.company.findMany({
     where: {
       teamId: session.teamId,
+      types: {
+        some: {
+          name: "customer",
+        },
+      },
     },
     orderBy: {
       companyName: "asc",

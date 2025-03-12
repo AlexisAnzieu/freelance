@@ -1,15 +1,12 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { formatDistanceToNow } from "date-fns";
 import type { Invoice } from "@prisma/client";
+import { filterCompaniesByType, CompanyWithTypes } from "@/app/lib/db";
+import { COMPANY_TYPES } from "@/app/lib/constants";
 
 export interface InvoicePDFProps {
   invoice: Invoice & {
-    companies: {
-      companyName: string;
-      types: {
-        name: string;
-      }[];
-    }[];
+    companies: CompanyWithTypes[];
   };
 }
 
@@ -71,13 +68,14 @@ const styles = StyleSheet.create({
 });
 
 export function InvoicePDF({ invoice }: InvoicePDFProps) {
-  const filterCompaniesByType = (type: string) =>
-    invoice.companies.filter((company) =>
-      company.types.some((t) => t.name === type)
-    );
-
-  const contractors = filterCompaniesByType("contractor");
-  const customers = filterCompaniesByType("customer");
+  const contractors = filterCompaniesByType(
+    invoice.companies,
+    COMPANY_TYPES.CONTRACTOR
+  );
+  const customers = filterCompaniesByType(
+    invoice.companies,
+    COMPANY_TYPES.CUSTOMER
+  );
 
   return (
     <Document>

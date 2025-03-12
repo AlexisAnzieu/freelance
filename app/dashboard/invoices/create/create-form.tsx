@@ -1,34 +1,61 @@
-import { Company } from "@prisma/client";
+import { CompanyWithTypes } from "@/app/lib/db";
 import { createInvoice } from "./actions";
 
 interface FormProps {
-  customers: Company[];
+  customers: CompanyWithTypes[];
+  contractors: CompanyWithTypes[];
 }
 
-export function Form({ customers }: FormProps) {
+export function Form({ customers, contractors }: FormProps) {
   return (
     <form action={createInvoice} className="space-y-6">
       <div className="rounded-md p-4">
         <div className="mb-4">
-          <label
-            htmlFor="customerId"
-            className="block text-sm font-medium mb-2"
-          >
-            Customer
-          </label>
-          <select
-            id="customerId"
-            name="customerId"
-            className="block w-full rounded-md border border-gray-200 py-2 px-3"
-            required
-          >
-            <option value="">Select a customer</option>
-            {customers.map((company) => (
-              <option key={company.id} value={company.id}>
-                {company.companyName}
-              </option>
-            ))}
-          </select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="customerId"
+                className="block text-sm font-medium mb-2"
+              >
+                Customer
+              </label>
+              <select
+                id="customerId"
+                name="customerId"
+                className="block w-full rounded-md border border-gray-200 py-2 px-3"
+                required
+              >
+                <option value="">Select a customer</option>
+                {customers.map((company) => (
+                  <option key={company.id} value={company.id}>
+                    {company.companyName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="contractorId"
+                className="block text-sm font-medium mb-2"
+              >
+                Contractor
+              </label>
+              <select
+                id="contractorId"
+                name="contractorId"
+                className="block w-full rounded-md border border-gray-200 py-2 px-3"
+                required
+              >
+                <option value="">Select a contractor</option>
+                {contractors.map((company) => (
+                  <option key={company.id} value={company.id}>
+                    {company.companyName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
 
         <div className="mb-4">
