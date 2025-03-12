@@ -2,36 +2,41 @@ import { type Company } from "@prisma/client";
 import prisma from "../../lib/prisma";
 import { auth } from "@/auth";
 
-async function getCustomers() {
+async function getContractors() {
   const session = await auth();
 
   if (!session?.teamId) {
     throw new Error("Unauthorized: No team access");
   }
 
-  const customers = await prisma.company.findMany({
+  const contractors = await prisma.company.findMany({
     where: {
       teamId: session.teamId,
+      types: {
+        some: {
+          name: "contractor",
+        },
+      },
     },
     orderBy: {
       companyName: "asc",
     },
   });
-  return customers;
+  return contractors;
 }
 
 export default async function Page() {
-  const customers = await getCustomers();
+  const contractors = await getContractors();
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Customers</h1>
+        <h1 className="text-2xl font-bold">Contractors</h1>
         <a
-          href="/dashboard/customers/create"
+          href="/dashboard/contractors/create"
           className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         >
-          Create Customer
+          Create Contractor
         </a>
       </div>
       <div className="overflow-x-auto">
@@ -39,7 +44,7 @@ export default async function Page() {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Customer
+                Contractor
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Contact
@@ -53,7 +58,7 @@ export default async function Page() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {customers.map((company: Company) => (
+            {contractors.map((company: Company) => (
               <tr key={company.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
