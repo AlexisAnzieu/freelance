@@ -35,14 +35,13 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
               htmlFor="contactName"
               className="block text-sm font-medium mb-2"
             >
-              Contact Name
+              Contact Name (optional)
             </label>
             <input
               type="text"
               id="contactName"
               name="contactName"
               className="block w-full rounded-md border border-gray-200 py-2 px-3"
-              required
             />
           </div>
         </div>
@@ -63,7 +62,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
 
           <div>
             <label htmlFor="phone" className="block text-sm font-medium mb-2">
-              Phone
+              Phone (optional)
             </label>
             <input
               type="tel"
@@ -103,7 +102,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
 
           <div>
             <label htmlFor="state" className="block text-sm font-medium mb-2">
-              State
+              State (optional)
             </label>
             <input
               type="text"
@@ -145,7 +144,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
 
         <div className="mt-4">
           <label htmlFor="taxId" className="block text-sm font-medium mb-2">
-            Tax ID
+            Tax ID (optional)
           </label>
           <input
             type="text"
@@ -157,7 +156,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
 
         <div className="mt-4">
           <label htmlFor="notes" className="block text-sm font-medium mb-2">
-            Notes
+            Notes (optional)
           </label>
           <textarea
             id="notes"
