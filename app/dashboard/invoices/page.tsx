@@ -4,6 +4,7 @@ import Search from "./search";
 import { Pagination } from "@/app/dashboard/invoices/pagination";
 import { auth } from "@/auth";
 import { InvoicesTable } from "./invoices-table";
+import { connection } from "next/server";
 const ITEMS_PER_PAGE = 10;
 
 export default async function Page(props: {
@@ -12,6 +13,8 @@ export default async function Page(props: {
     page?: string;
   }>;
 }) {
+  await connection();
+
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
