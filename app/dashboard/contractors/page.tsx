@@ -1,6 +1,7 @@
-import { type Company } from "@prisma/client";
 import prisma from "../../lib/prisma";
 import { auth } from "@/auth";
+import { CompanyTable } from "@/app/ui/companies/company-table";
+import { deleteContractorAction } from "./actions";
 
 async function getContractors() {
   const session = await auth();
@@ -39,56 +40,11 @@ export default async function Page() {
           Create Contractor
         </a>
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Contractor
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Contact
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Location
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {contractors.map((company: Company) => (
-              <tr key={company.id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
-                    {company.companyName}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">
-                    {company.contactName}
-                  </div>
-                  {company.phone && (
-                    <div className="text-sm text-gray-500">{company.phone}</div>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{company.email}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">
-                    {company.city}, {company.country}
-                  </div>
-                  {company.state && (
-                    <div className="text-sm text-gray-500">{company.state}</div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <CompanyTable
+        companies={contractors}
+        type="contractor"
+        deleteAction={deleteContractorAction}
+      />
     </div>
   );
 }

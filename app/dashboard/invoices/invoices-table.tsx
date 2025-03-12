@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Invoice } from "@prisma/client";
+import { deleteInvoiceAction } from "./actions";
+import { DeleteButton } from "@/app/ui/delete-button";
 
 interface InvoicesTableProps {
   invoices: (Invoice & {
@@ -54,6 +56,12 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                 >
                   Due Date
                 </th>
+                <th
+                  scope="col"
+                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -98,6 +106,16 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                     {formatDistanceToNow(invoice.dueDate, {
                       addSuffix: true,
                     })}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-4 text-sm">
+                    <form action={deleteInvoiceAction}>
+                      <input
+                        type="hidden"
+                        name="invoiceId"
+                        value={invoice.id}
+                      />
+                      <DeleteButton itemName="invoice" />
+                    </form>
                   </td>
                 </tr>
               ))}
