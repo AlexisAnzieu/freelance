@@ -22,6 +22,7 @@ export default async function InvoicePage({
       AND: [{ id }, { teamId: session.teamId }],
     },
     include: {
+      items: true,
       companies: {
         include: {
           types: true,

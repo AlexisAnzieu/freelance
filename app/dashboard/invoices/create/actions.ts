@@ -5,6 +5,12 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
+interface InvoiceItem {
+  name: string;
+  quantity: number;
+  unitaryPrice: number;
+}
+
 export async function createInvoice(formData: FormData) {
   const session = await auth();
 
@@ -12,10 +18,24 @@ export async function createInvoice(formData: FormData) {
     throw new Error("Unauthorized: No team access");
   }
 
-  const rawAmount = formData.get("amount") as string;
-  const rawTax = formData.get("tax") as string;
-  const amount = parseFloat(rawAmount);
-  const tax = parseFloat(rawTax || "0");
+  // Parse items from form data
+  const items: InvoiceItem[] = [];
+  let i = 0;
+  while (formData.has(`items[${i}].name`)) {
+    items.push({
+      name: formData.get(`items[${i}].name`) as string,
+      quantity: Number(formData.get(`items[${i}].quantity`)),
+      unitaryPrice: Number(formData.get(`items[${i}].unitaryPrice`)),
+    });
+    i++;
+  }
+
+  // Calculate total amount
+  const amount = items.reduce(
+    (sum, item) => sum + item.quantity * item.unitaryPrice,
+    0
+  );
+  const tax = parseFloat((formData.get("tax") as string) || "0");
   const totalAmount = amount * (1 + tax / 100);
 
   try {
@@ -38,6 +58,13 @@ export async function createInvoice(formData: FormData) {
               id: formData.get("contractorId") as string,
             },
           ],
+        },
+        items: {
+          create: items.map((item) => ({
+            name: item.name,
+            quantity: item.quantity,
+            unitaryPrice: item.unitaryPrice,
+          })),
         },
       },
     });
