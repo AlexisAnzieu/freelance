@@ -3,16 +3,9 @@ import { Skeleton } from "@/app/ui/skeletons";
 export default function ContractorsLoading() {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-          <h1 className="text-xl font-semibold text-gray-900">Contractors</h1>
-          <p className="mt-2 text-sm text-gray-700">
-            A list of all contractors in your team.
-          </p>
-        </div>
-        <div className="mt-4 sm:mt-0">
-          <div className="h-10 w-36 animate-pulse rounded-md bg-gray-200" />
-        </div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Contractors</h1>
+        <div className="h-10 w-36 animate-pulse rounded-md bg-gray-200" />
       </div>
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

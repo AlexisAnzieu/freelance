@@ -3,6 +3,10 @@ import { Skeleton } from "@/app/ui/skeletons";
 export default function CustomersLoading() {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Customers</h1>
+        <div className="h-10 w-36 animate-pulse rounded-md bg-gray-200" />
+      </div>
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle">
