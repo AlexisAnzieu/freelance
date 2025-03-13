@@ -12,7 +12,7 @@ export function Pagination({
   searchParams,
 }: PaginationProps) {
   return (
-    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mt-4">
+    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-4 sm:px-6 mt-6 rounded-lg shadow-sm">
       <div className="flex flex-1 justify-between sm:hidden">
         <Link
           href={{
@@ -21,8 +21,10 @@ export function Pagination({
               page: currentPage > 1 ? currentPage - 1 : 1,
             },
           }}
-          className={`relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${
-            currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+          className={`relative inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:border-gray-300 ${
+            currentPage === 1
+              ? "opacity-50 cursor-not-allowed pointer-events-none"
+              : ""
           }`}
         >
           Previous
@@ -34,8 +36,10 @@ export function Pagination({
               page: currentPage < totalPages ? currentPage + 1 : totalPages,
             },
           }}
-          className={`relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${
-            currentPage >= totalPages ? "opacity-50 cursor-not-allowed" : ""
+          className={`relative ml-3 inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:border-gray-300 ${
+            currentPage >= totalPages
+              ? "opacity-50 cursor-not-allowed pointer-events-none"
+              : ""
           }`}
         >
           Next
@@ -54,7 +58,7 @@ export function Pagination({
         </div>
         <div>
           <nav
-            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+            className="isolate inline-flex -space-x-px rounded-lg shadow-sm"
             aria-label="Pagination"
           >
             <Link
@@ -64,8 +68,10 @@ export function Pagination({
                   page: currentPage > 1 ? currentPage - 1 : 1,
                 },
               }}
-              className={`relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${
-                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+              className={`relative inline-flex items-center rounded-l-lg px-3 py-2 text-gray-500 border border-gray-200 hover:text-gray-700 hover:border-gray-300 bg-white transition-all duration-200 ${
+                currentPage === 1
+                  ? "opacity-50 cursor-not-allowed pointer-events-none"
+                  : "hover:bg-gray-50"
               }`}
             >
               <span aria-hidden="true">&lt;</span>
@@ -76,10 +82,10 @@ export function Pagination({
                 href={{
                   query: { ...searchParams, page: i + 1 },
                 }}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium transition-all duration-200 ${
                   currentPage === i + 1
-                    ? "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
+                    ? "z-10 bg-blue-600 text-white border border-blue-600 hover:bg-blue-700"
+                    : "text-gray-700 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 bg-white"
                 }`}
               >
                 {i + 1}
@@ -92,8 +98,10 @@ export function Pagination({
                   page: currentPage < totalPages ? currentPage + 1 : totalPages,
                 },
               }}
-              className={`relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${
-                currentPage >= totalPages ? "opacity-50 cursor-not-allowed" : ""
+              className={`relative inline-flex items-center rounded-r-lg px-3 py-2 text-gray-500 border border-gray-200 hover:text-gray-700 hover:border-gray-300 bg-white transition-all duration-200 ${
+                currentPage >= totalPages
+                  ? "opacity-50 cursor-not-allowed pointer-events-none"
+                  : "hover:bg-gray-50"
               }`}
             >
               <span aria-hidden="true">&gt;</span>

@@ -97,23 +97,23 @@ export function Form({ customers, contractors }: FormProps) {
 
         await createInvoice(data);
       }}
-      className="space-y-6"
+      className="space-y-8 max-w-[1400px] mx-auto"
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-          <div className="rounded-md p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label
                   htmlFor="customerId"
-                  className="block text-sm font-medium mb-2"
+                  className="block text-sm font-medium text-gray-700 mb-2"
                 >
                   Customer
                 </label>
                 <select
                   id="customerId"
                   name="customerId"
-                  className="block w-full rounded-md border border-gray-200 py-2 px-3"
+                  className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   required
                   value={formData.customerId}
                   onChange={handleChange}
@@ -130,14 +130,14 @@ export function Form({ customers, contractors }: FormProps) {
               <div>
                 <label
                   htmlFor="contractorId"
-                  className="block text-sm font-medium mb-2"
+                  className="block text-sm font-medium text-gray-700 mb-2"
                 >
                   Contractor
                 </label>
                 <select
                   id="contractorId"
                   name="contractorId"
-                  className="block w-full rounded-md border border-gray-200 py-2 px-3"
+                  className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   required
                   value={formData.contractorId}
                   onChange={handleChange}
@@ -154,14 +154,17 @@ export function Form({ customers, contractors }: FormProps) {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="number" className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="number"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Invoice Number
             </label>
             <input
               type="text"
               id="number"
               name="number"
-              className="block w-full rounded-md border border-gray-200 py-2 px-3"
+              className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
               required
               value={formData.number}
               onChange={handleChange}
@@ -204,14 +207,16 @@ export function Form({ customers, contractors }: FormProps) {
           </div>
 
           <div className="space-y-4 mt-4">
-            <div className="border rounded-md p-4">
-              <h3 className="text-lg font-medium mb-4">Activities</h3>
+            <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Activities
+              </h3>
               {formData.items.map((item) => (
                 <div key={item.id} className="grid grid-cols-12 gap-4 mb-4">
                   <div className="col-span-6">
                     <label
                       htmlFor={`name-${item.id}`}
-                      className="block text-sm font-medium mb-2"
+                      className="block text-sm font-medium text-gray-700 mb-2"
                     >
                       Description
                     </label>
@@ -224,13 +229,13 @@ export function Form({ customers, contractors }: FormProps) {
                       placeholder="Enter activity description"
                       value={item.name}
                       onChange={(e) => handleChange(e, item.id)}
-                      className="block w-full rounded-md border border-gray-200 py-2 px-3"
+                      className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     />
                   </div>
                   <div className="col-span-3">
                     <label
                       htmlFor={`quantity-${item.id}`}
-                      className="block text-sm font-medium mb-2"
+                      className="block text-sm font-medium text-gray-700 mb-2"
                     >
                       Quantity
                     </label>
@@ -244,13 +249,13 @@ export function Form({ customers, contractors }: FormProps) {
                       placeholder="Enter quantity"
                       value={item.quantity}
                       onChange={(e) => handleChange(e, item.id)}
-                      className="block w-full rounded-md border border-gray-200 py-2 px-3"
+                      className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     />
                   </div>
                   <div className="col-span-3">
                     <label
                       htmlFor={`unitaryPrice-${item.id}`}
-                      className="block text-sm font-medium mb-2"
+                      className="block text-sm font-medium text-gray-700 mb-2"
                     >
                       Unit Price
                     </label>
@@ -265,7 +270,7 @@ export function Form({ customers, contractors }: FormProps) {
                       placeholder="Enter price per unit"
                       value={item.unitaryPrice}
                       onChange={(e) => handleChange(e, item.id)}
-                      className="block w-full rounded-md border border-gray-200 py-2 px-3"
+                      className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     />
                   </div>
                 </div>
@@ -286,7 +291,7 @@ export function Form({ customers, contractors }: FormProps) {
                     ],
                   }))
                 }
-                className="mt-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="mt-4 inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-semibold rounded-lg text-white bg-blue-600 shadow-sm hover:bg-blue-500 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 Add Activity
               </button>
@@ -325,7 +330,7 @@ export function Form({ customers, contractors }: FormProps) {
         </div>
 
         <div
-          className="border rounded-lg overflow-hidden"
+          className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm"
           style={{ height: "800px" }}
         >
           <PDFViewer width="100%" height="100%" style={{ border: "none" }}>
@@ -356,7 +361,7 @@ export function Form({ customers, contractors }: FormProps) {
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button
           type="submit"
-          className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-blue-500 hover:shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         >
           Create Invoice
         </button>

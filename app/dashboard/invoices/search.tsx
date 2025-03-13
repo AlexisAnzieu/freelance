@@ -19,14 +19,14 @@ export default function Search() {
   };
 
   return (
-    <div className="relative mt-4 md:mt-0">
+    <div className="relative mt-4 md:mt-0 max-w-sm w-full">
       <label htmlFor="search" className="sr-only">
         Search invoices
       </label>
       <div className="relative">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <svg
-            className="h-5 w-5 text-gray-400"
+            className="h-5 w-5 text-gray-400 transition-colors duration-200 group-focus-within:text-blue-500"
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -41,7 +41,8 @@ export default function Search() {
           type="text"
           name="search"
           id="search"
-          className="block w-full rounded-md border-0 py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          className="group block w-full rounded-lg border-gray-200 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-500 bg-white shadow-sm transition-all duration-200
+          focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 hover:border-gray-300"
           placeholder="Search invoices..."
           onChange={(e) => handleSearch(e.target.value)}
           defaultValue={searchParams.get("query")?.toString()}

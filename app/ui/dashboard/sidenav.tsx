@@ -88,13 +88,13 @@ export default function SideNav() {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-full flex-col bg-gradient-to-b from-gray-900 to-gray-800 px-3 py-4 md:px-6">
+    <div className="flex h-full flex-col bg-gradient-to-b from-gray-950 to-gray-900 px-3 py-4 md:px-6">
       <Link
-        className="mb-8 flex items-end justify-start rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 p-4 md:h-20 transition-transform hover:scale-[1.02] hover:shadow-lg"
+        className="mb-8 flex items-end justify-start rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 p-4 md:h-20 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:from-blue-500 hover:to-blue-400"
         href="/"
       >
         <div className="w-32 text-white md:w-40">
-          <span className="text-2xl font-bold tracking-tight">
+          <span className="text-2xl font-bold tracking-tight drop-shadow-sm">
             Freezerlance
           </span>
         </div>
@@ -107,10 +107,11 @@ export default function SideNav() {
               key={item.name}
               href={item.href}
               className={clsx(
-                "flex h-[48px] grow items-center justify-center gap-3 rounded-lg p-3 text-sm font-medium transition-all duration-150 ease-in-out md:flex-none md:justify-start md:p-2 md:px-3",
+                "flex h-[48px] grow items-center justify-center gap-3 rounded-lg p-3 text-sm font-medium transition-all duration-200 ease-in-out md:flex-none md:justify-start md:p-2 md:px-3",
                 {
-                  "bg-blue-600/10 text-blue-500 shadow-sm": isActive,
-                  "text-gray-400 hover:bg-gray-800 hover:text-blue-400":
+                  "bg-blue-600/15 text-blue-400 shadow-md ring-1 ring-blue-500/20":
+                    isActive,
+                  "text-gray-400 hover:bg-gray-800/50 hover:text-blue-300 hover:shadow-sm":
                     !isActive,
                 }
               )}
@@ -122,7 +123,21 @@ export default function SideNav() {
         })}
       </div>
       <form action={handleSignOut}>
-        <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+        <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-800/40 p-3 text-sm font-medium text-gray-300 transition-all hover:bg-red-500/10 hover:text-red-400 hover:shadow-sm cursor-pointer md:flex-none md:justify-start md:p-2 md:px-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            />
+          </svg>
           <div className="hidden md:block">Sign Out</div>
         </button>
       </form>
