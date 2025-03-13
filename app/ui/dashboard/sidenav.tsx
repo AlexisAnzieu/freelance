@@ -89,17 +89,13 @@ export default function SideNav() {
 
   return (
     <div className="flex h-full flex-col bg-gradient-to-b from-gray-950 to-gray-900 px-3 py-4 md:px-6">
-      <Link
-        className="mb-8 flex items-end justify-start rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 p-4 md:h-20 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:from-blue-500 hover:to-blue-400"
-        href="/"
-      >
-        <div className="w-32 text-white md:w-40">
-          <span className="text-2xl font-bold tracking-tight drop-shadow-sm">
-            Freezerlance
-          </span>
-        </div>
-      </Link>
-      <div className="flex grow flex-row  space-x-2 md:flex-col md:space-x-0 md:space-y-2">
+      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
+      <div className="w-32 text-blue-300 md:w-40 relative group-hover:text-blue-200 px-3 mb-4">
+        <span className="text-2xl font-bold tracking-tight drop-shadow-sm">
+          Freezerlance
+        </span>
+      </div>
+      <div className="flex grow flex-row space-x-2 md:flex-col md:space-x-0 md:space-y-3 pb-2">
         {navigation.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -107,26 +103,35 @@ export default function SideNav() {
               key={item.name}
               href={item.href}
               className={clsx(
-                "flex h-[48px] grow items-center justify-center gap-3 rounded-lg p-3 text-sm font-medium transition-all duration-200 ease-in-out md:flex-none md:justify-start md:p-2 md:px-3",
+                "flex h-[48px] grow items-center justify-center gap-3 rounded-lg p-3 text-sm font-medium transition-all duration-300 ease-in-out md:flex-none md:justify-start md:p-2 md:px-3 relative overflow-hidden group hover:scale-[1.02]",
                 {
-                  "bg-blue-600/15 text-blue-400 shadow-md ring-1 ring-blue-500/20":
+                  "bg-blue-600/20 text-blue-300 shadow-lg shadow-blue-500/20 ring-2 ring-blue-500/30 hover:bg-blue-600/30 hover:text-blue-200":
                     isActive,
-                  "text-gray-400 hover:bg-gray-800/50 hover:text-blue-300 hover:shadow-sm":
+                  "text-gray-400 hover:bg-gray-800/80 hover:text-blue-200 hover:shadow-md hover:ring-1 hover:ring-blue-400/30":
                     !isActive,
                 }
               )}
             >
-              {item.icon}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
+              <div
+                className={clsx("transition-transform duration-300", {
+                  "scale-110": isActive,
+                  "group-hover:scale-110": !isActive,
+                })}
+              >
+                {item.icon}
+              </div>
               <span className="hidden md:block">{item.name}</span>
             </Link>
           );
         })}
       </div>
       <form action={handleSignOut}>
-        <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-800/40 p-3 text-sm font-medium text-gray-300 transition-all hover:bg-red-500/10 hover:text-red-400 hover:shadow-sm cursor-pointer md:flex-none md:justify-start md:p-2 md:px-3">
+        <button className="flex h-[48px] w-full items-center justify-center gap-2 rounded-md bg-gray-800/40 p-3 text-sm font-medium text-gray-300 transition-all hover:bg-red-500/20 hover:text-red-300 hover:shadow-md hover:shadow-red-500/10 hover:scale-[1.02] cursor-pointer md:justify-start md:p-2 md:px-3 mt-6 group relative overflow-hidden hover:ring-1 hover:ring-red-400/30">
+          <span className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/10 to-red-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
+            className="h-5 w-5 transition-transform group-hover:scale-110 duration-300"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
