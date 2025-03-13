@@ -23,6 +23,7 @@ model Team {
   users     UserTeam[]
   companies Company[]
   invoices  Invoice[]
+  projects  Project[]
 }
 
 model User {
@@ -57,6 +58,7 @@ model Company {
   teamId      String
   invoices    Invoice[]
   types       CompanyType[]
+  projects    Project[]
 }
 
 model CompanyType {
@@ -83,14 +85,52 @@ model Invoice {
 }
 
 model InvoiceItem {
-  id           String   @id @default(cuid())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id               String            @id @default(cuid())
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  name             String
+  quantity         Int
+  unitaryPrice     Float
+  invoice          Invoice           @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId        String
+  timeTrackingItem TimeTrackingItem?
+}
+
+model Project {
+  id           String         @id @default(cuid())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
   name         String
-  quantity     Int
-  unitaryPrice Float
-  invoice      Invoice  @relation(fields: [invoiceId], references: [id])
-  invoiceId    String
+  description  String?
+  team         Team           @relation(fields: [teamId], references: [id])
+  teamId       String
+  timeTracking TimeTracking[]
+  companies    Company[]
+}
+
+model TimeTracking {
+  id        String             @id @default(cuid())
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  items     TimeTrackingItem[]
+  status    String
+  month     DateTime
+  project   Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+}
+
+model TimeTrackingItem {
+  id             String       @id @default(cuid())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  date           DateTime
+  description    String
+  hours          Float
+  hourlyRate     Float
+  timeTracking   TimeTracking @relation(fields: [timeTrackingId], references: [id], onDelete: Cascade)
+  timeTrackingId String
+  invoiceItem    InvoiceItem? @relation(fields: [invoiceItemId], references: [id])
+  invoiceItemId  String?      @unique
 }
 
 model UserTeam {
