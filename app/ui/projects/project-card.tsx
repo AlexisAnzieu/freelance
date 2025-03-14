@@ -4,6 +4,7 @@ import { Project } from "@prisma/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useModal } from "../modal-context";
 
 interface ProjectWithCompanies extends Project {
   companies: { companyName: string }[];
@@ -22,15 +23,22 @@ export default function ProjectCard({
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
+  const { showConfirm, showError } = useModal();
+
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this project?")) return;
+    const confirmed = await showConfirm(
+      "Are you sure you want to delete this project?",
+      "Delete Project"
+    );
+    if (!confirmed) return;
+
     setIsDeleting(true);
     try {
       await onDelete(project.id);
       router.refresh();
     } catch (error) {
       console.error("Failed to delete project:", error);
-      alert("Failed to delete project");
+      showError("Failed to delete project");
     } finally {
       setIsDeleting(false);
     }

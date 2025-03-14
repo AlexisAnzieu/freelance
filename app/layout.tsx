@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ModalProvider } from "./ui/modal-context";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,7 +20,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} h-full selection:bg-blue-100 selection:text-blue-900`}
       >
-        {children}
+        <ModalProvider>{children}</ModalProvider>
       </body>
     </html>
   );

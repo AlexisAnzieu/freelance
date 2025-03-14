@@ -10,7 +10,7 @@ export async function deleteProjectAction(id: string) {
     throw new Error("Unauthorized: No team access");
   }
 
-  await prisma.project.findUnique({
+  await prisma.project.delete({
     where: {
       id,
     },
