@@ -83,8 +83,8 @@ const navigation = [
     ),
   },
   {
-    name: "Time Tracking",
-    href: "/dashboard/time-tracking",
+    name: "Projects",
+    href: "/dashboard/projects",
     icon: (
       <svg
         className="w-5 h-5"
