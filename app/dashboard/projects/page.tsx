@@ -20,9 +20,10 @@ async function getProjects() {
           companyName: true,
         },
       },
-      _count: {
+      timeEntries: {
         select: {
-          timeEntries: true,
+          id: true,
+          invoiceItemId: true,
         },
       },
     },
@@ -31,7 +32,15 @@ async function getProjects() {
     },
   });
 
-  return projects;
+  return projects.map((project) => ({
+    ...project,
+    _count: {
+      timeEntries: project.timeEntries.length,
+      invoicedTimeEntries: project.timeEntries.filter(
+        (entry) => entry.invoiceItemId !== null
+      ).length,
+    },
+  }));
 }
 
 export default async function Page() {

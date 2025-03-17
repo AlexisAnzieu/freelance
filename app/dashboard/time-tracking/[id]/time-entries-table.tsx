@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { deleteTimeEntry, generateInvoice } from "./actions";
 import { formatDate } from "@/app/lib/utils";
 import { useState } from "react";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 interface Props {
   timeEntries: TimeTrackingItem[];
@@ -97,13 +98,20 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
             {sortedEntries.map((entry) => (
               <tr key={entry.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <input
-                    type="checkbox"
-                    checked={selectedEntries.has(entry.id)}
-                    onChange={() => handleSelect(entry.id)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    aria-label={`Select time entry for ${entry.description}`}
-                  />
+                  {entry.status === "invoiced" ? (
+                    <CheckCircleIcon
+                      className="h-5 w-5 text-green-500"
+                      aria-label="Invoiced"
+                    />
+                  ) : (
+                    <input
+                      type="checkbox"
+                      checked={selectedEntries.has(entry.id)}
+                      onChange={() => handleSelect(entry.id)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      aria-label={`Select time entry for ${entry.description}`}
+                    />
+                  )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {formatDate(entry.date)}

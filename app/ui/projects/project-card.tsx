@@ -8,10 +8,11 @@ import { useModal } from "../modal-context";
 import SidePanel from "../side-panel";
 import TimeEntryForm from "@/app/dashboard/time-tracking/create/time-entry-form";
 
-interface ProjectWithCompanies extends Project {
+export interface ProjectWithCompanies extends Project {
   companies: { companyName: string }[];
   _count?: {
     timeEntries: number;
+    invoicedTimeEntries: number;
   };
 }
 
@@ -52,55 +53,62 @@ export default function ProjectCard({
       <div className="group relative bg-gradient-to-b from-white/80 to-white/50 backdrop-blur-xl rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 border border-white/10">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="relative p-6">
-          <div className="flex justify-between items-start mb-6">
-            <h3 className="text-xl font-bold bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent group-hover:scale-[1.01] transition-transform duration-300">
-              {project.name}
-            </h3>
-            <div className="flex space-x-2">
-              <Link
-                href={`/dashboard/projects/${project.id}/edit`}
-                className="relative p-2 text-blue-600 hover:text-blue-500 transition-colors duration-300 hover:scale-110 transform"
-                aria-label="Edit project"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                  />
-                </svg>
-              </Link>
-              <button
-                onClick={handleDelete}
-                disabled={isDeleting}
-                className="relative p-2 text-red-600 hover:text-red-500 disabled:opacity-50 transition-colors duration-300 hover:scale-110 transform"
-                aria-label="Delete project"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                  />
-                </svg>
-              </button>
+          <div className="space-y-2 mb-4">
+            <div className="flex justify-between items-center mb-1">
+              <h3 className="text-xl font-bold bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent group-hover:scale-[1.01] transition-transform duration-300">
+                {project.name}
+              </h3>
+              <div className="flex items-center">
+                <div className="text-sm text-gray-500 group-hover:hidden transition-opacity duration-200">
+                  {new Date(project.createdAt).toLocaleDateString()}
+                </div>
+                <div className="hidden group-hover:flex gap-2 transition-opacity duration-200">
+                  <Link
+                    href={`/dashboard/projects/${project.id}/edit`}
+                    className="relative p-1.5 text-blue-600/70 hover:text-blue-600 transition-colors duration-300"
+                    aria-label="Edit project"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                  </Link>
+                  <button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="relative p-1.5 text-red-600/70 hover:text-red-600 disabled:opacity-50 transition-colors duration-300"
+                    aria-label="Delete project"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
           {project.description && (
-            <p className="text-gray-600/90 mb-6 line-clamp-2 group-hover:text-gray-800 transition-colors duration-300">
+            <p className="text-gray-600/90 mb-4 line-clamp-2 group-hover:text-gray-800 transition-colors duration-300">
               {project.description}
             </p>
           )}
@@ -120,40 +128,42 @@ export default function ProjectCard({
             </div>
           )}
 
-          <div className="mt-6 flex justify-between items-center text-sm font-medium">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+          <button
+            onClick={() =>
+              router.push(`/dashboard/time-tracking/${project.id}`)
+            }
+            className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 p-4 hover:from-blue-100 hover:to-purple-100 transition-all duration-300"
+          >
+            <div className="absolute inset-0 bg-grid-black/[0.03] bg-[size:6px]" />
+
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-baseline gap-2">
+                <span className="font-semibold text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  {(
+                    ((project._count?.invoicedTimeEntries || 0) /
+                      (project._count?.timeEntries || 1)) *
+                    100
+                  ).toFixed(0)}
+                  %
+                </span>
+                <span className="text-sm text-gray-600">invoiced</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="text-sm text-gray-500">
+                  {project._count?.timeEntries || 0} entries
+                </div>
                 <button
-                  onClick={() =>
-                    router.push(`/dashboard/time-tracking/${project.id}`)
-                  }
-                  className="flex items-center bg-gradient-to-r from-blue-500/5 to-purple-500/5 px-3 py-1 rounded-full border border-blue-500/10 hover:from-blue-500/10 hover:to-purple-500/10 transition-colors duration-200"
-                >
-                  <span className="flex items-center">
-                    <svg
-                      className="w-4 h-4 mr-1.5 text-blue-600/80"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    {project._count?.timeEntries || 0} Time entries
-                  </span>
-                  <span className="sr-only">View time entries</span>
-                </button>
-                <button
-                  onClick={() => setIsTimeEntryPanelOpen(true)}
-                  className="inline-flex items-center px-2 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded-full hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsTimeEntryPanelOpen(true);
+                  }}
+                  className="group relative overflow-hidden rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-1.5 hover:from-blue-500/20 hover:to-purple-500/20 transition-all duration-300"
+                  title="Add time entry"
                   aria-label="Add time entry"
                 >
+                  <div className="absolute inset-0 bg-grid-black/[0.03] bg-[size:6px]" />
                   <svg
-                    className="w-4 h-4 mr-1"
+                    className="w-4 h-4 text-purple-600 relative"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -165,14 +175,23 @@ export default function ProjectCard({
                       d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                     />
                   </svg>
-                  Add Time
                 </button>
               </div>
-              <div className="text-gray-500/80">
-                Created {new Date(project.createdAt).toLocaleDateString()}
-              </div>
             </div>
-          </div>
+
+            <div className="h-2 w-full rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500 group-hover:opacity-80"
+                style={{
+                  width: `${(
+                    ((project._count?.invoicedTimeEntries || 0) /
+                      (project._count?.timeEntries || 1)) *
+                    100
+                  ).toFixed(0)}%`,
+                }}
+              />
+            </div>
+          </button>
         </div>
       </div>
 

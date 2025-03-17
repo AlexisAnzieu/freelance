@@ -1,12 +1,4 @@
-import { Project } from "@prisma/client";
-import ProjectCard from "./project-card";
-
-interface ProjectWithCompanies extends Project {
-  companies: { companyName: string }[];
-  _count?: {
-    timeEntries: number;
-  };
-}
+import ProjectCard, { ProjectWithCompanies } from "./project-card";
 
 export default function ProjectGrid({
   projects,
