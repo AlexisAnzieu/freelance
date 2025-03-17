@@ -172,8 +172,8 @@ export default function ProjectForm({
                 onChange={setSelectedContractors}
                 name="companies"
                 placeholder="Select contractor companies..."
-                gradientFrom="purple-500"
-                gradientTo="pink-500"
+                gradientFrom="blue-500"
+                gradientTo="purple-500"
               />
             </div>
           </div>

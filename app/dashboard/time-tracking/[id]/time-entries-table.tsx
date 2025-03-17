@@ -98,7 +98,7 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
             {sortedEntries.map((entry) => (
               <tr key={entry.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {entry.status === "invoiced" ? (
+                  {entry.invoiceItemId ? (
                     <CheckCircleIcon
                       className="h-5 w-5 text-green-500"
                       aria-label="Invoiced"
@@ -129,7 +129,7 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
                   ${(entry.hours * entry.hourlyRate).toFixed(2)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {entry.status}
+                  {entry.invoiceItemId ? "Invoiced" : "Not Invoiced"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button

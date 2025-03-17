@@ -1,5 +1,4 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
-import { formatDistanceToNow } from "date-fns";
 import type { Invoice, InvoiceItem } from "@prisma/client";
 import { filterCompaniesByType, CompanyWithTypes } from "@/app/lib/db";
 import { COMPANY_TYPES } from "@/app/lib/constants";
@@ -8,10 +7,33 @@ export interface InvoicePDFProps {
   invoice: Invoice & {
     companies: CompanyWithTypes[];
     items: Pick<InvoiceItem, "unitaryPrice" | "quantity" | "name" | "id">[];
+    name?: string;
   };
 }
 
 const styles = StyleSheet.create({
+  projectTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 12,
+  },
+  bankingInfo: {
+    position: "absolute",
+    bottom: 30,
+    left: 30,
+    fontSize: 10,
+  },
+  bankingHeader: {
+    fontSize: 12,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  bankingTitle: {
+    marginBottom: 4,
+  },
+  bankingDetails: {
+    marginTop: 4,
+  },
   page: {
     fontFamily: "Helvetica",
     fontSize: 11,
@@ -192,10 +214,14 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
 
         <View style={styles.divider} />
 
+        {invoice.name && (
+          <Text style={styles.projectTitle}>{invoice.name}</Text>
+        )}
+
         <View style={styles.itemsTable}>
           <View style={styles.tableHeader}>
             <Text style={styles.description}>Description</Text>
-            <Text style={styles.quantity}>Qty</Text>
+            <Text style={styles.quantity}>Quantity</Text>
             <Text style={styles.price}>Price</Text>
             <Text style={styles.total}>Total</Text>
           </View>
@@ -241,34 +267,16 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
           </View>
         </View>
 
-        <View style={[styles.section, { marginTop: 40 }]}>
-          <View style={styles.row}>
-            <Text style={styles.label}>Status:</Text>
-            <Text style={styles.value}>
-              {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
-            </Text>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.label}>Created:</Text>
-            <Text style={styles.value}>
-              {formatDistanceToNow(invoice.date, { addSuffix: true })}
-            </Text>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.label}>Due Date:</Text>
-            <Text style={styles.value}>
-              {formatDistanceToNow(invoice.dueDate, { addSuffix: true })}
-            </Text>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.label}>Last Updated:</Text>
-            <Text style={styles.value}>
-              {formatDistanceToNow(invoice.updatedAt, { addSuffix: true })}
-            </Text>
-          </View>
+        <View style={styles.bankingInfo}>
+          <Text style={styles.bankingHeader}>Payment information</Text>
+          <Text style={styles.bankingTitle}>
+            Interac via alexis.anzieu@gmail.com
+          </Text>
+          <Text> or</Text>
+          <Text style={styles.bankingDetails}>Transit number: 30166</Text>
+          <Text style={styles.bankingDetails}>Institution number: 815</Text>
+          <Text style={styles.bankingDetails}>Account: 741 478</Text>
+          <Text style={styles.bankingDetails}>Check digit: 2</Text>
         </View>
       </Page>
     </Document>

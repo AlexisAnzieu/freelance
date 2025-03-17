@@ -105,6 +105,7 @@ export async function generateInvoice(timeEntryIds: string[]) {
   const searchParams = new URLSearchParams();
   searchParams.set("customerId", customer.id);
   searchParams.set("contractorId", contractor.id);
+  searchParams.set("name", project.name);
   searchParams.set(
     "items",
     JSON.stringify(

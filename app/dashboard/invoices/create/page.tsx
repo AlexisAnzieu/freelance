@@ -8,6 +8,7 @@ interface SearchParams {
   customerId?: string;
   contractorId?: string;
   items?: string;
+  name?: string;
 }
 
 export default async function Page({
@@ -39,7 +40,7 @@ export default async function Page({
     COMPANY_TYPES.CONTRACTOR
   );
 
-  const { items, customerId, contractorId } = await searchParams;
+  const { items, customerId, contractorId, name } = await searchParams;
 
   // Parse pre-filled items if they exist
   const prefillItems = items ? JSON.parse(items) : null;
@@ -51,8 +52,9 @@ export default async function Page({
         customers={customers}
         contractors={contractors}
         prefillData={{
-          customerId: customerId,
-          contractorId: contractorId,
+          name,
+          customerId,
+          contractorId,
           items: prefillItems,
         }}
       />

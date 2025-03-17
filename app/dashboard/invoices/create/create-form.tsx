@@ -18,6 +18,7 @@ interface PrefillData {
   customerId?: string;
   contractorId?: string;
   items?: Array<Omit<InvoiceItem, "id">> | null;
+  name?: string;
 }
 
 interface FormProps {
@@ -28,11 +29,12 @@ interface FormProps {
 
 export function Form({ customers, contractors, prefillData }: FormProps) {
   const [formData, setFormData] = useState({
+    name: prefillData?.name || "",
     customerId: prefillData?.customerId || "",
     contractorId: prefillData?.contractorId || "",
     number: "",
     date: new Date().toISOString().split("T")[0],
-    dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+    dueDate: new Date(Date.now() + 31 * 24 * 60 * 60 * 1000)
       .toISOString()
       .split("T")[0],
     tax: 0,

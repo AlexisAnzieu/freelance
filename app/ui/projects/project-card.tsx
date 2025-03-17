@@ -128,12 +128,7 @@ export default function ProjectCard({
             </div>
           )}
 
-          <button
-            onClick={() =>
-              router.push(`/dashboard/time-tracking/${project.id}`)
-            }
-            className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 p-4 hover:from-blue-100 hover:to-purple-100 transition-all duration-300"
-          >
+          <div className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 p-4 hover:from-blue-100 hover:to-purple-100 transition-all duration-300">
             <div className="absolute inset-0 bg-grid-black/[0.03] bg-[size:6px]" />
 
             <div className="flex items-center justify-between mb-2">
@@ -152,30 +147,52 @@ export default function ProjectCard({
                 <div className="text-sm text-gray-500">
                   {project._count?.timeEntries || 0} entries
                 </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsTimeEntryPanelOpen(true);
-                  }}
-                  className="group relative overflow-hidden rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-1.5 hover:from-blue-500/20 hover:to-purple-500/20 transition-all duration-300"
-                  title="Add time entry"
-                  aria-label="Add time entry"
-                >
-                  <div className="absolute inset-0 bg-grid-black/[0.03] bg-[size:6px]" />
-                  <svg
-                    className="w-4 h-4 text-purple-600 relative"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setIsTimeEntryPanelOpen(true)}
+                    className="group relative overflow-hidden rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-1.5 hover:from-blue-500/20 hover:to-purple-500/20 transition-all duration-300"
+                    title="Add time entry"
+                    aria-label="Add time entry"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                  </svg>
-                </button>
+                    <div className="absolute inset-0 bg-grid-black/[0.03] bg-[size:6px]" />
+                    <svg
+                      className="w-4 h-4 text-purple-600 relative"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() =>
+                      router.push(`/dashboard/time-tracking/${project.id}`)
+                    }
+                    className="group relative overflow-hidden rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-1.5 hover:from-blue-500/20 hover:to-purple-500/20 transition-all duration-300"
+                    title="View time entries"
+                    aria-label="View time entries"
+                  >
+                    <div className="absolute inset-0 bg-grid-black/[0.03] bg-[size:6px]" />
+                    <svg
+                      className="w-4 h-4 text-purple-600 relative"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -191,7 +208,7 @@ export default function ProjectCard({
                 }}
               />
             </div>
-          </button>
+          </div>
         </div>
       </div>
 

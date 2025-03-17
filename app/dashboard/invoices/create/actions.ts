@@ -83,7 +83,6 @@ export async function createInvoice(formData: FormData) {
           where: { id: item.timeEntryId },
           data: {
             invoiceItemId: invoice.items[i].id,
-            status: "invoiced",
           },
         });
       }

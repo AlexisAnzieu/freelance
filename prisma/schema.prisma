@@ -116,7 +116,6 @@ model TimeTrackingItem {
   description   String
   hours         Float
   hourlyRate    Float
-  status        String
   project       Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId     String
   invoiceItem   InvoiceItem? @relation(fields: [invoiceItemId], references: [id])
