@@ -56,7 +56,14 @@ export default function MultiSelect({
               return (
                 <span
                   key={id}
-                  className={`inline-flex items-center px-2 py-1 rounded-lg text-xs bg-gradient-to-r from-${gradientFrom}/10 to-${gradientTo}/10 text-gray-700`}
+                  className={`inline-flex items-center px-2 py-1 rounded-lg text-xs text-gray-700 ${
+                    gradientFrom === "blue-500" && gradientTo === "purple-500"
+                      ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10"
+                      : gradientFrom === "purple-500" &&
+                        gradientTo === "pink-500"
+                      ? "bg-gradient-to-r from-purple-500/10 to-pink-500/10"
+                      : "bg-gradient-to-r from-blue-500/10 to-purple-500/10"
+                  }`}
                 >
                   {option?.label}
                   <button
