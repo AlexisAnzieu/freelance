@@ -4,7 +4,7 @@ import ProjectCard from "./project-card";
 interface ProjectWithCompanies extends Project {
   companies: { companyName: string }[];
   _count?: {
-    timeTracking: number;
+    timeEntries: number;
   };
 }
 

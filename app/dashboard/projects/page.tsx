@@ -22,7 +22,7 @@ async function getProjects() {
       },
       _count: {
         select: {
-          timeTracking: true,
+          timeEntries: true,
         },
       },
     },

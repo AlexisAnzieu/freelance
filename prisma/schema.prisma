@@ -97,40 +97,30 @@ model InvoiceItem {
 }
 
 model Project {
-  id           String         @id @default(cuid())
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  name         String
-  description  String?
-  team         Team           @relation(fields: [teamId], references: [id])
-  teamId       String
-  timeTracking TimeTracking[]
-  companies    Company[]
-}
-
-model TimeTracking {
-  id        String             @id @default(cuid())
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
-  items     TimeTrackingItem[]
-  status    String
-  month     DateTime
-  project   Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId String
+  id          String             @id @default(cuid())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  name        String
+  description String?
+  team        Team               @relation(fields: [teamId], references: [id])
+  teamId      String
+  timeEntries TimeTrackingItem[]
+  companies   Company[]
 }
 
 model TimeTrackingItem {
-  id             String       @id @default(cuid())
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  date           DateTime
-  description    String
-  hours          Float
-  hourlyRate     Float
-  timeTracking   TimeTracking @relation(fields: [timeTrackingId], references: [id], onDelete: Cascade)
-  timeTrackingId String
-  invoiceItem    InvoiceItem? @relation(fields: [invoiceItemId], references: [id])
-  invoiceItemId  String?      @unique
+  id            String       @id @default(cuid())
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  date          DateTime
+  description   String
+  hours         Float
+  hourlyRate    Float
+  status        String
+  project       Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId     String
+  invoiceItem   InvoiceItem? @relation(fields: [invoiceItemId], references: [id])
+  invoiceItemId String?      @unique
 }
 
 model UserTeam {

@@ -11,7 +11,7 @@ import TimeEntryForm from "@/app/dashboard/time-tracking/create/time-entry-form"
 interface ProjectWithCompanies extends Project {
   companies: { companyName: string }[];
   _count?: {
-    timeTracking: number;
+    timeEntries: number;
   };
 }
 
@@ -143,7 +143,7 @@ export default function ProjectCard({
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    {project._count?.timeTracking || 0} Time entries
+                    {project._count?.timeEntries || 0} Time entries
                   </span>
                   <span className="sr-only">View time entries</span>
                 </button>
@@ -182,7 +182,7 @@ export default function ProjectCard({
         title="Add Time Entry"
       >
         <TimeEntryForm
-          project={project}
+          projectId={project.id}
           onSuccess={() => {
             setIsTimeEntryPanelOpen(false);
             router.refresh();

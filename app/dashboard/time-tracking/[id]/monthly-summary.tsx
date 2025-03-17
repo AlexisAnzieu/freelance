@@ -1,98 +1,76 @@
-"use client";
+import { TimeTrackingItem } from "@prisma/client";
 
-import { TimeTracking } from "@prisma/client";
-
-interface TimeTrackingWithItems extends TimeTracking {
-  items: {
-    id: string;
-    date: Date;
-    description: string;
-    hours: number;
-    hourlyRate: number;
-  }[];
+interface Props {
+  timeEntries: TimeTrackingItem[];
 }
 
-export default function MonthlySummary({
-  timeTrackingList,
-}: {
-  timeTrackingList: TimeTrackingWithItems[];
-}) {
-  const monthlySummaries = timeTrackingList
-    .map((tracking) => {
-      const totalHours = tracking.items.reduce(
-        (sum, item) => sum + item.hours,
+export default function MonthlySummary({ timeEntries }: Props) {
+  // Group time entries by month
+  const entriesByMonth = timeEntries.reduce<Record<string, TimeTrackingItem[]>>(
+    (acc, entry) => {
+      const monthKey = new Date(entry.date).toLocaleString("en-US", {
+        year: "numeric",
+        month: "long",
+      });
+      if (!acc[monthKey]) {
+        acc[monthKey] = [];
+      }
+      acc[monthKey].push(entry);
+      return acc;
+    },
+    {}
+  );
+
+  // Calculate monthly summaries
+  const monthlySummaries = Object.entries(entriesByMonth).map(
+    ([month, entries]) => {
+      const totalHours = entries.reduce((sum, entry) => sum + entry.hours, 0);
+      const totalAmount = entries.reduce(
+        (sum, entry) => sum + entry.hours * entry.hourlyRate,
         0
       );
-      const totalAmount = tracking.items.reduce(
-        (sum, item) => sum + item.hours * item.hourlyRate,
-        0
-      );
+
       return {
-        month: new Date(tracking.month),
+        month,
         totalHours,
         totalAmount,
-        entries: tracking.items.length,
+        entriesCount: entries.length,
       };
-    })
-    .sort((a, b) => b.month.getTime() - a.month.getTime());
-
-  if (monthlySummaries.length === 0) {
-    return null;
-  }
-
-  const maxHours = Math.max(...monthlySummaries.map((s) => s.totalHours));
+    }
+  );
 
   return (
-    <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
-      <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-base font-semibold leading-6 text-gray-900">
-          Monthly Activity
-        </h3>
-        <div className="mt-6 space-y-8">
-          {monthlySummaries.map((summary) => {
-            const percentageOfMax = (summary.totalHours / maxHours) * 100;
-            return (
-              <div key={summary.month.toISOString()}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-x-3">
-                    <div className="text-sm font-medium text-gray-900">
-                      {summary.month.toLocaleDateString(undefined, {
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </div>
-                    <div className="text-sm font-medium text-gray-500">
-                      {summary.entries} entries
-                    </div>
-                  </div>
-                  <div className="text-sm font-medium text-gray-900">
-                    ${summary.totalAmount.toFixed(2)}
-                  </div>
+    <div className="mt-6">
+      <h2 className="text-2xl font-bold mb-4">Monthly Summary</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {monthlySummaries.map(
+          ({ month, totalHours, totalAmount, entriesCount }) => (
+            <div
+              key={month}
+              className="bg-white shadow rounded-lg p-6 hover:shadow-lg transition-shadow"
+            >
+              <h3 className="text-lg font-semibold text-gray-900">{month}</h3>
+              <dl className="mt-4 space-y-2">
+                <div>
+                  <dt className="text-sm text-gray-500">Total Hours</dt>
+                  <dd className="text-2xl font-semibold text-gray-900">
+                    {totalHours.toFixed(1)}
+                  </dd>
                 </div>
-                <div className="mt-2">
-                  <div className="overflow-hidden rounded-full bg-gray-100">
-                    <div
-                      className="h-2 rounded-full bg-blue-600"
-                      style={{ width: `${percentageOfMax}%` }}
-                    />
-                  </div>
-                  <div className="mt-1.5 flex items-center justify-between text-sm">
-                    <div className="text-gray-500">
-                      {summary.totalHours} hours
-                    </div>
-                    <div className="text-gray-500">
-                      {summary.entries > 0
-                        ? `$${(
-                            summary.totalAmount / summary.totalHours
-                          ).toFixed(2)}/hr avg.`
-                        : "-"}
-                    </div>
-                  </div>
+                <div>
+                  <dt className="text-sm text-gray-500">Total Amount</dt>
+                  <dd className="text-2xl font-semibold text-gray-900">
+                    ${totalAmount.toFixed(2)}
+                  </dd>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+                <div>
+                  <dt className="text-sm text-gray-500">Entries</dt>
+                  <dd className="text-lg text-gray-900">{entriesCount}</dd>
+                </div>
+              </dl>
+            </div>
+          )
+        )}
       </div>
     </div>
   );

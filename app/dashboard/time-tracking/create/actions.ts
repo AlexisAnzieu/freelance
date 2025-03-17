@@ -4,44 +4,25 @@ import { auth } from "@/auth";
 import prisma from "@/app/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-interface CreateTimeEntryParams {
-  projectId: string;
+interface TimeEntryFormData {
   date: Date;
   description: string;
   hours: number;
   hourlyRate: number;
+  projectId: string;
 }
 
 export async function createTimeEntry({
-  projectId,
   date,
   description,
   hours,
   hourlyRate,
-}: CreateTimeEntryParams) {
+  projectId,
+}: TimeEntryFormData) {
   const session = await auth();
 
   if (!session?.teamId) {
     throw new Error("Unauthorized: No team access");
-  }
-
-  // First, find or create a TimeTracking record for this month
-  const month = new Date(date.getFullYear(), date.getMonth(), 1);
-  let timeTracking = await prisma.timeTracking.findFirst({
-    where: {
-      projectId,
-      month,
-    },
-  });
-
-  if (!timeTracking) {
-    timeTracking = await prisma.timeTracking.create({
-      data: {
-        projectId,
-        month,
-        status: "pending",
-      },
-    });
   }
 
   // Create the time entry
@@ -51,12 +32,14 @@ export async function createTimeEntry({
       description,
       hours,
       hourlyRate,
-      timeTrackingId: timeTracking.id,
+      status: "pending", // Default status
+      projectId,
     },
   });
 
   revalidatePath("/dashboard/projects");
   revalidatePath(`/dashboard/projects/${projectId}`);
+  revalidatePath(`/dashboard/time-tracking/${projectId}`);
 
   return timeEntry;
 }
