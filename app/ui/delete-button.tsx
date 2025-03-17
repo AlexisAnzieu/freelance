@@ -11,6 +11,21 @@ export function DeleteButton({ itemName }: DeleteButtonProps) {
   const { pending } = useFormStatus();
   const { showConfirm } = useModal();
 
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      const confirmed = await showConfirm(
+        `Are you sure you want to delete this ${itemName}?`,
+        `Delete ${itemName}`
+      );
+      if (!confirmed) {
+        e.preventDefault(); // Only prevent form submission if not confirmed
+      }
+    } catch (error) {
+      console.error("Error during delete operation:", error);
+      e.preventDefault(); // Prevent form submission on error
+    }
+  };
+
   return (
     <>
       <button
@@ -23,16 +38,7 @@ export function DeleteButton({ itemName }: DeleteButtonProps) {
             : "hover:bg-red-100 hover:text-red-700 hover:shadow-sm hover:ring-1 hover:ring-red-400/50 active:bg-red-200"
         } 
         disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-50`}
-        onClick={async (e) => {
-          e.preventDefault();
-          const confirmed = await showConfirm(
-            `Are you sure you want to delete this ${itemName}?`,
-            `Delete ${itemName}`
-          );
-          if (confirmed) {
-            (e.target as HTMLButtonElement).form?.submit();
-          }
-        }}
+        onClick={handleDelete}
       >
         <span className="sr-only">Delete</span>
         <TrashIcon className="h-4 w-4 text-red-600" aria-hidden="true" />

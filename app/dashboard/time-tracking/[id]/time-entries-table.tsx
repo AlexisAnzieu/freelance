@@ -2,8 +2,9 @@
 
 import { TimeTrackingItem } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { deleteTimeEntry } from "./actions";
+import { deleteTimeEntry, generateInvoice } from "./actions";
 import { formatDate } from "@/app/lib/utils";
+import { useState } from "react";
 
 interface Props {
   timeEntries: TimeTrackingItem[];
@@ -25,13 +26,50 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
     }
   };
 
+  const [selectedEntries, setSelectedEntries] = useState<Set<string>>(
+    new Set()
+  );
+
+  const handleSelect = (id: string) => {
+    setSelectedEntries((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleGenerateInvoice = async () => {
+    try {
+      await generateInvoice(Array.from(selectedEntries));
+    } catch (error) {
+      console.error("Failed to generate invoice:", error);
+    }
+  };
+
   return (
     <div className="mt-6">
-      <h2 className="text-2xl font-bold mb-4">Time Entries</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Time Entries</h2>
+        {selectedEntries.size > 0 && (
+          <button
+            onClick={handleGenerateInvoice}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors"
+          >
+            Generate Invoice
+          </button>
+        )}
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <span className="sr-only">Select</span>
+              </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Date
               </th>
@@ -58,6 +96,15 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
           <tbody className="bg-white divide-y divide-gray-200">
             {sortedEntries.map((entry) => (
               <tr key={entry.id}>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <input
+                    type="checkbox"
+                    checked={selectedEntries.has(entry.id)}
+                    onChange={() => handleSelect(entry.id)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    aria-label={`Select time entry for ${entry.description}`}
+                  />
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {formatDate(entry.date)}
                 </td>

@@ -4,7 +4,17 @@ import { auth } from "@/auth";
 import { filterCompaniesByType } from "@/app/lib/db";
 import { COMPANY_TYPES } from "@/app/lib/constants";
 
-export default async function Page() {
+interface SearchParams {
+  customerId?: string;
+  contractorId?: string;
+  items?: string;
+}
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
   const session = await auth();
 
   if (!session?.teamId) {
@@ -29,10 +39,23 @@ export default async function Page() {
     COMPANY_TYPES.CONTRACTOR
   );
 
+  const { items, customerId, contractorId } = await searchParams;
+
+  // Parse pre-filled items if they exist
+  const prefillItems = items ? JSON.parse(items) : null;
+
   return (
     <main>
       <h1 className="mb-8 text-xl md:text-2xl">Create Invoice</h1>
-      <Form customers={customers} contractors={contractors} />
+      <Form
+        customers={customers}
+        contractors={contractors}
+        prefillData={{
+          customerId: customerId,
+          contractorId: contractorId,
+          items: prefillItems,
+        }}
+      />
     </main>
   );
 }

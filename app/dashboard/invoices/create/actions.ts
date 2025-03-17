@@ -9,6 +9,7 @@ interface InvoiceItem {
   name: string;
   quantity: number;
   unitaryPrice: number;
+  timeEntryId?: string;
 }
 
 export async function createInvoice(formData: FormData) {
@@ -39,7 +40,11 @@ export async function createInvoice(formData: FormData) {
   const totalAmount = amount * (1 + tax / 100);
 
   try {
-    await prisma.invoice.create({
+    // Create the invoice and get the created invoice items
+    const invoice = await prisma.invoice.create({
+      include: {
+        items: true,
+      },
       data: {
         teamId: session.teamId,
         number: formData.get("number") as string,
@@ -68,6 +73,19 @@ export async function createInvoice(formData: FormData) {
         },
       },
     });
+
+    // Update time entries with their invoice item IDs
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.timeEntryId) {
+        await prisma.timeTrackingItem.update({
+          where: { id: item.timeEntryId },
+          data: {
+            invoiceItemId: invoice.items[i].id,
+          },
+        });
+      }
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

@@ -6,15 +6,30 @@ import { createInvoice } from "./actions";
 import { PDFViewer } from "@react-pdf/renderer";
 import { InvoicePDF } from "../[id]/invoice-pdf";
 
+interface InvoiceItem {
+  id: string;
+  name: string;
+  quantity: number;
+  unitaryPrice: number;
+  timeEntryId?: string;
+}
+
+interface PrefillData {
+  customerId?: string;
+  contractorId?: string;
+  items?: Array<Omit<InvoiceItem, "id">> | null;
+}
+
 interface FormProps {
   customers: CompanyWithTypes[];
   contractors: CompanyWithTypes[];
+  prefillData?: PrefillData;
 }
 
-export function Form({ customers, contractors }: FormProps) {
+export function Form({ customers, contractors, prefillData }: FormProps) {
   const [formData, setFormData] = useState({
-    customerId: "",
-    contractorId: "",
+    customerId: prefillData?.customerId || "",
+    contractorId: prefillData?.contractorId || "",
     number: "",
     date: new Date().toISOString().split("T")[0],
     dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
@@ -24,14 +39,19 @@ export function Form({ customers, contractors }: FormProps) {
     status: "DRAFT",
     companies: [] as CompanyWithTypes[],
     teamId: "preview",
-    items: [
-      {
-        id: "1",
-        name: "",
-        quantity: 1,
-        unitaryPrice: 0,
-      },
-    ],
+    items: prefillData?.items
+      ? (prefillData.items.map((item, index) => ({
+          id: String(index + 1),
+          ...item,
+        })) as InvoiceItem[])
+      : [
+          {
+            id: "1",
+            name: "",
+            quantity: 1,
+            unitaryPrice: 0,
+          },
+        ],
   });
 
   const handleChange = (
@@ -93,6 +113,10 @@ export function Form({ customers, contractors }: FormProps) {
             `items[${index}].unitaryPrice`,
             String(item.unitaryPrice)
           );
+          // Add time entry ID if it exists
+          if (item.timeEntryId) {
+            data.append(`items[${index}].timeEntryId`, item.timeEntryId);
+          }
         });
 
         await createInvoice(data);
