@@ -5,7 +5,7 @@ import { CompanyWithTypes } from "@/app/lib/db";
 import { COMPANY_TYPES } from "@/app/lib/constants";
 import { filterCompaniesByType } from "@/app/lib/db";
 import { useActionState } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MultiSelect from "@/app/ui/multi-select";
 
 interface ProjectFormState {
@@ -28,7 +28,7 @@ interface ProjectFormProps {
     id?: string;
     name?: string;
     description?: string;
-    companies?: string[];
+    companies?: CompanyWithTypes[];
   };
 }
 
@@ -47,16 +47,22 @@ export default function ProjectForm({
   );
 
   const [selectedCustomers, setSelectedCustomers] = useState<string[]>(
-    customers.map((company) => company.id)
+    filterCompaniesByType(defaultValues.companies, COMPANY_TYPES.CUSTOMER).map(
+      (company) => company.id
+    )
   );
   const [selectedContractors, setSelectedContractors] = useState<string[]>(
-    contractors.map((company) => company.id)
+    filterCompaniesByType(
+      defaultValues.companies,
+      COMPANY_TYPES.CONTRACTOR
+    ).map((company) => company.id)
   );
 
-  if (state.redirect) {
-    router.push(state.redirect);
-    return null;
-  }
+  useEffect(() => {
+    if (state.redirect) {
+      router.push(state.redirect);
+    }
+  }, [state.redirect, router]);
 
   return (
     <form action={dispatch}>

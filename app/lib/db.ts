@@ -6,7 +6,7 @@ export type CompanyWithTypes = Prisma.CompanyGetPayload<{
 }>;
 
 export const filterCompaniesByType = (
-  companies: CompanyWithTypes[],
+  companies: CompanyWithTypes[] = [],
   type: CompanyType
 ) => {
   return companies.filter((company) =>

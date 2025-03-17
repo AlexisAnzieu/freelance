@@ -17,7 +17,9 @@ async function getProject(id: string) {
     },
     include: {
       companies: {
-        select: { id: true },
+        include: {
+          types: true,
+        },
       },
     },
   });
@@ -67,7 +69,7 @@ export default async function EditProjectPage({
     id: project.id,
     name: project.name,
     description: project.description || "",
-    companies: project.companies.map((c) => c.id),
+    companies: project.companies,
   };
 
   return (
