@@ -37,7 +37,14 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
       .split("T")[0],
     tax: 0,
     status: "DRAFT",
-    companies: [] as CompanyWithTypes[],
+    companies: [
+      ...(prefillData?.customerId
+        ? [customers.find((c) => c.id === prefillData.customerId)]
+        : []),
+      ...(prefillData?.contractorId
+        ? [contractors.find((c) => c.id === prefillData.contractorId)]
+        : []),
+    ].filter((company): company is CompanyWithTypes => company !== undefined),
     teamId: "preview",
     items: prefillData?.items
       ? (prefillData.items.map((item, index) => ({
