@@ -5,6 +5,8 @@ import { CompanyWithTypes } from "@/app/lib/db";
 import { COMPANY_TYPES } from "@/app/lib/constants";
 import { filterCompaniesByType } from "@/app/lib/db";
 import { useActionState } from "react";
+import { useState } from "react";
+import MultiSelect from "@/app/ui/multi-select";
 
 interface ProjectFormState {
   errors?: {
@@ -37,6 +39,19 @@ export default function ProjectForm({
 }: ProjectFormProps) {
   const router = useRouter();
   const [state, dispatch] = useActionState(action, { errors: {} });
+
+  const customers = filterCompaniesByType(companies, COMPANY_TYPES.CUSTOMER);
+  const contractors = filterCompaniesByType(
+    companies,
+    COMPANY_TYPES.CONTRACTOR
+  );
+
+  const [selectedCustomers, setSelectedCustomers] = useState<string[]>(
+    customers.map((company) => company.id)
+  );
+  const [selectedContractors, setSelectedContractors] = useState<string[]>(
+    contractors.map((company) => company.id)
+  );
 
   if (state.redirect) {
     router.push(state.redirect);
@@ -119,25 +134,18 @@ export default function ProjectForm({
               Customer Companies
             </label>
             <div className="mt-2">
-              <select
-                id="customer-companies"
+              <MultiSelect
+                options={customers.map((company) => ({
+                  id: company.id,
+                  label: company.companyName,
+                }))}
+                value={selectedCustomers}
+                onChange={setSelectedCustomers}
                 name="companies"
-                multiple
-                className="block w-full rounded-xl border-0 py-2 px-3 text-gray-900 shadow-sm bg-white/50 backdrop-blur-sm ring-1 ring-inset ring-gray-300/50 focus:ring-2 focus:ring-inset focus:ring-blue-500/50 sm:text-sm sm:leading-6 transition-all duration-300"
-                aria-describedby="companies-error"
-                defaultValue={defaultValues.companies}
-              >
-                {filterCompaniesByType(companies, COMPANY_TYPES.CUSTOMER).map(
-                  (company) => (
-                    <option key={company.id} value={company.id}>
-                      {company.companyName}
-                    </option>
-                  )
-                )}
-              </select>
-              <p className="mt-2 text-sm text-gray-500/90">
-                Hold Cmd/Ctrl to select multiple customer companies
-              </p>
+                placeholder="Select customer companies..."
+                gradientFrom="blue-500"
+                gradientTo="purple-500"
+              />
             </div>
           </div>
 
@@ -149,25 +157,18 @@ export default function ProjectForm({
               Contractor Companies
             </label>
             <div className="mt-2">
-              <select
-                id="contractor-companies"
+              <MultiSelect
+                options={contractors.map((company) => ({
+                  id: company.id,
+                  label: company.companyName,
+                }))}
+                value={selectedContractors}
+                onChange={setSelectedContractors}
                 name="companies"
-                multiple
-                className="block w-full rounded-xl border-0 py-2 px-3 text-gray-900 shadow-sm bg-white/50 backdrop-blur-sm ring-1 ring-inset ring-gray-300/50 focus:ring-2 focus:ring-inset focus:ring-blue-500/50 sm:text-sm sm:leading-6 transition-all duration-300"
-                aria-describedby="companies-error"
-                defaultValue={defaultValues.companies}
-              >
-                {filterCompaniesByType(companies, COMPANY_TYPES.CONTRACTOR).map(
-                  (company) => (
-                    <option key={company.id} value={company.id}>
-                      {company.companyName}
-                    </option>
-                  )
-                )}
-              </select>
-              <p className="mt-2 text-sm text-gray-500/90">
-                Hold Cmd/Ctrl to select multiple contractor companies
-              </p>
+                placeholder="Select contractor companies..."
+                gradientFrom="purple-500"
+                gradientTo="pink-500"
+              />
             </div>
           </div>
 
