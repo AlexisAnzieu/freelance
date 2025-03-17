@@ -27,6 +27,7 @@ export async function createInvoice(formData: FormData) {
       name: formData.get(`items[${i}].name`) as string,
       quantity: Number(formData.get(`items[${i}].quantity`)),
       unitaryPrice: Number(formData.get(`items[${i}].unitaryPrice`)),
+      timeEntryId: formData.get(`items[${i}].timeEntryId`) as string,
     });
     i++;
   }
