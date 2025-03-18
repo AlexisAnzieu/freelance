@@ -188,6 +188,23 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
 
           <div className="mb-4">
             <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Invoice Name (optional)
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
               htmlFor="number"
               className="block text-sm font-medium text-gray-700 mb-2"
             >

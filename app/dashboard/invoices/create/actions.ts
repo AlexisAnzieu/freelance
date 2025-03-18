@@ -47,6 +47,7 @@ export async function createInvoice(formData: FormData) {
         items: true,
       },
       data: {
+        name: formData.get("name") as string,
         teamId: session.teamId,
         number: formData.get("number") as string,
         date: new Date(formData.get("date") as string),

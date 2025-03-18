@@ -47,6 +47,12 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
+                    Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
                     Customer
                   </th>
                   <th
@@ -91,6 +97,9 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                       >
                         {invoice.number}
                       </Link>
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
+                      {invoice.name || "-"}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                       {invoice.companies.map((company) => company.companyName)}

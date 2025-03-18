@@ -74,8 +74,9 @@ model Invoice {
   number      String
   date        DateTime
   dueDate     DateTime
-  status      String // 'draft', 'sent', 'paid', 'overdue'
+  status      String // 'draft', 'sent', 'paid'
   amount      Float
+  name        String?
   tax         Float         @default(0)
   totalAmount Float
   companies   Company[]
