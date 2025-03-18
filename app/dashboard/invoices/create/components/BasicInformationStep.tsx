@@ -1,9 +1,13 @@
+import { ValidationErrors } from "../utils/format-errors";
+import { cn } from "@/app/lib/utils";
+
 interface BasicInformationProps {
   name: string;
   number: string;
   date: string;
   dueDate: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors?: ValidationErrors;
 }
 
 export function BasicInformationStep({
@@ -12,6 +16,7 @@ export function BasicInformationStep({
   date,
   dueDate,
   onChange,
+  errors,
 }: BasicInformationProps) {
   return (
     <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-200">
@@ -32,8 +37,15 @@ export function BasicInformationStep({
             name="name"
             value={name}
             onChange={onChange}
-            className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            className={cn(
+              "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+              errors?.name &&
+                "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+            )}
           />
+          {errors?.name && (
+            <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+          )}
         </div>
 
         <div>
@@ -50,8 +62,15 @@ export function BasicInformationStep({
             required
             value={number}
             onChange={onChange}
-            className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            className={cn(
+              "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+              errors?.number &&
+                "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+            )}
           />
+          {errors?.number && (
+            <p className="mt-1 text-sm text-red-500">{errors.number}</p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -66,8 +85,15 @@ export function BasicInformationStep({
               required
               value={date}
               onChange={onChange}
-              className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              className={cn(
+                "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+                errors?.date &&
+                  "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+              )}
             />
+            {errors?.date && (
+              <p className="mt-1 text-sm text-red-500">{errors.date}</p>
+            )}
           </div>
           <div>
             <label htmlFor="dueDate" className="block text-sm font-medium mb-2">
@@ -80,8 +106,15 @@ export function BasicInformationStep({
               required
               value={dueDate}
               onChange={onChange}
-              className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              className={cn(
+                "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+                errors?.dueDate &&
+                  "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+              )}
             />
+            {errors?.dueDate && (
+              <p className="mt-1 text-sm text-red-500">{errors.dueDate}</p>
+            )}
           </div>
         </div>
       </div>

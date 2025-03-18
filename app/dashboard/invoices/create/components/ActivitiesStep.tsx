@@ -1,5 +1,6 @@
 import { InvoiceActivityItem } from "./InvoiceActivityItem";
 import { InvoiceSummary } from "./InvoiceSummary";
+import { ValidationErrors } from "../utils/format-errors";
 
 interface InvoiceItem {
   id: string;
@@ -18,6 +19,7 @@ interface ActivitiesStepProps {
   ) => void;
   onTaxChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onAddActivity: () => void;
+  errors?: ValidationErrors;
 }
 
 export function ActivitiesStep({
@@ -26,6 +28,7 @@ export function ActivitiesStep({
   onItemChange,
   onTaxChange,
   onAddActivity,
+  errors,
 }: ActivitiesStepProps) {
   return (
     <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-200">
@@ -39,6 +42,7 @@ export function ActivitiesStep({
             quantity={item.quantity}
             unitaryPrice={item.unitaryPrice}
             onChange={onItemChange}
+            errors={errors}
           />
         ))}
 
@@ -50,7 +54,16 @@ export function ActivitiesStep({
           Add Activity
         </button>
 
-        <InvoiceSummary items={items} tax={tax} onChange={onTaxChange} />
+        <InvoiceSummary
+          items={items}
+          tax={tax}
+          onChange={onTaxChange}
+          errors={errors}
+        />
+
+        {errors?.items && (
+          <p className="mt-1 text-sm text-red-500">{errors.items}</p>
+        )}
       </div>
     </div>
   );

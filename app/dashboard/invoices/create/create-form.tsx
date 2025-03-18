@@ -8,6 +8,8 @@ import { BasicInformationStep } from "./components/BasicInformationStep";
 import { CompanyDetailsStep } from "./components/CompanyDetailsStep";
 import { ActivitiesStep } from "./components/ActivitiesStep";
 import { InvoicePreview } from "./components/InvoicePreview";
+import { invoiceSchema } from "./schemas/invoice";
+import { formatZodErrors, ValidationErrors } from "./utils/format-errors";
 
 interface InvoiceItem {
   id: string;
@@ -38,6 +40,7 @@ const steps = [
 
 export function Form({ customers, contractors, prefillData }: FormProps) {
   const [currentStep, setCurrentStep] = useState(1);
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const [formData, setFormData] = useState({
     name: prefillData?.name || "",
     customerId: prefillData?.customerId || "",
@@ -134,10 +137,26 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
     }));
   };
 
+  const validateForm = () => {
+    const result = invoiceSchema.safeParse(formData);
+
+    if (!result.success) {
+      setErrors(formatZodErrors(result.error));
+      return false;
+    }
+
+    setErrors({});
+    return true;
+  };
+
   return (
     <form
       action={async (formSubmitData: FormData) => {
         try {
+          if (!validateForm()) {
+            return;
+          }
+
           // Add required invoice data
           const requiredFields = [
             "name",
@@ -205,6 +224,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
               date={formData.date}
               dueDate={formData.dueDate}
               onChange={handleChange}
+              errors={errors}
             />
           </div>
 
@@ -220,6 +240,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
               customers={customers}
               contractors={contractors}
               onChange={handleChange}
+              errors={errors}
             />
           </div>
 
@@ -235,6 +256,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
               onItemChange={handleChange}
               onTaxChange={handleChange}
               onAddActivity={handleAddActivity}
+              errors={errors}
             />
           </div>
         </div>
