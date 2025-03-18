@@ -7,7 +7,7 @@ export interface InvoicePDFProps {
   invoice: Invoice & {
     companies: CompanyWithTypes[];
     items: Pick<InvoiceItem, "unitaryPrice" | "quantity" | "name" | "id">[];
-    name?: string;
+    name?: string | null;
   };
 }
 
