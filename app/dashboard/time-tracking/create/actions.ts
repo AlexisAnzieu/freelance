@@ -32,7 +32,6 @@ export async function createTimeEntry({
       description,
       hours,
       hourlyRate,
-      status: "pending", // Default status
       projectId,
     },
   });
