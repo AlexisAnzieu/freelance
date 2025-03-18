@@ -15,50 +15,61 @@ export function InvoiceStepProgress({
   onStepChange,
 }: InvoiceStepProgressProps) {
   return (
-    <nav aria-label="Progress" className="mb-8">
-      <ol role="list" className="flex items-center">
-        {steps.map((step, stepIdx) => (
-          <li
-            key={step.name}
-            className={`relative ${
-              stepIdx !== steps.length - 1 ? "pr-8 sm:pr-20" : ""
-            } ${stepIdx !== 0 ? "pl-8 sm:pl-20" : ""}`}
-          >
-            <div
-              className="absolute inset-0 flex items-center"
-              aria-hidden="true"
-            >
-              {stepIdx !== 0 && (
-                <div
-                  className={`h-0.5 w-full ${
-                    currentStep > step.id ? "bg-blue-600" : "bg-gray-200"
+    <nav aria-label="Progress" className="mb-8 w-1/2 mx-auto ">
+      <div className="relative">
+        {/* Step Indicators */}
+        <ol role="list" className="relative flex justify-between">
+          {steps.map((step) => (
+            <li key={step.name}>
+              <button
+                type="button"
+                onClick={() => onStepChange(step.id)}
+                className="relative flex flex-col items-center"
+              >
+                <span
+                  className={`h-8 w-8 flex items-center justify-center rounded-full border-2 transition-all duration-200 ease-in-out ${
+                    currentStep > step.id
+                      ? "border-blue-600 bg-blue-600 hover:bg-blue-700"
+                      : currentStep === step.id
+                      ? "border-blue-600 bg-blue-600 hover:bg-blue-700"
+                      : "border-gray-300 bg-white"
+                  } ${
+                    currentStep >= step.id
+                      ? "cursor-pointer"
+                      : "cursor-not-allowed"
                   }`}
-                />
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={() => onStepChange(step.id)}
-              className={`relative flex h-8 w-8 items-center justify-center rounded-full border-2 ${
-                currentStep === step.id
-                  ? "border-blue-600 bg-blue-600 text-white"
-                  : currentStep > step.id
-                  ? "border-blue-600 bg-white"
-                  : "border-gray-300 bg-white"
-              } ${
-                currentStep >= step.id
-                  ? "hover:bg-blue-50 cursor-pointer"
-                  : "cursor-not-allowed"
-              }`}
-            >
-              <span className="text-sm font-semibold">{step.id}</span>
-              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-sm font-medium text-gray-600">
-                {step.name}
-              </span>
-            </button>
-          </li>
-        ))}
-      </ol>
+                >
+                  {currentStep > step.id ? (
+                    <svg
+                      className="h-5 w-5 text-white"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  ) : currentStep === step.id ? (
+                    <span className="text-sm font-semibold text-white">
+                      {step.id}
+                    </span>
+                  ) : (
+                    <span className="text-sm font-semibold text-gray-500">
+                      {step.id}
+                    </span>
+                  )}
+                </span>
+                <span className="mt-2 text-sm font-medium text-gray-700">
+                  {step.name}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ol>
+      </div>
     </nav>
   );
 }
