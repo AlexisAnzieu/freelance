@@ -1,9 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Invoice } from "@prisma/client";
-import { deleteInvoiceAction } from "./actions";
+import {
+  deleteInvoiceAction,
+  updateInvoiceStatus,
+  InvoiceStatus,
+} from "./actions";
 import { DeleteButton } from "@/app/ui/delete-button";
-
 interface InvoicesTableProps {
   invoices: (Invoice & {
     companies: {
@@ -13,6 +18,17 @@ interface InvoicesTableProps {
 }
 
 export function InvoicesTable({ invoices }: InvoicesTableProps) {
+  async function updateStatus(formData: FormData) {
+    const id = formData.get("invoiceId") as string;
+    const status = formData.get("status") as InvoiceStatus;
+
+    try {
+      await updateInvoiceStatus(id, status);
+    } catch (error) {
+      console.error("Failed to update invoice status:", error);
+    }
+  }
+
   return (
     <div className="mt-8 flow-root">
       <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -77,7 +93,7 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                       </Link>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
-                      {/* {invoice.company.companyName} */}
+                      {invoice.companies.map((company) => company.companyName)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 font-medium">
                       $
@@ -86,19 +102,36 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                       })}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm">
-                      <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset transition-colors duration-150 ease-in-out ${
-                          {
-                            draft: "bg-gray-50 text-gray-600 ring-gray-500/10",
-                            sent: "bg-blue-50 text-blue-700 ring-blue-700/10",
-                            paid: "bg-green-50 text-green-700 ring-green-600/10",
-                            overdue: "bg-red-50 text-red-700 ring-red-600/10",
-                          }[invoice.status]
-                        }`}
-                      >
-                        {invoice.status.charAt(0).toUpperCase() +
-                          invoice.status.slice(1)}
-                      </span>
+                      <form action={updateStatus} className="min-w-0">
+                        <input
+                          type="hidden"
+                          name="invoiceId"
+                          value={invoice.id}
+                        />
+                        <select
+                          name="status"
+                          value={invoice.status}
+                          aria-label="Invoice status"
+                          className={`block w-28 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors duration-150 ease-in-out cursor-pointer ${
+                            {
+                              draft:
+                                "bg-gray-50 text-gray-600 ring-gray-500/10",
+                              sent: "bg-blue-50 text-blue-700 ring-blue-700/10",
+                              paid: "bg-green-50 text-green-700 ring-green-600/10",
+                            }[invoice.status]
+                          }`}
+                          onChange={async (e) => {
+                            const form = e.currentTarget.form;
+                            if (!form) return;
+                            const formData = new FormData(form);
+                            await updateStatus(formData);
+                          }}
+                        >
+                          <option value="draft">Draft</option>
+                          <option value="sent">Sent</option>
+                          <option value="paid">Paid</option>
+                        </select>
+                      </form>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                       {formatDistanceToNow(invoice.date, { addSuffix: true })}
