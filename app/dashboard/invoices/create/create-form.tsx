@@ -258,14 +258,14 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
               onAddActivity={handleAddActivity}
               errors={errors}
             />
-          </div>
-          <div className="mt-6 flex items-center justify-end gap-x-6">
-            <button
-              type="submit"
-              className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-blue-500 hover:shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-            >
-              Create Invoice
-            </button>
+            <div className="mt-6 flex items-center justify-end gap-x-6">
+              <button
+                type="submit"
+                className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-blue-500 hover:shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+              >
+                Create Invoice
+              </button>
+            </div>
           </div>
         </div>
 
