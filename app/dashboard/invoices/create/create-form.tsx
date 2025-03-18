@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { CompanyWithTypes } from "@/app/lib/db";
 import { createInvoice } from "./actions";
-import { PDFViewer } from "@react-pdf/renderer";
-import { InvoicePDF } from "../[id]/invoice-pdf";
+import { InvoiceStepProgress } from "./components/InvoiceStepProgress";
+import { BasicInformationStep } from "./components/BasicInformationStep";
+import { CompanyDetailsStep } from "./components/CompanyDetailsStep";
+import { ActivitiesStep } from "./components/ActivitiesStep";
+import { InvoicePreview } from "./components/InvoicePreview";
 
 interface InvoiceItem {
   id: string;
@@ -27,7 +30,14 @@ interface FormProps {
   prefillData?: PrefillData;
 }
 
+const steps = [
+  { id: 1, name: "Basic Information" },
+  { id: 2, name: "Company Details" },
+  { id: 3, name: "Activities" },
+];
+
 export function Form({ customers, contractors, prefillData }: FormProps) {
+  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: prefillData?.name || "",
     customerId: prefillData?.customerId || "",
@@ -70,7 +80,6 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
     const { name, value } = e.target;
     setFormData((prev) => {
       if (itemId) {
-        // Update an item
         const newItems = prev.items.map((item) =>
           item.id === itemId
             ? {
@@ -86,7 +95,6 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
       } else {
         const newData = { ...prev, [name]: value };
 
-        // Update companies array when customer or contractor changes
         if (name === "customerId" || name === "contractorId") {
           const selectedCompany =
             name === "customerId"
@@ -111,301 +119,128 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
     });
   };
 
+  const handleAddActivity = () => {
+    setFormData((prev) => ({
+      ...prev,
+      items: [
+        ...prev.items,
+        {
+          id: String(prev.items.length + 1),
+          name: "",
+          quantity: 1,
+          unitaryPrice: 0,
+        },
+      ],
+    }));
+  };
+
   return (
     <form
-      action={async (data: FormData) => {
-        // Add items from state to FormData
-        formData.items.forEach((item, index) => {
-          data.append(`items[${index}].name`, item.name);
-          data.append(`items[${index}].quantity`, String(item.quantity));
-          data.append(
-            `items[${index}].unitaryPrice`,
-            String(item.unitaryPrice)
-          );
-          // Add time entry ID if it exists
-          if (item.timeEntryId) {
-            data.append(`items[${index}].timeEntryId`, item.timeEntryId);
-          }
-        });
+      action={async (formSubmitData: FormData) => {
+        try {
+          // Add required invoice data
+          const requiredFields = [
+            "name",
+            "number",
+            "date",
+            "dueDate",
+            "tax",
+            "status",
+            "customerId",
+            "contractorId",
+            "teamId",
+          ];
 
-        await createInvoice(data);
+          requiredFields.forEach((field) => {
+            formSubmitData.append(
+              field,
+              String(formData[field as keyof typeof formData])
+            );
+          });
+
+          // Add items data with explicit typing
+          formData.items.forEach((item: InvoiceItem, index: number) => {
+            formSubmitData.append(`items[${index}].name`, item.name);
+            formSubmitData.append(
+              `items[${index}].quantity`,
+              String(item.quantity)
+            );
+            formSubmitData.append(
+              `items[${index}].unitaryPrice`,
+              String(item.unitaryPrice)
+            );
+            if (item.timeEntryId) {
+              formSubmitData.append(
+                `items[${index}].timeEntryId`,
+                item.timeEntryId
+              );
+            }
+          });
+
+          await createInvoice(formSubmitData);
+        } catch (error) {
+          console.error("Error submitting invoice:", error);
+          throw error;
+        }
       }}
-      className="space-y-8 max-w-[1400px] mx-auto"
+      className="max-w-[1400px] mx-auto bg-[#F8FAFC] p-6"
     >
+      <InvoiceStepProgress
+        steps={steps}
+        currentStep={currentStep}
+        onStepChange={setCurrentStep}
+      />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div>
-          <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label
-                  htmlFor="customerId"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Customer
-                </label>
-                <select
-                  id="customerId"
-                  name="customerId"
-                  className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                  required
-                  value={formData.customerId}
-                  onChange={handleChange}
-                >
-                  <option value="">Select a customer</option>
-                  {customers.map((company) => (
-                    <option key={company.id} value={company.id}>
-                      {company.companyName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="contractorId"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Contractor
-                </label>
-                <select
-                  id="contractorId"
-                  name="contractorId"
-                  className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                  required
-                  value={formData.contractorId}
-                  onChange={handleChange}
-                >
-                  <option value="">Select a contractor</option>
-                  {contractors.map((company) => (
-                    <option key={company.id} value={company.id}>
-                      {company.companyName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Invoice Name (optional)
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-              value={formData.name}
+        <div className="space-y-6">
+          {/* Step 1: Basic Information */}
+          <div
+            className={`transition-all duration-300 ${
+              currentStep === 1 ? "opacity-100" : "opacity-0 hidden"
+            }`}
+          >
+            <BasicInformationStep
+              name={formData.name}
+              number={formData.number}
+              date={formData.date}
+              dueDate={formData.dueDate}
               onChange={handleChange}
             />
           </div>
 
-          <div className="mb-4">
-            <label
-              htmlFor="number"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Invoice Number
-            </label>
-            <input
-              type="text"
-              id="number"
-              name="number"
-              className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-              required
-              value={formData.number}
+          {/* Step 2: Company Details */}
+          <div
+            className={`transition-all duration-300 ${
+              currentStep === 2 ? "opacity-100" : "opacity-0 hidden"
+            }`}
+          >
+            <CompanyDetailsStep
+              customerId={formData.customerId}
+              contractorId={formData.contractorId}
+              customers={customers}
+              contractors={contractors}
               onChange={handleChange}
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="date" className="block text-sm font-medium mb-2">
-                Invoice Date
-              </label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                value={formData.date}
-                className="block w-full rounded-md border border-gray-200 py-2 px-3"
-                required
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="dueDate"
-                className="block text-sm font-medium mb-2"
-              >
-                Due Date
-              </label>
-              <input
-                type="date"
-                id="dueDate"
-                name="dueDate"
-                value={formData.dueDate}
-                className="block w-full rounded-md border border-gray-200 py-2 px-3"
-                required
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-4 mt-4">
-            <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Activities
-              </h3>
-              {formData.items.map((item) => (
-                <div key={item.id} className="grid grid-cols-12 gap-4 mb-4">
-                  <div className="col-span-6">
-                    <label
-                      htmlFor={`name-${item.id}`}
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Description
-                    </label>
-                    <input
-                      type="text"
-                      id={`name-${item.id}`}
-                      name="name"
-                      required
-                      aria-label="Activity description"
-                      placeholder="Enter activity description"
-                      value={item.name}
-                      onChange={(e) => handleChange(e, item.id)}
-                      className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                    />
-                  </div>
-                  <div className="col-span-3">
-                    <label
-                      htmlFor={`quantity-${item.id}`}
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Quantity
-                    </label>
-                    <input
-                      type="number"
-                      id={`quantity-${item.id}`}
-                      name="quantity"
-                      required
-                      min="1"
-                      aria-label="Activity quantity"
-                      placeholder="Enter quantity"
-                      value={item.quantity}
-                      onChange={(e) => handleChange(e, item.id)}
-                      className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                    />
-                  </div>
-                  <div className="col-span-3">
-                    <label
-                      htmlFor={`unitaryPrice-${item.id}`}
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Unit Price
-                    </label>
-                    <input
-                      type="number"
-                      id={`unitaryPrice-${item.id}`}
-                      name="unitaryPrice"
-                      required
-                      min="0"
-                      step="0.01"
-                      aria-label="Activity unit price"
-                      placeholder="Enter price per unit"
-                      value={item.unitaryPrice}
-                      onChange={(e) => handleChange(e, item.id)}
-                      className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                    />
-                  </div>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    items: [
-                      ...prev.items,
-                      {
-                        id: String(prev.items.length + 1),
-                        name: "",
-                        quantity: 1,
-                        unitaryPrice: 0,
-                      },
-                    ],
-                  }))
-                }
-                className="mt-4 inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-semibold rounded-lg text-white bg-blue-600 shadow-sm hover:bg-blue-500 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Add Activity
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-right">
-                <p className="text-sm text-gray-500">Subtotal:</p>
-                <p className="text-lg font-medium">
-                  $
-                  {formData.items
-                    .reduce(
-                      (sum, item) => sum + item.quantity * item.unitaryPrice,
-                      0
-                    )
-                    .toFixed(2)}
-                </p>
-              </div>
-              <div>
-                <label htmlFor="tax" className="block text-sm font-medium mb-2">
-                  Tax Rate (%)
-                </label>
-                <input
-                  type="number"
-                  id="tax"
-                  name="tax"
-                  step="0.01"
-                  min="0"
-                  value={formData.tax}
-                  className="block w-full rounded-md border border-gray-200 py-2 px-3"
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm"
-          style={{ height: "800px" }}
-        >
-          <PDFViewer width="100%" height="100%" style={{ border: "none" }}>
-            <InvoicePDF
-              invoice={{
-                ...formData,
-                id: "preview",
-                date: new Date(formData.date),
-                dueDate: new Date(formData.dueDate),
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                amount: formData.items.reduce(
-                  (sum, item) => sum + item.quantity * item.unitaryPrice,
-                  0
-                ),
-                totalAmount:
-                  formData.items.reduce(
-                    (sum, item) => sum + item.quantity * item.unitaryPrice,
-                    0
-                  ) *
-                  (1 + Number(formData.tax) / 100),
-              }}
+          {/* Step 3: Activities */}
+          <div
+            className={`transition-all duration-300 ${
+              currentStep === 3 ? "opacity-100" : "opacity-0 hidden"
+            }`}
+          >
+            <ActivitiesStep
+              items={formData.items}
+              tax={formData.tax}
+              onItemChange={handleChange}
+              onTaxChange={handleChange}
+              onAddActivity={handleAddActivity}
             />
-          </PDFViewer>
+          </div>
         </div>
+
+        {/* PDF Preview */}
+        <InvoicePreview formData={formData} />
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
