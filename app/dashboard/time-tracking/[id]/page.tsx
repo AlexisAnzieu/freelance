@@ -9,7 +9,15 @@ async function getProjectWithTimeEntries(id: string) {
   const project = await prisma.project.findFirst({
     where: { id },
     include: {
-      timeEntries: true,
+      timeEntries: {
+        include: {
+          invoiceItem: {
+            include: {
+              invoice: true,
+            },
+          },
+        },
+      },
     },
   });
 

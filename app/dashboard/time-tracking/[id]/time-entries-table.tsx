@@ -1,14 +1,22 @@
 "use client";
 
-import { TimeTrackingItem } from "@prisma/client";
+import { Invoice, InvoiceItem, TimeTrackingItem } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { deleteTimeEntry, generateInvoice } from "./actions";
 import { formatDate } from "@/app/lib/utils";
 import { useState } from "react";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
+type TimeEntryWithInvoice = TimeTrackingItem & {
+  invoiceItem?:
+    | (InvoiceItem & {
+        invoice: Invoice;
+      })
+    | null;
+};
+
 interface Props {
-  timeEntries: TimeTrackingItem[];
+  timeEntries: TimeEntryWithInvoice[];
 }
 
 export default function TimeEntriesTable({ timeEntries }: Props) {
@@ -128,8 +136,17 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   ${(entry.hours * entry.hourlyRate).toFixed(2)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {entry.invoiceItemId ? "Invoiced" : "Not Invoiced"}
+                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  {entry.invoiceItem?.invoice ? (
+                    <a
+                      href={`/dashboard/invoices/${entry.invoiceItem.invoice.id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      View Invoice
+                    </a>
+                  ) : (
+                    <span className="text-gray-500">Not Invoiced</span>
+                  )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button
