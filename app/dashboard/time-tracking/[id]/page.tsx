@@ -3,7 +3,6 @@ import prisma from "@/app/lib/prisma";
 import { Suspense } from "react";
 import { Skeleton } from "@/app/ui/skeletons";
 import TimeEntriesTable from "./time-entries-table";
-import MonthlySummary from "./monthly-summary";
 
 async function getProjectWithTimeEntries(id: string) {
   const project = await prisma.project.findFirst({
@@ -68,10 +67,6 @@ export default async function TimeTrackingPage({
           </p>
         </div>
       </div>
-
-      <Suspense fallback={<Skeleton className="h-96" />}>
-        <MonthlySummary timeEntries={timeEntries} />
-      </Suspense>
 
       <Suspense fallback={<Skeleton className="h-96" />}>
         <TimeEntriesTable timeEntries={timeEntries} />

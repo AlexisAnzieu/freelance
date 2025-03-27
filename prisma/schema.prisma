@@ -102,7 +102,7 @@ model Project {
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
   name        String
-  description String?
+  description String?            @db.Text
   team        Team               @relation(fields: [teamId], references: [id])
   teamId      String
   timeEntries TimeTrackingItem[]

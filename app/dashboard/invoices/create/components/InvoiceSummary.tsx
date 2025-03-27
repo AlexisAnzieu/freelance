@@ -36,7 +36,7 @@ export function InvoiceSummary({
           type="number"
           id="tax"
           name="tax"
-          step="0.01"
+          step="0.001"
           min="0"
           value={tax}
           onChange={onChange}

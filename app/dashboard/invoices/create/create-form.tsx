@@ -96,7 +96,10 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
         );
         return { ...prev, items: newItems };
       } else {
-        const newData = { ...prev, [name]: value };
+        const newData = {
+          ...prev,
+          [name]: name === "tax" ? Number(value) : value,
+        };
 
         if (name === "customerId" || name === "contractorId") {
           const selectedCompany =
