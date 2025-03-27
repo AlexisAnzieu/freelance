@@ -63,14 +63,24 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
     <div className="mt-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Time Entries</h2>
-        {selectedEntries.size > 0 && (
+        <div className="relative group">
           <button
             onClick={handleGenerateInvoice}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors"
+            disabled={selectedEntries.size === 0}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              selectedEntries.size === 0
+                ? "bg-blue-300 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-500"
+            } text-white`}
           >
             Generate Invoice
           </button>
-        )}
+          {selectedEntries.size === 0 && (
+            <div className="absolute bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-gray-800 text-white text-sm rounded-lg">
+              You need to select time entries to generate an invoice
+            </div>
+          )}
+        </div>
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
@@ -142,7 +152,8 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
                       href={`/dashboard/invoices/${entry.invoiceItem.invoice.id}`}
                       className="text-blue-600 hover:underline"
                     >
-                      View Invoice
+                      {entry.invoiceItem.invoice.number} -{" "}
+                      {entry.invoiceItem.invoice.name}
                     </a>
                   ) : (
                     <span className="text-gray-500">Not Invoiced</span>
