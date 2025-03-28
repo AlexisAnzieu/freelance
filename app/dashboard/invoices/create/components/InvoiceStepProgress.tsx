@@ -27,16 +27,12 @@ export function InvoiceStepProgress({
                 className="relative flex flex-col items-center"
               >
                 <span
-                  className={`h-8 w-8 flex items-center justify-center rounded-full border-2 transition-all duration-200 ease-in-out ${
+                  className={`h-8 w-8 flex items-center justify-center rounded-full border-2 transition-all duration-200 ease-in-out cursor-pointer ${
                     currentStep > step.id
                       ? "border-blue-600 bg-blue-600 hover:bg-blue-700"
                       : currentStep === step.id
                       ? "border-blue-600 bg-blue-600 hover:bg-blue-700"
                       : "border-gray-300 bg-white"
-                  } ${
-                    currentStep >= step.id
-                      ? "cursor-pointer"
-                      : "cursor-not-allowed"
                   }`}
                 >
                   {currentStep > step.id ? (

@@ -3,21 +3,32 @@
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Invoice } from "@prisma/client";
+import { useState } from "react";
+import { pdf } from "@react-pdf/renderer";
+import { CompanyWithTypes, filterCompaniesByType } from "@/app/lib/db";
 import {
   deleteInvoiceAction,
   updateInvoiceStatus,
   InvoiceStatus,
 } from "./actions";
 import { DeleteButton } from "@/app/ui/delete-button";
+import { InvoicePDF } from "./[id]/invoice-pdf";
+import { COMPANY_TYPES } from "@/app/lib/constants";
 interface InvoicesTableProps {
   invoices: (Invoice & {
-    companies: {
-      companyName: string;
+    companies: CompanyWithTypes[];
+    items: {
+      id: string;
+      name: string;
+      unitaryPrice: number;
+      quantity: number;
     }[];
   })[];
 }
 
 export function InvoicesTable({ invoices }: InvoicesTableProps) {
+  const [loadingPdf, setLoadingPdf] = useState<string | null>(null);
+
   async function updateStatus(formData: FormData) {
     const id = formData.get("invoiceId") as string;
     const status = formData.get("status") as InvoiceStatus;
@@ -102,7 +113,10 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                       {invoice.name || "-"}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
-                      {invoice.companies.map((company) => company.companyName)}
+                      {filterCompaniesByType(
+                        invoice.companies,
+                        COMPANY_TYPES.CUSTOMER
+                      ).map((company) => company.companyName)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 font-medium">
                       $
@@ -150,7 +164,36 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                         addSuffix: true,
                       })}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm">
+                    <td className="whitespace-nowrap px-3 py-4 text-sm space-x-2 flex">
+                      <button
+                        onClick={async () => {
+                          try {
+                            setLoadingPdf(invoice.id);
+                            const blob = await pdf(
+                              <InvoicePDF invoice={invoice} />
+                            ).toBlob();
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement("a");
+                            link.href = url;
+                            link.download = `invoice-${invoice.number}.pdf`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            URL.revokeObjectURL(url);
+                          } catch (error) {
+                            console.error("Failed to generate PDF:", error);
+                            alert("Failed to generate PDF. Please try again.");
+                          } finally {
+                            setLoadingPdf(null);
+                          }
+                        }}
+                        disabled={loadingPdf === invoice.id}
+                        className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                      >
+                        {loadingPdf === invoice.id
+                          ? "Generating..."
+                          : "Download PDF"}
+                      </button>
                       <form action={deleteInvoiceAction}>
                         <input
                           type="hidden"

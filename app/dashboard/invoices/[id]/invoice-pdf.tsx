@@ -214,9 +214,7 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
 
         <View style={styles.divider} />
 
-        {invoice.name && (
-          <Text style={styles.projectTitle}>{invoice.name}</Text>
-        )}
+        <Text style={styles.projectTitle}>{invoice.name || "\u00A0"}</Text>
 
         <View style={styles.itemsTable}>
           <View style={styles.tableHeader}>

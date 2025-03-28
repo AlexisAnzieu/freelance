@@ -5,7 +5,6 @@ import { Pagination } from "@/app/dashboard/invoices/pagination";
 import { auth } from "@/auth";
 import { InvoicesTable } from "./invoices-table";
 import { connection } from "next/server";
-import { COMPANY_TYPES } from "@/app/lib/constants";
 const ITEMS_PER_PAGE = 10;
 
 export default async function Page(props: {
@@ -40,17 +39,11 @@ export default async function Page(props: {
       },
       include: {
         companies: {
-          select: {
-            companyName: true,
-          },
-          where: {
-            types: {
-              some: {
-                name: COMPANY_TYPES.CUSTOMER,
-              },
-            },
+          include: {
+            types: true,
           },
         },
+        items: true,
       },
       orderBy: {
         date: "desc",
