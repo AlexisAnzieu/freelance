@@ -10,6 +10,7 @@ import { ActivitiesStep } from "./components/ActivitiesStep";
 import { InvoicePreview } from "./components/InvoicePreview";
 import { invoiceSchema } from "./schemas/invoice";
 import { formatZodErrors, ValidationErrors } from "./utils/format-errors";
+import { DEFAULT_TAX_RATE, TAX_RATES } from "./components/InvoiceSummary";
 
 interface InvoiceItem {
   id: string;
@@ -50,7 +51,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
     dueDate: new Date(Date.now() + 31 * 24 * 60 * 60 * 1000)
       .toISOString()
       .split("T")[0],
-    tax: 0,
+    tax: DEFAULT_TAX_RATE,
     status: "DRAFT",
     companies: [
       ...(prefillData?.customerId

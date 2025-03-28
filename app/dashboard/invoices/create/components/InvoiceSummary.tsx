@@ -1,43 +1,36 @@
 import { ValidationErrors } from "../utils/format-errors";
 import { cn } from "@/app/lib/utils";
 
+const TAX_RATES = [
+  { name: "Quebec (QST + GST)", rate: 14.975 },
+  { name: "Canada (GST)", rate: 5 },
+  { name: "Ontario (HST)", rate: 13 },
+  { name: "European Union (VAT)", rate: 20 },
+  { name: "United Kingdom (VAT)", rate: 20 },
+  { name: "Japan (Consumption)", rate: 10 },
+  { name: "Custom", rate: 0 },
+] as const;
+
+export const DEFAULT_TAX_RATE = TAX_RATES.find(
+  (rate) => rate.name === "Quebec (QST + GST)"
+)?.rate;
+
 interface InvoiceSummaryProps {
-  items: Array<{
-    quantity: number;
-    unitaryPrice: number;
-  }>;
   tax: number;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   errors?: ValidationErrors;
 }
 
-export function InvoiceSummary({
-  items,
-  tax,
-  onChange,
-  errors,
-}: InvoiceSummaryProps) {
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.quantity * item.unitaryPrice,
-    0
-  );
-
+export function InvoiceSummary({ tax, onChange, errors }: InvoiceSummaryProps) {
   return (
     <div className="grid grid-cols-2 gap-4 mt-8">
-      <div className="text-right">
-        <p className="text-sm text-gray-500">Subtotal:</p>
-        <p className="text-lg font-medium">${subtotal.toFixed(2)}</p>
-      </div>
       <div>
         <label htmlFor="tax" className="block text-sm font-medium mb-2">
-          Tax Rate (%)
+          Tax Rate
         </label>
-        <input
-          type="number"
+        <select
           id="tax"
           name="tax"
-          step="0.001"
-          min="0"
           value={tax}
           onChange={onChange}
           className={cn(
@@ -45,7 +38,13 @@ export function InvoiceSummary({
             errors?.tax &&
               "border-red-500 focus:border-red-500 focus:ring-red-500/20"
           )}
-        />
+        >
+          {TAX_RATES.map(({ name, rate }) => (
+            <option key={name} value={rate}>
+              {name} ({rate}%)
+            </option>
+          ))}
+        </select>
         {errors?.tax && (
           <p className="mt-1 text-sm text-red-500">{errors.tax}</p>
         )}

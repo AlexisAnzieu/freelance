@@ -17,7 +17,7 @@ interface ActivitiesStepProps {
     e: React.ChangeEvent<HTMLInputElement>,
     itemId: string
   ) => void;
-  onTaxChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onTaxChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onAddActivity: () => void;
   errors?: ValidationErrors;
 }
@@ -54,12 +54,7 @@ export function ActivitiesStep({
           Add Activity
         </button>
 
-        <InvoiceSummary
-          items={items}
-          tax={tax}
-          onChange={onTaxChange}
-          errors={errors}
-        />
+        <InvoiceSummary tax={tax} onChange={onTaxChange} errors={errors} />
 
         {errors?.items && (
           <p className="mt-1 text-sm text-red-500">{errors.items}</p>
