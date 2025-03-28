@@ -46,26 +46,11 @@ export default async function TimeTrackingPage({
   }
 
   const timeEntries = project.timeEntries;
-  const totalHours = timeEntries.reduce((sum, item) => sum + item.hours, 0);
-  const totalAmount = timeEntries.reduce(
-    (sum, item) => sum + item.hours * item.hourlyRate,
-    0
-  );
 
   return (
-    <div className="p-6">
+    <div className="p-2">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">{project.name}</h1>
-        <div className="text-right">
-          <p className="text-lg">
-            Total Hours:{" "}
-            <span className="font-semibold">{totalHours.toFixed(1)}</span>
-          </p>
-          <p className="text-lg">
-            Total Amount:{" "}
-            <span className="font-semibold">${totalAmount.toFixed(2)}</span>
-          </p>
-        </div>
       </div>
 
       <Suspense fallback={<Skeleton className="h-96" />}>
