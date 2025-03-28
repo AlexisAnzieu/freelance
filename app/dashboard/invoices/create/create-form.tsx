@@ -10,7 +10,7 @@ import { ActivitiesStep } from "./components/ActivitiesStep";
 import { InvoicePreview } from "./components/InvoicePreview";
 import { invoiceSchema } from "./schemas/invoice";
 import { formatZodErrors, ValidationErrors } from "./utils/format-errors";
-import { DEFAULT_TAX_RATE, TAX_RATES } from "./components/InvoiceSummary";
+import { DEFAULT_TAX_RATE } from "./components/InvoiceSummary";
 
 interface InvoiceItem {
   id: string;

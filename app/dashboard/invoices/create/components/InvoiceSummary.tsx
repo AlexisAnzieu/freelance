@@ -11,9 +11,8 @@ const TAX_RATES = [
   { name: "Custom", rate: 0 },
 ] as const;
 
-export const DEFAULT_TAX_RATE = TAX_RATES.find(
-  (rate) => rate.name === "Quebec (QST + GST)"
-)?.rate;
+export const DEFAULT_TAX_RATE =
+  TAX_RATES.find((rate) => rate.name === "Quebec (QST + GST)")?.rate || 0;
 
 interface InvoiceSummaryProps {
   tax: number;
