@@ -5,6 +5,56 @@ import prisma from "@/app/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+export async function updateTimeEntry(
+  id: string,
+  data: {
+    date: Date;
+    description: string;
+    hours: number;
+    hourlyRate: number;
+  }
+) {
+  const session = await auth();
+
+  if (!session?.teamId) {
+    throw new Error("Unauthorized: No team access");
+  }
+
+  // Get the time entry to verify project access
+  const timeEntry = await prisma.timeTrackingItem.findFirst({
+    where: { id },
+    include: {
+      project: true,
+    },
+  });
+
+  if (!timeEntry) {
+    throw new Error("Time entry not found");
+  }
+
+  // Verify user has access to this project's team
+  if (timeEntry.project.teamId !== session.teamId) {
+    throw new Error("Unauthorized: Invalid team access");
+  }
+
+  // Update the time entry
+  await prisma.timeTrackingItem.update({
+    where: { id },
+    data: {
+      date: data.date,
+      description: data.description,
+      hours: data.hours,
+      hourlyRate: data.hourlyRate,
+    },
+  });
+
+  revalidatePath("/dashboard/projects");
+  revalidatePath(`/dashboard/projects/${timeEntry.project.id}`);
+  revalidatePath(`/dashboard/time-tracking/${timeEntry.project.id}`);
+
+  return { success: true };
+}
+
 export async function deleteTimeEntry(id: string) {
   const session = await auth();
 

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { deleteTimeEntry, generateInvoice } from "./actions";
 import { formatDate } from "@/app/lib/utils";
 import { useState } from "react";
+import SidePanel from "@/app/ui/side-panel";
+import TimeEntryForm from "../../../dashboard/time-tracking/create/time-entry-form";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 type TimeEntryWithInvoice = TimeTrackingItem & {
@@ -21,6 +23,9 @@ interface Props {
 
 export default function TimeEntriesTable({ timeEntries }: Props) {
   const router = useRouter();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedEntry, setSelectedEntry] =
+    useState<TimeEntryWithInvoice | null>(null);
 
   const sortedEntries = [...timeEntries].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -63,25 +68,37 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
     <div className="mt-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Time Entries</h2>
-        <div className="relative group">
+        <div className="flex gap-4 items-center">
           <button
-            onClick={handleGenerateInvoice}
-            disabled={selectedEntries.size === 0}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              selectedEntries.size === 0
-                ? "bg-blue-300 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-500"
-            } text-white`}
+            onClick={() => {
+              setSelectedEntry(null);
+              setIsDrawerOpen(true);
+            }}
+            className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
           >
-            Generate Invoice
+            New Entry
           </button>
-          {selectedEntries.size === 0 && (
-            <div className="absolute bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-gray-800 text-white text-sm rounded-lg">
-              You need to select time entries to generate an invoice
-            </div>
-          )}
+          <div className="relative group">
+            <button
+              onClick={handleGenerateInvoice}
+              disabled={selectedEntries.size === 0}
+              className={`px-4 py-2 rounded-lg transition-colors ${
+                selectedEntries.size === 0
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-500"
+              } text-white`}
+            >
+              Generate Invoice
+            </button>
+            {selectedEntries.size === 0 && (
+              <div className="absolute bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-gray-800 text-white text-sm rounded-lg">
+                You need to select time entries to generate an invoice
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -160,18 +177,60 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <button
-                    onClick={() => handleDelete(entry.id)}
-                    className="text-red-600 hover:text-red-900"
-                  >
-                    Delete
-                  </button>
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() => {
+                        setSelectedEntry(entry);
+                        setIsDrawerOpen(true);
+                      }}
+                      className="text-blue-600 hover:text-blue-900"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(entry.id)}
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      <SidePanel
+        title={selectedEntry ? "Edit Time Entry" : "New Time Entry"}
+        isOpen={isDrawerOpen}
+        onClose={() => {
+          setIsDrawerOpen(false);
+          setSelectedEntry(null);
+        }}
+      >
+        <div className="px-6">
+          <TimeEntryForm
+            projectId={timeEntries[0]?.projectId ?? ""}
+            initialData={
+              selectedEntry
+                ? {
+                    id: selectedEntry.id,
+                    date: selectedEntry.date,
+                    description: selectedEntry.description,
+                    hours: selectedEntry.hours,
+                    hourlyRate: selectedEntry.hourlyRate,
+                  }
+                : undefined
+            }
+            onSuccess={() => {
+              setIsDrawerOpen(false);
+              setSelectedEntry(null);
+              router.refresh();
+            }}
+          />
+        </div>
+      </SidePanel>
     </div>
   );
 }
