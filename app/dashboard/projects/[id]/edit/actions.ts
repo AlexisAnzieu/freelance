@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 const UpdateProject = z.object({
   name: z.string().min(1, "Project name is required"),
   description: z.string(),
+  currency: z.string().default("USD"),
   companies: z.array(z.string()),
 });
 
@@ -15,6 +16,7 @@ interface ProjectFormState {
   errors?: {
     name?: string[];
     description?: string[];
+    currency?: string[];
     companies?: string[];
     _form?: string[];
   };
@@ -38,6 +40,7 @@ export async function updateProject(
     const validatedFields = UpdateProject.safeParse({
       name: formData.get("name"),
       description: formData.get("description"),
+      currency: formData.get("currency"),
       companies: formData.getAll("companies"),
     });
 
@@ -47,7 +50,7 @@ export async function updateProject(
       };
     }
 
-    const { name, description, companies } = validatedFields.data;
+    const { name, description, currency, companies } = validatedFields.data;
 
     const projectId = formData.get("id")?.toString();
     if (!projectId) {
@@ -65,6 +68,7 @@ export async function updateProject(
       data: {
         name,
         description,
+        currency,
         companies: {
           set: companies.map((id) => ({ id })),
         },

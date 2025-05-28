@@ -8,6 +8,7 @@ import { useState } from "react";
 import SidePanel from "@/app/ui/side-panel";
 import TimeEntryForm from "../../../dashboard/time-tracking/create/time-entry-form";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { CURRENCIES } from "@/app/lib/constants";
 
 type TimeEntryWithInvoice = TimeTrackingItem & {
   invoiceItem?:
@@ -19,9 +20,10 @@ type TimeEntryWithInvoice = TimeTrackingItem & {
 
 interface Props {
   timeEntries: TimeEntryWithInvoice[];
+  projectCurrency: string;
 }
 
-export default function TimeEntriesTable({ timeEntries }: Props) {
+export default function TimeEntriesTable({ timeEntries, projectCurrency }: Props) {
   const router = useRouter();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] =
@@ -77,7 +79,7 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <h3 className="text-sm font-medium text-gray-500">Total Amount</h3>
           <p className="mt-2 text-3xl font-semibold text-gray-900">
-            $
+            {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]?.symbol || "$"}
             {timeEntries
               .reduce((sum, entry) => sum + entry.hours * entry.hourlyRate, 0)
               .toFixed(2)}
@@ -187,10 +189,10 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
                     {entry.hours}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ${entry.hourlyRate}
+                    {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]?.symbol || "$"}{entry.hourlyRate}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ${(entry.hours * entry.hourlyRate).toFixed(2)}
+                    {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]?.symbol || "$"}{(entry.hours * entry.hourlyRate).toFixed(2)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {entry.invoiceItem?.invoice ? (
@@ -242,6 +244,7 @@ export default function TimeEntriesTable({ timeEntries }: Props) {
         <div className="px-6">
           <TimeEntryForm
             projectId={timeEntries[0]?.projectId ?? ""}
+            projectCurrency={projectCurrency}
             initialData={
               selectedEntry
                 ? {

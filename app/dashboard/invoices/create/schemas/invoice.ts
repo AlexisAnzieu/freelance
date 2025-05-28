@@ -15,6 +15,7 @@ export const invoiceSchema = z.object({
   number: z.string().min(1, "Invoice number is required"),
   date: z.string().min(1, "Invoice date is required"),
   dueDate: z.string().min(1, "Due date is required"),
+  currency: z.string().default("USD"),
   tax: z.number().min(0, "Tax rate must be positive"),
   status: z.enum(["DRAFT", "SENT", "PAID"]),
   items: z.array(invoiceItemSchema).min(1, "At least one activity is required"),

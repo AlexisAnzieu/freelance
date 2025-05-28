@@ -13,7 +13,7 @@ import {
 } from "./actions";
 import { DeleteButton } from "@/app/ui/delete-button";
 import { InvoicePDF } from "./[id]/invoice-pdf";
-import { COMPANY_TYPES } from "@/app/lib/constants";
+import { COMPANY_TYPES, CURRENCIES } from "@/app/lib/constants";
 interface InvoicesTableProps {
   invoices: (Invoice & {
     companies: CompanyWithTypes[];
@@ -119,7 +119,7 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                       ).map((company) => company.companyName)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 font-medium">
-                      $
+                      {CURRENCIES[invoice.currency as keyof typeof CURRENCIES]?.symbol || "$"}
                       {invoice.totalAmount.toLocaleString("en-US", {
                         minimumFractionDigits: 2,
                       })}

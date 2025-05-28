@@ -1,12 +1,14 @@
 import { ValidationErrors } from "../utils/format-errors";
 import { cn } from "@/app/lib/utils";
+import { CURRENCIES } from "@/app/lib/constants";
 
 interface BasicInformationProps {
   name: string;
   number: string;
   date: string;
   dueDate: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  currency: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   errors?: ValidationErrors;
 }
 
@@ -15,6 +17,7 @@ export function BasicInformationStep({
   number,
   date,
   dueDate,
+  currency,
   onChange,
   errors,
 }: BasicInformationProps) {
@@ -70,6 +73,35 @@ export function BasicInformationStep({
           />
           {errors?.number && (
             <p className="mt-1 text-sm text-red-500">{errors.number}</p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="currency"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Currency
+          </label>
+          <select
+            id="currency"
+            name="currency"
+            value={currency}
+            onChange={onChange}
+            className={cn(
+              "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+              errors?.currency &&
+                "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+            )}
+          >
+            {Object.entries(CURRENCIES).map(([code, currency]) => (
+              <option key={code} value={code}>
+                {currency.symbol} {code} - {currency.name}
+              </option>
+            ))}
+          </select>
+          {errors?.currency && (
+            <p className="mt-1 text-sm text-red-500">{errors.currency}</p>
           )}
         </div>
 

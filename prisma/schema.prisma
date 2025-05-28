@@ -79,6 +79,7 @@ model Invoice {
   name        String?
   tax         Float         @default(0)
   totalAmount Float
+  currency    String        @default("USD")
   companies   Company[]
   items       InvoiceItem[]
   team        Team          @relation(fields: [teamId], references: [id])
@@ -103,6 +104,7 @@ model Project {
   updatedAt   DateTime           @updatedAt
   name        String
   description String?            @db.Text
+  currency    String            @default("USD")
   team        Team               @relation(fields: [teamId], references: [id])
   teamId      String
   timeEntries TimeTrackingItem[]

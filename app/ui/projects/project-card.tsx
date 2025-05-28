@@ -4,6 +4,7 @@ import { Project } from "@prisma/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { CURRENCIES } from "@/app/lib/constants";
 import { useModal } from "../modal-context";
 import SidePanel from "../side-panel";
 import TimeEntryForm from "@/app/dashboard/time-tracking/create/time-entry-form";
@@ -55,9 +56,14 @@ export default function ProjectCard({
         <div className="relative p-6">
           <div className="space-y-2 mb-4">
             <div className="flex justify-between items-center mb-1">
-              <h3 className="text-xl font-bold bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent group-hover:scale-[1.01] transition-transform duration-300">
-                {project.name}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-xl font-bold bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent group-hover:scale-[1.01] transition-transform duration-300">
+                  {project.name}
+                </h3>
+                <span className="text-sm px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-700 border border-blue-500/10">
+                  {CURRENCIES[project.currency as keyof typeof CURRENCIES]?.symbol} {project.currency}
+                </span>
+              </div>
               <div className="flex items-center">
                 <div className="text-sm text-gray-500 group-hover:hidden transition-opacity duration-200">
                   {new Date(project.createdAt).toLocaleDateString()}
@@ -219,6 +225,7 @@ export default function ProjectCard({
       >
         <TimeEntryForm
           projectId={project.id}
+          projectCurrency={project.currency}
           onSuccess={() => {
             setIsTimeEntryPanelOpen(false);
             router.refresh();

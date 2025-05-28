@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { CompanyWithTypes } from "@/app/lib/db";
-import { COMPANY_TYPES } from "@/app/lib/constants";
+import { COMPANY_TYPES, CURRENCIES } from "@/app/lib/constants";
 import { filterCompaniesByType } from "@/app/lib/db";
 import { useActionState } from "react";
 import { useState, useEffect } from "react";
@@ -13,6 +13,7 @@ interface ProjectFormState {
     name?: string[];
     description?: string[];
     companies?: string[];
+    currency?: string[];
     _form?: string[];
   };
   redirect?: string;
@@ -28,6 +29,7 @@ interface ProjectFormProps {
     id?: string;
     name?: string;
     description?: string;
+    currency?: string;
     companies?: CompanyWithTypes[];
   };
 }
@@ -125,6 +127,41 @@ export default function ProjectForm({
               className="mt-2 text-sm text-red-500"
             >
               {state.errors.description.map((error: string) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="currency"
+            className="block text-sm font-medium leading-6 bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent"
+          >
+            Currency
+          </label>
+          <div className="mt-2">
+            <select
+              id="currency"
+              name="currency"
+              defaultValue={defaultValues.currency || "USD"}
+              className="block w-full rounded-xl border-0 py-2 px-3 text-gray-900 shadow-sm bg-white/50 backdrop-blur-sm ring-1 ring-inset ring-gray-300/50 placeholder:text-gray-400/70 focus:ring-2 focus:ring-inset focus:ring-blue-500/50 sm:text-sm sm:leading-6 transition-all duration-300"
+              aria-describedby="currency-error"
+            >
+              {Object.entries(CURRENCIES).map(([code, { name }]) => (
+                <option key={code} value={code}>
+                  {code} - {name}
+                </option>
+              ))}
+            </select>
+          </div>
+          {state.errors?.currency && (
+            <div
+              id="currency-error"
+              aria-live="polite"
+              className="mt-2 text-sm text-red-500"
+            >
+              {state.errors.currency.map((error: string) => (
                 <p key={error}>{error}</p>
               ))}
             </div>

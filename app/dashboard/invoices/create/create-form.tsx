@@ -25,6 +25,7 @@ interface PrefillData {
   contractorId?: string;
   items?: Array<Omit<InvoiceItem, "id">> | null;
   name?: string;
+  currency?: string;
 }
 
 interface FormProps {
@@ -51,6 +52,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
     dueDate: new Date(Date.now() + 31 * 24 * 60 * 60 * 1000)
       .toISOString()
       .split("T")[0],
+    currency: prefillData?.currency || "USD",
     tax: DEFAULT_TAX_RATE,
     status: "DRAFT",
     companies: [
@@ -172,6 +174,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
             "customerId",
             "contractorId",
             "teamId",
+            "currency",
           ];
 
           requiredFields.forEach((field) => {
@@ -227,6 +230,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
               number={formData.number}
               date={formData.date}
               dueDate={formData.dueDate}
+              currency={formData.currency}
               onChange={handleChange}
               errors={errors}
             />

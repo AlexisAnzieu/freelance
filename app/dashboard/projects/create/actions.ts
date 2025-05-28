@@ -8,6 +8,7 @@ import { auth } from "@/auth";
 const ProjectSchema = z.object({
   name: z.string().min(1, "Project name is required"),
   description: z.string().optional(),
+  currency: z.string().default("USD"),
   companies: z.array(z.string()).optional(),
 });
 
@@ -15,6 +16,7 @@ interface ProjectFormState {
   errors?: {
     name?: string[];
     description?: string[];
+    currency?: string[];
     companies?: string[];
     _form?: string[];
   };
@@ -37,6 +39,7 @@ export async function createProject(
   const validatedFields = ProjectSchema.safeParse({
     name: formData.get("name"),
     description: formData.get("description"),
+    currency: formData.get("currency"),
     companies: formData.getAll("companies"),
   });
 
@@ -46,13 +49,14 @@ export async function createProject(
     };
   }
 
-  const { name, description, companies } = validatedFields.data;
+  const { name, description, currency, companies } = validatedFields.data;
 
   try {
     await prisma.project.create({
       data: {
         name,
         description,
+        currency,
         team: {
           connect: {
             id: session.teamId,

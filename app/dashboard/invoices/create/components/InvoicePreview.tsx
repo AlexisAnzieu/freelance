@@ -22,6 +22,7 @@ interface InvoiceFormData {
   companies: CompanyWithTypes[];
   teamId: string;
   items: InvoiceItem[];
+  currency: string;
 }
 
 interface InvoicePreviewProps {

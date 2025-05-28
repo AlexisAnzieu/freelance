@@ -1,13 +1,14 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { Invoice, InvoiceItem } from "@prisma/client";
 import { filterCompaniesByType, CompanyWithTypes } from "@/app/lib/db";
-import { COMPANY_TYPES } from "@/app/lib/constants";
+import { COMPANY_TYPES, CURRENCIES } from "@/app/lib/constants";
 
 export interface InvoicePDFProps {
   invoice: Invoice & {
     companies: CompanyWithTypes[];
     items: Pick<InvoiceItem, "unitaryPrice" | "quantity" | "name" | "id">[];
     name?: string | null;
+    currency: string;
   };
 }
 
@@ -228,9 +229,13 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
             <View key={item.id} style={styles.tableRow}>
               <Text style={styles.description}>{item.name}</Text>
               <Text style={styles.quantity}>{item.quantity}</Text>
-              <Text style={styles.price}>${item.unitaryPrice.toFixed(2)}</Text>
+              <Text style={styles.price}>
+                {CURRENCIES[invoice.currency as keyof typeof CURRENCIES]?.symbol || "$"}
+                {item.unitaryPrice.toFixed(2)}
+              </Text>
               <Text style={styles.total}>
-                ${(item.quantity * item.unitaryPrice).toFixed(2)}
+                {CURRENCIES[invoice.currency as keyof typeof CURRENCIES]?.symbol || "$"}
+                {(item.quantity * item.unitaryPrice).toFixed(2)}
               </Text>
             </View>
           ))}
@@ -241,7 +246,10 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
             <Text style={[styles.price, { fontWeight: "bold" }]}>
               Subtotal:
             </Text>
-            <Text style={styles.total}>${invoice.amount.toFixed(2)}</Text>
+            <Text style={styles.total}>
+              {CURRENCIES[invoice.currency as keyof typeof CURRENCIES]?.symbol || "$"}
+              {invoice.amount.toFixed(2)}
+            </Text>
           </View>
 
           <View style={styles.tableRow}>
@@ -251,7 +259,8 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
               Tax ({invoice.tax}%):
             </Text>
             <Text style={styles.total}>
-              ${(invoice.amount * (invoice.tax / 100)).toFixed(2)}
+              {CURRENCIES[invoice.currency as keyof typeof CURRENCIES]?.symbol || "$"}
+              {(invoice.amount * (invoice.tax / 100)).toFixed(2)}
             </Text>
           </View>
 
@@ -260,7 +269,8 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
             <Text style={styles.quantity}></Text>
             <Text style={[styles.price, { fontWeight: "bold" }]}>Total:</Text>
             <Text style={[styles.total, { fontWeight: "bold" }]}>
-              ${invoice.totalAmount.toFixed(2)}
+              {CURRENCIES[invoice.currency as keyof typeof CURRENCIES]?.symbol || "$"}
+              {invoice.totalAmount.toFixed(2)}
             </Text>
           </View>
         </View>

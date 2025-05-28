@@ -53,6 +53,7 @@ export async function createInvoice(formData: FormData) {
         date: new Date(formData.get("date") as string),
         dueDate: new Date(formData.get("dueDate") as string),
         status: "draft",
+        currency: (formData.get("currency") as string) || "USD",
         amount,
         tax,
         totalAmount,

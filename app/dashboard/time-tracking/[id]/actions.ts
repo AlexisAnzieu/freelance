@@ -156,6 +156,7 @@ export async function generateInvoice(timeEntryIds: string[]) {
   searchParams.set("customerId", customer.id);
   searchParams.set("contractorId", contractor.id);
   searchParams.set("name", project.name);
+  searchParams.set("currency", project.currency); // Pass the project currency
   searchParams.set(
     "items",
     JSON.stringify(
