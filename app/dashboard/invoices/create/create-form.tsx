@@ -64,7 +64,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
         : []),
     ].filter((company): company is CompanyWithTypes => company !== undefined),
     teamId: "preview",
-    selectedPaymentMethod: "TRANSFER",
+    selectedPaymentMethod: "No Payment Method",
     items: prefillData?.items
       ? (prefillData.items.map((item, index) => ({
           id: String(index + 1),
