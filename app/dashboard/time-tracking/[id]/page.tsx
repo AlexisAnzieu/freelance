@@ -71,9 +71,6 @@ export default async function TimeTrackingPage({
             </svg>
           </Link>
           <h1 className="text-3xl font-bold">{project.name}</h1>
-          <span className="text-sm px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-700 border border-blue-500/10">
-            {project.currency}
-          </span>
         </div>
       </div>
 

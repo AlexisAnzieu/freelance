@@ -60,7 +60,7 @@ export default function ProjectTable({
                   Created
                 </th>
                 <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-                  Progress
+                  Invoice Progress
                 </th>
                 <th scope="col" className="px-6 py-4 font-medium text-gray-900">
                   Actions
@@ -104,7 +104,7 @@ export default function ProjectTable({
                       <div className="flex-1 max-w-32">
                         <div className="flex justify-between text-xs mb-1">
                           <span className="text-gray-600">
-                            {project._count?.timeEntries || 0} entries
+                            {project._count?.invoicedTimeEntries || 0} / {project._count?.timeEntries || 0} 
                           </span>
                           <span className="font-medium text-blue-700">
                             {(
