@@ -23,6 +23,7 @@ interface InvoiceFormData {
   teamId: string;
   items: InvoiceItem[];
   currency: string;
+  selectedPaymentMethod: string;
 }
 
 interface InvoicePreviewProps {
@@ -51,7 +52,6 @@ export function InvoicePreview({ formData }: InvoicePreviewProps) {
             updatedAt: new Date(),
             amount: subtotal,
             totalAmount: subtotal * (1 + Number(formData.tax) / 100),
-            selectedPaymentMethod: null,
           }}
         />
       </PDFViewer>

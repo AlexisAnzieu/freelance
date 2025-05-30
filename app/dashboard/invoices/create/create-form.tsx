@@ -64,6 +64,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
         : []),
     ].filter((company): company is CompanyWithTypes => company !== undefined),
     teamId: "preview",
+    selectedPaymentMethod: "TRANSFER",
     items: prefillData?.items
       ? (prefillData.items.map((item, index) => ({
           id: String(index + 1),
@@ -175,6 +176,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
             "contractorId",
             "teamId",
             "currency",
+            "selectedPaymentMethod",
           ];
 
           requiredFields.forEach((field) => {
