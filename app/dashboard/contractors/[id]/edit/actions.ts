@@ -37,6 +37,7 @@ export async function editContractorAction(formData: FormData) {
       country: rawFormData.country as string,
       taxId: rawFormData.taxId as string || null,
       notes: rawFormData.notes as string || null,
+      paymentMethods: rawFormData.paymentMethods as string || null,
     },
   });
 

@@ -9,6 +9,7 @@ export interface InvoicePDFProps {
     items: Pick<InvoiceItem, "unitaryPrice" | "quantity" | "name" | "id">[];
     name?: string | null;
     currency: string;
+    selectedPaymentMethod?: string | null;
   };
 }
 
@@ -277,14 +278,11 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
 
         <View style={styles.bankingInfo}>
           <Text style={styles.bankingHeader}>Payment information</Text>
-          <Text style={styles.bankingTitle}>
-            Interac via alexis.anzieu@gmail.com
-          </Text>
-          <Text> or</Text>
-          <Text style={styles.bankingDetails}>Transit number: 30166</Text>
-          <Text style={styles.bankingDetails}>Institution number: 815</Text>
-          <Text style={styles.bankingDetails}>Account: 741 478</Text>
-          <Text style={styles.bankingDetails}>Check digit: 2</Text>
+          {invoice.selectedPaymentMethod ? (
+            <Text style={styles.bankingDetails}>{invoice.selectedPaymentMethod}</Text>
+          ) : (
+            <Text style={styles.bankingDetails}>No payment method specified</Text>
+          )}
         </View>
       </Page>
     </Document>

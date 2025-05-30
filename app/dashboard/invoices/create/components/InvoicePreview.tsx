@@ -51,6 +51,7 @@ export function InvoicePreview({ formData }: InvoicePreviewProps) {
             updatedAt: new Date(),
             amount: subtotal,
             totalAmount: subtotal * (1 + Number(formData.tax) / 100),
+            selectedPaymentMethod: null,
           }}
         />
       </PDFViewer>

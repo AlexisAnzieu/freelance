@@ -33,6 +33,7 @@ export async function createCompany({
         country: formData.get("country") as string,
         taxId: (formData.get("taxId") as string) || null,
         notes: (formData.get("notes") as string) || null,
+        paymentMethods: (formData.get("paymentMethods") as string) || null,
         types: {
           connect: {
             name: type,

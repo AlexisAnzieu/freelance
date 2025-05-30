@@ -29,12 +29,13 @@ async function getContractor(id: string) {
   return contractor;
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const contractor = await getContractor(params.id);
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const contractor = await getContractor(id);
 
   async function editWithId(formData: FormData) {
     "use server";
-    formData.append("contractorId", params.id);
+    formData.append("contractorId", id);
     await editContractorAction(formData);
   }
 
@@ -59,6 +60,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           country: contractor.country,
           taxId: contractor.taxId || "",
           notes: contractor.notes || "",
+          paymentMethods: contractor.paymentMethods || "",
         }}
       />
     </div>

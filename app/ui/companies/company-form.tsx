@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type CompanyFormProps = {
   title: string;
@@ -17,15 +18,47 @@ type CompanyFormProps = {
     country?: string;
     taxId?: string;
     notes?: string;
+    paymentMethods?: string;
   };
   mode?: 'create' | 'edit';
 };
 
 export function CompanyForm({ title, onSubmit, defaultValues = {}, mode = 'create' }: CompanyFormProps) {
   const router = useRouter();
+  const [paymentMethods, setPaymentMethods] = useState<string[]>(() => {
+    if (defaultValues.paymentMethods) {
+      try {
+        return JSON.parse(defaultValues.paymentMethods);
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    formData.set('paymentMethods', JSON.stringify(paymentMethods));
+    await onSubmit(formData);
+  };
+
+  const addPaymentMethod = () => {
+    setPaymentMethods([...paymentMethods, '']);
+  };
+
+  const removePaymentMethod = (index: number) => {
+    setPaymentMethods(paymentMethods.filter((_, i) => i !== index));
+  };
+
+  const updatePaymentMethod = (index: number, value: string) => {
+    const newPaymentMethods = [...paymentMethods];
+    newPaymentMethods[index] = value;
+    setPaymentMethods(newPaymentMethods);
+  };
 
   return (
-    <form action={onSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="rounded-md p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -189,6 +222,39 @@ export function CompanyForm({ title, onSubmit, defaultValues = {}, mode = 'creat
             className="block w-full rounded-md border border-gray-200 py-2 px-3"
             defaultValue={defaultValues.notes}
           />
+        </div>
+
+        <div className="mt-4">
+          <label className="block text-sm font-medium mb-2">
+            Payment Methods (optional)
+          </label>
+          <div className="space-y-2">
+            {paymentMethods.map((method, index) => (
+              <div key={index} className="flex gap-2">
+                <textarea
+                  value={method}
+                  onChange={(e) => updatePaymentMethod(index, e.target.value)}
+                  rows={3}
+                  className="block w-full rounded-md border border-gray-200 py-2 px-3"
+                  placeholder="Enter payment details (e.g., Bank account info, PayPal, etc.)"
+                />
+                <button
+                  type="button"
+                  onClick={() => removePaymentMethod(index)}
+                  className="px-2 py-1 text-sm text-red-600 hover:text-red-500"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addPaymentMethod}
+              className="mt-2 text-sm text-blue-600 hover:text-blue-500"
+            >
+              + Add Payment Method
+            </button>
+          </div>
         </div>
       </div>
 
