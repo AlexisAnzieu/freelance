@@ -61,8 +61,14 @@ export function CompanyTable({
                   <div className="text-sm text-gray-500">{company.state}</div>
                 )}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <form action={deleteAction}>
+              <td className="px-6 py-4 whitespace-nowrap flex items-center gap-2">
+                <a
+                  href={`/dashboard/${type}s/${company.id}/edit`}
+                  className="text-blue-600 hover:text-blue-500 text-sm font-semibold"
+                >
+                  Edit
+                </a>
+                <form action={deleteAction} className="inline-block">
                   <input type="hidden" name={`${type}Id`} value={company.id} />
                   <DeleteButton itemName={type} />
                 </form>

@@ -5,9 +5,23 @@ import { useRouter } from "next/navigation";
 type CompanyFormProps = {
   title: string;
   onSubmit: (formData: FormData) => Promise<void>;
+  defaultValues?: {
+    companyName?: string;
+    contactName?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    postalCode?: string;
+    country?: string;
+    taxId?: string;
+    notes?: string;
+  };
+  mode?: 'create' | 'edit';
 };
 
-export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
+export function CompanyForm({ title, onSubmit, defaultValues = {}, mode = 'create' }: CompanyFormProps) {
   const router = useRouter();
 
   return (
@@ -27,6 +41,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
               name="companyName"
               className="block w-full rounded-md border border-gray-200 py-2 px-3"
               required
+              defaultValue={defaultValues.companyName}
             />
           </div>
 
@@ -42,6 +57,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
               id="contactName"
               name="contactName"
               className="block w-full rounded-md border border-gray-200 py-2 px-3"
+              defaultValue={defaultValues.contactName}
             />
           </div>
         </div>
@@ -57,6 +73,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
               name="email"
               className="block w-full rounded-md border border-gray-200 py-2 px-3"
               required
+              defaultValue={defaultValues.email}
             />
           </div>
 
@@ -69,6 +86,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
               id="phone"
               name="phone"
               className="block w-full rounded-md border border-gray-200 py-2 px-3"
+              defaultValue={defaultValues.phone}
             />
           </div>
         </div>
@@ -83,6 +101,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
             name="address"
             className="block w-full rounded-md border border-gray-200 py-2 px-3"
             required
+            defaultValue={defaultValues.address}
           />
         </div>
 
@@ -97,6 +116,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
               name="city"
               className="block w-full rounded-md border border-gray-200 py-2 px-3"
               required
+              defaultValue={defaultValues.city}
             />
           </div>
 
@@ -109,6 +129,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
               id="state"
               name="state"
               className="block w-full rounded-md border border-gray-200 py-2 px-3"
+              defaultValue={defaultValues.state}
             />
           </div>
 
@@ -125,6 +146,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
               name="postalCode"
               className="block w-full rounded-md border border-gray-200 py-2 px-3"
               required
+              defaultValue={defaultValues.postalCode}
             />
           </div>
 
@@ -138,6 +160,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
               name="country"
               className="block w-full rounded-md border border-gray-200 py-2 px-3"
               required
+              defaultValue={defaultValues.country}
             />
           </div>
         </div>
@@ -151,6 +174,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
             id="taxId"
             name="taxId"
             className="block w-full rounded-md border border-gray-200 py-2 px-3"
+            defaultValue={defaultValues.taxId}
           />
         </div>
 
@@ -163,6 +187,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
             name="notes"
             rows={3}
             className="block w-full rounded-md border border-gray-200 py-2 px-3"
+            defaultValue={defaultValues.notes}
           />
         </div>
       </div>
@@ -179,7 +204,7 @@ export function CompanyForm({ title, onSubmit }: CompanyFormProps) {
           type="submit"
           className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         >
-          {`Create ${title}`}
+          {mode === 'edit' ? `Save ${title}` : `Create ${title}`}
         </button>
       </div>
     </form>
