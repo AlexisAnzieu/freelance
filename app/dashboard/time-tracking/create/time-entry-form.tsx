@@ -21,7 +21,7 @@ interface Props {
 
 export default function TimeEntryForm({
   projectId,
-  projectCurrency = "USD",
+  projectCurrency = "CAD",
   onSuccess,
   initialData,
 }: Props) {

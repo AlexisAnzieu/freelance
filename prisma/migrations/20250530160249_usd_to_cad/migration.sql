@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `Invoice` MODIFY `currency` VARCHAR(191) NOT NULL DEFAULT 'CAD';
+
+-- AlterTable
+ALTER TABLE `Project` MODIFY `currency` VARCHAR(191) NOT NULL DEFAULT 'CAD';

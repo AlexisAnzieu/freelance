@@ -8,7 +8,7 @@ import { auth } from "@/auth";
 const ProjectSchema = z.object({
   name: z.string().min(1, "Project name is required"),
   description: z.string().optional(),
-  currency: z.string().default("USD"),
+  currency: z.string().default("CAD"),
   companies: z.array(z.string()).optional(),
 });
 

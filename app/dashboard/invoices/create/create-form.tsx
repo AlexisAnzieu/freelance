@@ -52,7 +52,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
     dueDate: new Date(Date.now() + 31 * 24 * 60 * 60 * 1000)
       .toISOString()
       .split("T")[0],
-    currency: prefillData?.currency || "USD",
+    currency: prefillData?.currency || "CAD",
     tax: DEFAULT_TAX_RATE,
     status: "DRAFT",
     companies: [

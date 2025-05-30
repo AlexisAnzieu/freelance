@@ -144,7 +144,7 @@ export default function ProjectForm({
             <select
               id="currency"
               name="currency"
-              defaultValue={defaultValues.currency || "USD"}
+              defaultValue={defaultValues.currency || "CAD"}
               className="block w-full rounded-xl border-0 py-2 px-3 text-gray-900 shadow-sm bg-white/50 backdrop-blur-sm ring-1 ring-inset ring-gray-300/50 placeholder:text-gray-400/70 focus:ring-2 focus:ring-inset focus:ring-blue-500/50 sm:text-sm sm:leading-6 transition-all duration-300"
               aria-describedby="currency-error"
             >

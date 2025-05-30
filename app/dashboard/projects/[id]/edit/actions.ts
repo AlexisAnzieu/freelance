@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 const UpdateProject = z.object({
   name: z.string().min(1, "Project name is required"),
   description: z.string(),
-  currency: z.string().default("USD"),
+  currency: z.string().default("CAD"),
   companies: z.array(z.string()),
 });
 
