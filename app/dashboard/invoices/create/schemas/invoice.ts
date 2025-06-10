@@ -18,7 +18,7 @@ export const invoiceSchema = z.object({
   currency: z.string().default("CAD"),
   tax: z.number().min(0, "Tax rate must be positive"),
   status: z.enum(["DRAFT", "SENT", "PAID"]),
-  selectedPaymentMethod: z.string().optional(),
+  selectedPaymentMethod: z.string(),
   items: z.array(invoiceItemSchema).min(1, "At least one activity is required"),
 });
 

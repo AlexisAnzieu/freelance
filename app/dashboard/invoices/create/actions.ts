@@ -57,6 +57,7 @@ export async function createInvoice(formData: FormData) {
         amount,
         tax,
         totalAmount,
+        selectedPaymentMethod: formData.get("selectedPaymentMethod") as string,
         companies: {
           connect: [
             {

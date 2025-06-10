@@ -247,6 +247,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
             <CompanyDetailsStep
               customerId={formData.customerId}
               contractorId={formData.contractorId}
+              selectedPaymentMethod={formData.selectedPaymentMethod}
               customers={customers}
               contractors={contractors}
               onChange={handleChange}
