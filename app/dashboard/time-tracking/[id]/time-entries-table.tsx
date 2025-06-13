@@ -243,6 +243,7 @@ export default function TimeEntriesTable({ timeEntries, projectCurrency }: Props
       >
         <div className="px-6">
           <TimeEntryForm
+            key={selectedEntry?.id || "new-entry"}
             projectId={timeEntries[0]?.projectId ?? ""}
             projectCurrency={projectCurrency}
             initialData={
