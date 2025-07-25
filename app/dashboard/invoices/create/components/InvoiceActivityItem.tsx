@@ -63,7 +63,8 @@ export function InvoiceActivityItem({
           id={`quantity-${id}`}
           name="quantity"
           required
-          min="1"
+          min="0"
+          step="any"
           placeholder="Enter quantity"
           value={quantity}
           onChange={(e) => onChange(e, id)}

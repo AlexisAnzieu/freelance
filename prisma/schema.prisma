@@ -40,11 +40,11 @@ model User {
 }
 
 model Company {
-  id          String        @id @default(cuid())
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  companyName     String
-  contactName     String?
+  id             String        @id @default(cuid())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  companyName    String
+  contactName    String?
   email          String
   phone          String?
   address        String
@@ -54,12 +54,12 @@ model Company {
   country        String
   taxId          String?
   notes          String?
-  paymentMethods String?    @db.LongText
-  team        Team          @relation(fields: [teamId], references: [id])
-  teamId      String
-  invoices    Invoice[]
-  types       CompanyType[]
-  projects    Project[]
+  paymentMethods String?       @db.LongText
+  team           Team          @relation(fields: [teamId], references: [id])
+  teamId         String
+  invoices       Invoice[]
+  types          CompanyType[]
+  projects       Project[]
 }
 
 model CompanyType {
@@ -69,23 +69,23 @@ model CompanyType {
 }
 
 model Invoice {
-  id          String        @id @default(cuid())
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  number      String
-  date        DateTime
-  dueDate     DateTime
-  status      String // 'draft', 'sent', 'paid'
-  amount      Float
-  name                String?
-  tax                 Float         @default(0)
-  totalAmount         Float
-  currency           String        @default("CAD")
+  id                    String        @id @default(cuid())
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  number                String
+  date                  DateTime
+  dueDate               DateTime
+  status                String // 'draft', 'sent', 'paid'
+  amount                Float
+  name                  String?
+  tax                   Float         @default(0)
+  totalAmount           Float
+  currency              String        @default("CAD")
   selectedPaymentMethod String?
-  companies          Company[]
-  items              InvoiceItem[]
-  team               Team          @relation(fields: [teamId], references: [id])
-  teamId             String
+  companies             Company[]
+  items                 InvoiceItem[]
+  team                  Team          @relation(fields: [teamId], references: [id])
+  teamId                String
 }
 
 model InvoiceItem {
@@ -93,7 +93,7 @@ model InvoiceItem {
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   name             String
-  quantity         Int
+  quantity         Float
   unitaryPrice     Float
   invoice          Invoice           @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   invoiceId        String
@@ -106,7 +106,7 @@ model Project {
   updatedAt   DateTime           @updatedAt
   name        String
   description String?            @db.Text
-  currency    String            @default("CAD")
+  currency    String             @default("CAD")
   team        Team               @relation(fields: [teamId], references: [id])
   teamId      String
   timeEntries TimeTrackingItem[]
