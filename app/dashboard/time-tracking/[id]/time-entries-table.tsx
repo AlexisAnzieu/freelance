@@ -7,7 +7,11 @@ import { formatDate } from "@/app/lib/utils";
 import { useState } from "react";
 import SidePanel from "@/app/ui/side-panel";
 import TimeEntryForm from "../../../dashboard/time-tracking/create/time-entry-form";
-import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import {
+  CheckCircleIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/solid";
 import { CURRENCIES } from "@/app/lib/constants";
 
 type TimeEntryWithInvoice = TimeTrackingItem & {
@@ -23,7 +27,10 @@ interface Props {
   projectCurrency: string;
 }
 
-export default function TimeEntriesTable({ timeEntries, projectCurrency }: Props) {
+export default function TimeEntriesTable({
+  timeEntries,
+  projectCurrency,
+}: Props) {
   const router = useRouter();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] =
@@ -79,7 +86,8 @@ export default function TimeEntriesTable({ timeEntries, projectCurrency }: Props
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <h3 className="text-sm font-medium text-gray-500">Total Amount</h3>
           <p className="mt-2 text-3xl font-semibold text-gray-900">
-            {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]?.symbol || "$"}
+            {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]?.symbol ||
+              "$"}
             {timeEntries
               .reduce((sum, entry) => sum + entry.hours * entry.hourlyRate, 0)
               .toFixed(2)}
@@ -189,10 +197,14 @@ export default function TimeEntriesTable({ timeEntries, projectCurrency }: Props
                     {entry.hours}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]?.symbol || "$"}{entry.hourlyRate}
+                    {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]
+                      ?.symbol || "$"}
+                    {entry.hourlyRate}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]?.symbol || "$"}{(entry.hours * entry.hourlyRate).toFixed(2)}
+                    {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]
+                      ?.symbol || "$"}
+                    {(entry.hours * entry.hourlyRate).toFixed(2)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {entry.invoiceItem?.invoice ? (
@@ -209,21 +221,27 @@ export default function TimeEntriesTable({ timeEntries, projectCurrency }: Props
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="flex gap-4">
-                      <button
-                        onClick={() => {
-                          setSelectedEntry(entry);
-                          setIsDrawerOpen(true);
-                        }}
-                        className="text-blue-600 hover:text-blue-900"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(entry.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Delete
-                      </button>
+                      {!entry.invoiceItem?.invoice && (
+                        <>
+                          <button
+                            onClick={() => {
+                              setSelectedEntry(entry);
+                              setIsDrawerOpen(true);
+                            }}
+                            className="text-blue-600 hover:text-blue-900 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            aria-label="Edit"
+                          >
+                            <PencilIcon className="h-5 w-5" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(entry.id)}
+                            className="text-red-600 hover:text-red-900 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500"
+                            aria-label="Delete"
+                          >
+                            <TrashIcon className="h-5 w-5" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>
