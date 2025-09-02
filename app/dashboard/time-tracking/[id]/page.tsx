@@ -75,7 +75,11 @@ export default async function TimeTrackingPage({
       </div>
 
       <Suspense fallback={<Skeleton className="h-96" />}>
-        <TimeEntriesTable timeEntries={timeEntries} projectCurrency={project.currency} />
+        <TimeEntriesTable
+          timeEntries={timeEntries}
+          projectCurrency={project.currency}
+          projectId={project.id}
+        />
       </Suspense>
     </div>
   );

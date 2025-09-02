@@ -25,11 +25,13 @@ type TimeEntryWithInvoice = TimeTrackingItem & {
 interface Props {
   timeEntries: TimeEntryWithInvoice[];
   projectCurrency: string;
+  projectId: string;
 }
 
 export default function TimeEntriesTable({
   timeEntries,
   projectCurrency,
+  projectId,
 }: Props) {
   const router = useRouter();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -262,7 +264,7 @@ export default function TimeEntriesTable({
         <div className="px-6">
           <TimeEntryForm
             key={selectedEntry?.id || "new-entry"}
-            projectId={timeEntries[0]?.projectId ?? ""}
+            projectId={projectId}
             projectCurrency={projectCurrency}
             initialData={
               selectedEntry
