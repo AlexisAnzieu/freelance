@@ -33,7 +33,7 @@ export default async function Page(props: {
         AND: [
           { teamId: session.teamId },
           {
-            OR: [{ number: { contains: query } }],
+            OR: [{ name: { contains: query } }],
           },
         ],
       },
@@ -56,7 +56,7 @@ export default async function Page(props: {
         AND: [
           { teamId: session.teamId },
           {
-            OR: [{ number: { contains: query } }],
+            OR: [{ name: { contains: query } }],
           },
         ],
       },

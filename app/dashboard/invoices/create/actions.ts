@@ -12,6 +12,20 @@ interface InvoiceItem {
   timeEntryId?: string;
 }
 
+export async function getNextInvoiceNumber() {
+  const session = await auth();
+  if (!session?.teamId) {
+    throw new Error("Unauthorized: No team access");
+  }
+
+  const lastInvoice = await prisma.invoice.findFirst({
+    where: { teamId: session.teamId },
+    orderBy: { number: "desc" },
+    select: { number: true },
+  });
+  return lastInvoice ? lastInvoice.number + 1 : 1;
+}
+
 export async function createInvoice(formData: FormData) {
   const session = await auth();
 
@@ -49,7 +63,7 @@ export async function createInvoice(formData: FormData) {
       data: {
         name: formData.get("name") as string,
         teamId: session.teamId,
-        number: formData.get("number") as string,
+        number: Number(formData.get("number")),
         date: new Date(formData.get("date") as string),
         dueDate: new Date(formData.get("dueDate") as string),
         status: "draft",

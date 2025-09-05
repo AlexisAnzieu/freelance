@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CompanyWithTypes } from "@/app/lib/db";
-import { createInvoice } from "./actions";
+import { createInvoice, getNextInvoiceNumber } from "./actions";
 import { InvoiceStepProgress } from "./components/InvoiceStepProgress";
 import { BasicInformationStep } from "./components/BasicInformationStep";
 import { CompanyDetailsStep } from "./components/CompanyDetailsStep";
@@ -43,11 +43,12 @@ const steps = [
 export function Form({ customers, contractors, prefillData }: FormProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [nextInvoiceNumber, setNextInvoiceNumber] = useState<number>(1);
   const [formData, setFormData] = useState({
     name: prefillData?.name || "",
     customerId: prefillData?.customerId || "",
     contractorId: prefillData?.contractorId || "",
-    number: "",
+    number: nextInvoiceNumber,
     date: new Date().toISOString().split("T")[0],
     dueDate: new Date(Date.now() + 31 * 24 * 60 * 60 * 1000)
       .toISOString()
@@ -79,6 +80,17 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
           },
         ],
   });
+
+  // Fetch and sync nextInvoiceNumber and formData.number together
+  useEffect(() => {
+    getNextInvoiceNumber().then((num) => {
+      setNextInvoiceNumber(num);
+      setFormData((prev) => ({
+        ...prev,
+        number: num,
+      }));
+    });
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -180,10 +192,11 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
           ];
 
           requiredFields.forEach((field) => {
-            formSubmitData.append(
-              field,
-              String(formData[field as keyof typeof formData])
-            );
+            let value = formData[field as keyof typeof formData];
+            if (field === "number") {
+              value = Number(value);
+            }
+            formSubmitData.append(field, String(value));
           });
 
           // Add items data with explicit typing
@@ -229,7 +242,6 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
           >
             <BasicInformationStep
               name={formData.name}
-              number={formData.number}
               date={formData.date}
               dueDate={formData.dueDate}
               currency={formData.currency}
@@ -281,7 +293,9 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
         </div>
 
         {/* PDF Preview */}
-        <InvoicePreview formData={formData} />
+        <InvoicePreview
+          formData={{ ...formData, number: nextInvoiceNumber ?? "" }}
+        />
       </div>
     </form>
   );

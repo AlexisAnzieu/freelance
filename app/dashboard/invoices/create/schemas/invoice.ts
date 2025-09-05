@@ -12,7 +12,7 @@ export const invoiceSchema = z.object({
   name: z.string().optional(),
   customerId: z.string().min(1, "Customer is required"),
   contractorId: z.string().min(1, "Contractor is required"),
-  number: z.string().min(1, "Invoice number is required"),
+  number: z.number().min(1, "Invoice number is required"),
   date: z.string().min(1, "Invoice date is required"),
   dueDate: z.string().min(1, "Due date is required"),
   currency: z.string().default("CAD"),

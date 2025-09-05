@@ -4,17 +4,17 @@ import { CURRENCIES } from "@/app/lib/constants";
 
 interface BasicInformationProps {
   name: string;
-  number: string;
   date: string;
   dueDate: string;
   currency: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
   errors?: ValidationErrors;
 }
 
 export function BasicInformationStep({
   name,
-  number,
   date,
   dueDate,
   currency,
@@ -48,31 +48,6 @@ export function BasicInformationStep({
           />
           {errors?.name && (
             <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="number"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Invoice Number
-          </label>
-          <input
-            type="text"
-            id="number"
-            name="number"
-            required
-            value={number}
-            onChange={onChange}
-            className={cn(
-              "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
-              errors?.number &&
-                "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-            )}
-          />
-          {errors?.number && (
-            <p className="mt-1 text-sm text-red-500">{errors.number}</p>
           )}
         </div>
 

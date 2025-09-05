@@ -14,7 +14,7 @@ interface InvoiceFormData {
   name: string;
   customerId: string;
   contractorId: string;
-  number: string;
+  number: number;
   date: string;
   dueDate: string;
   tax: number;
