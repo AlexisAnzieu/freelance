@@ -1,9 +1,5 @@
-import RevenuesCard from "@/app/ui/dashboard/revenues";
+import EnhancedDashboard from "@/app/ui/dashboard/enhanced-dashboard";
 
 export default function Page() {
-  return (
-    <div className="p-6">
-      <RevenuesCard />
-    </div>
-  );
+  return <EnhancedDashboard />;
 }

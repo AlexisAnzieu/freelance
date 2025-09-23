@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { Invoice } from "@prisma/client";
 import { useState } from "react";
 import { pdf } from "@react-pdf/renderer";
@@ -50,9 +50,9 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                 <tr>
                   <th
                     scope="col"
-                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8 uppercase tracking-wider"
+                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8"
                   >
-                    Invoice Number
+                    #
                   </th>
                   <th
                     scope="col"
@@ -119,7 +119,8 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                       ).map((company) => company.companyName)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 font-medium">
-                      {CURRENCIES[invoice.currency as keyof typeof CURRENCIES]?.symbol || "$"}
+                      {CURRENCIES[invoice.currency as keyof typeof CURRENCIES]
+                        ?.symbol || "$"}
                       {invoice.totalAmount.toLocaleString("en-US", {
                         minimumFractionDigits: 2,
                       })}
@@ -157,12 +158,14 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                       </form>
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
-                      {formatDistanceToNow(invoice.date, { addSuffix: true })}
+                      {format(invoice.date, "MMM d, yyyy")}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
-                      {formatDistanceToNow(invoice.dueDate, {
-                        addSuffix: true,
-                      })}
+                      {invoice.status === "paid"
+                        ? ""
+                        : formatDistanceToNow(invoice.dueDate, {
+                            addSuffix: true,
+                          })}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm space-x-2 flex">
                       <button
