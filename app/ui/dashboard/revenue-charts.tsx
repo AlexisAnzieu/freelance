@@ -237,3 +237,87 @@ export function RevenueOverviewChart({ data }: RevenueChartsProps) {
     </div>
   );
 }
+
+export function MonthlyRevenueTrendChart({ data }: RevenueChartsProps) {
+  const chartData = {
+    labels: data.monthlyRevenueTrend.map((item) => item.month),
+    datasets: [
+      {
+        label: "Paid Revenue",
+        data: data.monthlyRevenueTrend.map((item) => item.paid),
+        backgroundColor: "rgba(16, 185, 129, 0.8)",
+        borderColor: "rgb(16, 185, 129)",
+        borderWidth: 1,
+      },
+      {
+        label: "Unpaid Revenue",
+        data: data.monthlyRevenueTrend.map((item) => item.unpaid),
+        backgroundColor: "rgba(245, 158, 11, 0.8)",
+        borderColor: "rgb(245, 158, 11)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: "Monthly Revenue Trend (Paid vs Unpaid)",
+        font: {
+          size: 16,
+          weight: "bold" as const,
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context: {
+            dataset: { label?: string };
+            parsed: { y: number };
+          }) {
+            const label = context.dataset.label || "";
+            const value = context.parsed.y;
+            return `${label}: $${value.toLocaleString()}`;
+          },
+          footer: function (tooltipItems: { dataIndex: number }[]) {
+            const monthData =
+              data.monthlyRevenueTrend[tooltipItems[0].dataIndex];
+            return `Total: $${monthData.total.toLocaleString()}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        stacked: true,
+        title: {
+          display: true,
+          text: "Month",
+        },
+      },
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Revenue ($)",
+        },
+        ticks: {
+          callback: function (value: string | number) {
+            return `$${value.toLocaleString()}`;
+          },
+        },
+      },
+    },
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-6">
+      <Bar data={chartData} options={options} />
+    </div>
+  );
+}

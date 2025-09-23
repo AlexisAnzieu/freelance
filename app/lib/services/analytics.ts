@@ -4,6 +4,12 @@ import { startOfMonth, endOfMonth, subMonths, format } from "date-fns";
 export interface RevenueAnalytics {
   totalRevenue: number;
   monthlyRevenue: { month: string; revenue: number; invoiceCount: number }[];
+  monthlyRevenueTrend: {
+    month: string;
+    paid: number;
+    unpaid: number;
+    total: number;
+  }[];
   revenueByStatus: { status: string; amount: number; count: number }[];
   averageInvoiceValue: number;
   yearOverYearGrowth: number;
@@ -15,17 +21,6 @@ export interface TimeTrackingAnalytics {
   hoursByMonth: { month: string; hours: number }[];
   averageHourlyRate: number;
   utilizationRate: number;
-}
-
-export interface InvoiceAnalytics {
-  invoiceStatusDistribution: {
-    status: string;
-    count: number;
-    amount: number;
-  }[];
-  agingReport: { category: string; count: number; amount: number }[];
-  paymentTrends: { month: string; paid: number; outstanding: number }[];
-  averageDaysToPayment: number;
 }
 
 export interface ProjectAnalytics {
@@ -126,9 +121,36 @@ export async function getRevenueAnalytics(
       ? ((currentYearRevenue - previousYearRevenue) / previousYearRevenue) * 100
       : 0;
 
+  // Monthly revenue trend with paid and unpaid breakdown for the last 6 months
+  const monthlyRevenueTrend = [];
+  for (let i = 5; i >= 0; i--) {
+    const monthStart = startOfMonth(subMonths(now, i));
+    const monthEnd = endOfMonth(subMonths(now, i));
+
+    const monthInvoices = invoices.filter(
+      (invoice) => invoice.date >= monthStart && invoice.date <= monthEnd
+    );
+
+    const paidRevenue = monthInvoices
+      .filter((invoice) => invoice.status === "paid")
+      .reduce((sum, inv) => sum + inv.totalAmount, 0);
+
+    const unpaidRevenue = monthInvoices
+      .filter((invoice) => invoice.status !== "paid")
+      .reduce((sum, inv) => sum + inv.totalAmount, 0);
+
+    monthlyRevenueTrend.push({
+      month: format(monthStart, "MMM yyyy"),
+      paid: paidRevenue,
+      unpaid: unpaidRevenue,
+      total: paidRevenue + unpaidRevenue,
+    });
+  }
+
   return {
     totalRevenue,
     monthlyRevenue,
+    monthlyRevenueTrend,
     revenueByStatus,
     averageInvoiceValue,
     yearOverYearGrowth,
@@ -217,120 +239,6 @@ export async function getTimeTrackingAnalytics(
     hoursByMonth,
     averageHourlyRate,
     utilizationRate,
-  };
-}
-
-export async function getInvoiceAnalytics(
-  teamId: string
-): Promise<InvoiceAnalytics> {
-  const now = new Date();
-
-  const invoices = await prisma.invoice.findMany({
-    where: { teamId },
-    orderBy: { date: "desc" },
-  });
-
-  // Invoice status distribution
-  const statusGroups = invoices.reduce((acc, invoice) => {
-    if (!acc[invoice.status]) {
-      acc[invoice.status] = { count: 0, amount: 0 };
-    }
-    acc[invoice.status].count += 1;
-    acc[invoice.status].amount += invoice.totalAmount;
-    return acc;
-  }, {} as Record<string, { count: number; amount: number }>);
-
-  const invoiceStatusDistribution = Object.entries(statusGroups).map(
-    ([status, data]) => ({
-      status,
-      count: data.count,
-      amount: data.amount,
-    })
-  );
-
-  // Aging report
-  const unpaidInvoices = invoices.filter(
-    (invoice) => invoice.status !== "paid"
-  );
-  const agingCategories = {
-    "Current (0-30 days)": { count: 0, amount: 0 },
-    "Past Due (31-60 days)": { count: 0, amount: 0 },
-    "Past Due (61-90 days)": { count: 0, amount: 0 },
-    "Past Due (90+ days)": { count: 0, amount: 0 },
-  };
-
-  unpaidInvoices.forEach((invoice) => {
-    const daysPastDue = Math.floor(
-      (now.getTime() - invoice.dueDate.getTime()) / (1000 * 60 * 60 * 24)
-    );
-
-    let category: keyof typeof agingCategories;
-    if (daysPastDue <= 30) {
-      category = "Current (0-30 days)";
-    } else if (daysPastDue <= 60) {
-      category = "Past Due (31-60 days)";
-    } else if (daysPastDue <= 90) {
-      category = "Past Due (61-90 days)";
-    } else {
-      category = "Past Due (90+ days)";
-    }
-
-    agingCategories[category].count += 1;
-    agingCategories[category].amount += invoice.totalAmount;
-  });
-
-  const agingReport = Object.entries(agingCategories).map(
-    ([category, data]) => ({
-      category,
-      count: data.count,
-      amount: data.amount,
-    })
-  );
-
-  // Payment trends over last 6 months
-  const paymentTrends = [];
-  for (let i = 5; i >= 0; i--) {
-    const monthStart = startOfMonth(subMonths(now, i));
-    const monthEnd = endOfMonth(subMonths(now, i));
-
-    const monthInvoices = invoices.filter(
-      (invoice) => invoice.date >= monthStart && invoice.date <= monthEnd
-    );
-
-    const paid = monthInvoices
-      .filter((invoice) => invoice.status === "paid")
-      .reduce((sum, invoice) => sum + invoice.totalAmount, 0);
-
-    const outstanding = monthInvoices
-      .filter((invoice) => invoice.status !== "paid")
-      .reduce((sum, invoice) => sum + invoice.totalAmount, 0);
-
-    paymentTrends.push({
-      month: format(monthStart, "MMM yyyy"),
-      paid,
-      outstanding,
-    });
-  }
-
-  // Average days to payment
-  const paidInvoices = invoices.filter((invoice) => invoice.status === "paid");
-  const totalDaysToPayment = paidInvoices.reduce((sum, invoice) => {
-    // Approximate calculation - in real scenario you'd track payment date
-    const daysToPay = Math.floor(
-      (invoice.updatedAt.getTime() - invoice.date.getTime()) /
-        (1000 * 60 * 60 * 24)
-    );
-    return sum + Math.max(0, daysToPay);
-  }, 0);
-
-  const averageDaysToPayment =
-    paidInvoices.length > 0 ? totalDaysToPayment / paidInvoices.length : 0;
-
-  return {
-    invoiceStatusDistribution,
-    agingReport,
-    paymentTrends,
-    averageDaysToPayment,
   };
 }
 

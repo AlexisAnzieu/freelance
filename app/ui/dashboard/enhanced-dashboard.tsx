@@ -2,18 +2,13 @@ import { auth } from "@/auth";
 import {
   getRevenueAnalytics,
   getTimeTrackingAnalytics,
-  getInvoiceAnalytics,
 } from "@/app/lib/services/analytics";
-import { MonthlyRevenueChart } from "@/app/ui/dashboard/revenue-charts";
+import { MonthlyRevenueTrendChart } from "@/app/ui/dashboard/revenue-charts";
 import {
   HoursByProjectChart,
   MonthlyHoursChart,
   HoursDistributionChart,
 } from "@/app/ui/dashboard/time-tracking-charts";
-import {
-  InvoiceStatusChart,
-  PaymentTrendsChart,
-} from "@/app/ui/dashboard/invoice-charts";
 
 interface StatCardProps {
   title: string;
@@ -55,25 +50,22 @@ async function getDashboardData() {
     throw new Error("Unauthorized: No team access");
   }
 
-  const [revenueData, timeTrackingData, invoiceData] = await Promise.all([
+  const [revenueData, timeTrackingData] = await Promise.all([
     getRevenueAnalytics(session.teamId),
     getTimeTrackingAnalytics(session.teamId),
-    getInvoiceAnalytics(session.teamId),
   ]);
 
   return {
     revenueData,
     timeTrackingData,
-    invoiceData,
   };
 }
 
 export default async function EnhancedDashboard() {
-  const { revenueData, timeTrackingData, invoiceData } =
-    await getDashboardData();
+  const { revenueData, timeTrackingData } = await getDashboardData();
 
-  const totalRevenue = invoiceData.invoiceStatusDistribution.reduce(
-    (total, item) => total + item.amount,
+  const totalRevenue = revenueData.revenueByStatus.reduce(
+    (total: number, item: { amount: number }) => total + item.amount,
     0
   );
   const outstanding = totalRevenue - revenueData.totalRevenue;
@@ -113,7 +105,7 @@ export default async function EnhancedDashboard() {
               icon="<path stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'/>"
             />
           </div>
-          <MonthlyRevenueChart data={revenueData} />
+          <MonthlyRevenueTrendChart data={revenueData} />
         </div>
 
         {/* Time Tracking */}
@@ -127,17 +119,6 @@ export default async function EnhancedDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <MonthlyHoursChart data={timeTrackingData} />
             <HoursDistributionChart data={timeTrackingData} />
-          </div>
-        </div>
-
-        {/* Invoice Analytics */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
-            Invoice Analytics
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <InvoiceStatusChart data={invoiceData} />
-            <PaymentTrendsChart data={invoiceData} />
           </div>
         </div>
       </div>
