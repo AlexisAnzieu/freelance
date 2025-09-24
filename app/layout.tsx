@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+
+import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { ModalProvider } from "./ui/modal-context";
 import "./globals.css";
 
@@ -20,6 +24,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} h-full selection:bg-blue-100 selection:text-blue-900`}
       >
+        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <ModalProvider>{children}</ModalProvider>
       </body>
     </html>

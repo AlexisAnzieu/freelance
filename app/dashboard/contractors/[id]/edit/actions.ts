@@ -27,17 +27,23 @@ export async function editContractorAction(formData: FormData) {
     },
     data: {
       companyName: rawFormData.companyName as string,
-      contactName: rawFormData.contactName as string || null,
+      contactName: (rawFormData.contactName as string) || null,
       email: rawFormData.email as string,
-      phone: rawFormData.phone as string || null,
+      phone: (rawFormData.phone as string) || null,
       address: rawFormData.address as string,
       city: rawFormData.city as string,
-      state: rawFormData.state as string || null,
+      state: (rawFormData.state as string) || null,
       postalCode: rawFormData.postalCode as string,
       country: rawFormData.country as string,
-      taxId: rawFormData.taxId as string || null,
-      notes: rawFormData.notes as string || null,
-      paymentMethods: rawFormData.paymentMethods as string || null,
+      taxId: (rawFormData.taxId as string) || null,
+      notes: (rawFormData.notes as string) || null,
+      paymentMethods: (rawFormData.paymentMethods as string) || null,
+      logoUrl:
+        rawFormData.logoUrl && typeof rawFormData.logoUrl === "string"
+          ? rawFormData.logoUrl.trim().length > 0
+            ? rawFormData.logoUrl.trim()
+            : null
+          : null,
     },
   });
 

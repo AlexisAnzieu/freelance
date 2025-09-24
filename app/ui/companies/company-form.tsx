@@ -1,7 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useState } from "react";
+
+import { UploadDropzone } from "@/app/lib/uploadthing";
 
 type CompanyFormProps = {
   title: string;
@@ -19,11 +22,17 @@ type CompanyFormProps = {
     taxId?: string;
     notes?: string;
     paymentMethods?: string;
+    logoUrl?: string;
   };
-  mode?: 'create' | 'edit';
+  mode?: "create" | "edit";
 };
 
-export function CompanyForm({ title, onSubmit, defaultValues = {}, mode = 'create' }: CompanyFormProps) {
+export function CompanyForm({
+  title,
+  onSubmit,
+  defaultValues = {},
+  mode = "create",
+}: CompanyFormProps) {
   const router = useRouter();
   const [paymentMethods, setPaymentMethods] = useState<string[]>(() => {
     if (defaultValues.paymentMethods) {
@@ -35,16 +44,26 @@ export function CompanyForm({ title, onSubmit, defaultValues = {}, mode = 'creat
     }
     return [];
   });
+  const [logoUrl, setLogoUrl] = useState<string | null>(
+    defaultValues.logoUrl ?? null
+  );
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const [logoUploadError, setLogoUploadError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isUploadingLogo) {
+      setLogoUploadError("Please wait for the logo upload to finish.");
+      return;
+    }
     const formData = new FormData(e.currentTarget);
-    formData.set('paymentMethods', JSON.stringify(paymentMethods));
+    formData.set("paymentMethods", JSON.stringify(paymentMethods));
+    formData.set("logoUrl", logoUrl ?? "");
     await onSubmit(formData);
   };
 
   const addPaymentMethod = () => {
-    setPaymentMethods([...paymentMethods, '']);
+    setPaymentMethods([...paymentMethods, ""]);
   };
 
   const removePaymentMethod = (index: number) => {
@@ -226,6 +245,89 @@ export function CompanyForm({ title, onSubmit, defaultValues = {}, mode = 'creat
 
         <div className="mt-4">
           <label className="block text-sm font-medium mb-2">
+            Company Logo (optional)
+          </label>
+          {logoUrl ? (
+            <div className="flex items-center gap-4">
+              <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-white">
+                <Image
+                  src={logoUrl}
+                  alt="Company logo preview"
+                  width={80}
+                  height={80}
+                  className="h-full w-full object-contain"
+                />
+              </div>
+              <div className="flex flex-col gap-2 text-sm">
+                <button
+                  type="button"
+                  className="text-blue-600 hover:text-blue-500"
+                  onClick={() => {
+                    setLogoUrl(null);
+                    setLogoUploadError(null);
+                  }}
+                >
+                  Change logo
+                </button>
+                <button
+                  type="button"
+                  className="text-red-600 hover:text-red-500"
+                  onClick={() => {
+                    setLogoUrl(null);
+                    setLogoUploadError(null);
+                  }}
+                >
+                  Remove logo
+                </button>
+              </div>
+            </div>
+          ) : (
+            <UploadDropzone
+              endpoint="companyLogoUploader"
+              className="border-dashed border-2 border-gray-200 bg-white/80 py-6"
+              onUploadBegin={() => {
+                setIsUploadingLogo(true);
+                setLogoUploadError(null);
+              }}
+              onUploadError={(error: Error) => {
+                setIsUploadingLogo(false);
+                setLogoUploadError(error.message ?? "Failed to upload logo.");
+              }}
+              onClientUploadComplete={(
+                res: Array<{ url?: string | null; ufsUrl?: string | null }>
+              ) => {
+                setIsUploadingLogo(false);
+                if (!res || res.length === 0) {
+                  setLogoUploadError(
+                    "Upload finished but no file was received."
+                  );
+                  return;
+                }
+
+                const uploadedUrl = res[0]?.url ?? res[0]?.ufsUrl ?? null;
+
+                if (!uploadedUrl) {
+                  setLogoUploadError(
+                    "We couldn't retrieve the uploaded logo URL. Please try again."
+                  );
+                  return;
+                }
+
+                setLogoUrl(uploadedUrl);
+                setLogoUploadError(null);
+              }}
+            />
+          )}
+          {isUploadingLogo && (
+            <p className="mt-2 text-sm text-gray-500">Uploading logo...</p>
+          )}
+          {logoUploadError && (
+            <p className="mt-2 text-sm text-red-600">{logoUploadError}</p>
+          )}
+        </div>
+
+        <div className="mt-4">
+          <label className="block text-sm font-medium mb-2">
             Payment Methods (optional)
           </label>
           <div className="space-y-2">
@@ -268,9 +370,9 @@ export function CompanyForm({ title, onSubmit, defaultValues = {}, mode = 'creat
         </button>
         <button
           type="submit"
-          className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         >
-          {mode === 'edit' ? `Save ${title}` : `Create ${title}`}
+          {mode === "edit" ? `Save ${title}` : `Create ${title}`}
         </button>
       </div>
     </form>

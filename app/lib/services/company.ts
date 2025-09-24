@@ -19,6 +19,12 @@ export async function createCompany({
   }
 
   try {
+    const rawLogoUrl = formData.get("logoUrl");
+    const logoUrl =
+      typeof rawLogoUrl === "string" && rawLogoUrl.trim().length > 0
+        ? rawLogoUrl
+        : null;
+
     await prisma.company.create({
       data: {
         teamId,
@@ -34,6 +40,7 @@ export async function createCompany({
         taxId: (formData.get("taxId") as string) || null,
         notes: (formData.get("notes") as string) || null,
         paymentMethods: (formData.get("paymentMethods") as string) || null,
+        logoUrl,
         types: {
           connect: {
             name: type,

@@ -29,7 +29,11 @@ async function getContractor(id: string) {
   return contractor;
 }
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const contractor = await getContractor(id);
 
@@ -61,6 +65,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           taxId: contractor.taxId || "",
           notes: contractor.notes || "",
           paymentMethods: contractor.paymentMethods || "",
+          logoUrl: contractor.logoUrl ?? undefined,
         }}
       />
     </div>
