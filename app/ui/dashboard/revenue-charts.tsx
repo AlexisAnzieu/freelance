@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import { Line, Bar, Doughnut } from "react-chartjs-2";
 import { RevenueAnalytics } from "@/app/lib/services/analytics";
+import { useResponsiveChart } from "./hooks/useResponsiveChart";
 
 ChartJS.register(
   CategoryScale,
@@ -32,6 +33,8 @@ interface RevenueChartsProps {
 }
 
 export function MonthlyRevenueChart({ data }: RevenueChartsProps) {
+  const { getResponsiveOptions } = useResponsiveChart();
+
   const chartData = {
     labels: data.monthlyRevenue.map((item) => item.month),
     datasets: [
@@ -54,8 +57,7 @@ export function MonthlyRevenueChart({ data }: RevenueChartsProps) {
     ],
   };
 
-  const options = {
-    responsive: true,
+  const baseOptions = {
     interaction: {
       mode: "index" as const,
       intersect: false,
@@ -98,9 +100,13 @@ export function MonthlyRevenueChart({ data }: RevenueChartsProps) {
     },
   };
 
+  const options = getResponsiveOptions(baseOptions);
+
   return (
-    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-6">
-      <Line data={chartData} options={options} />
+    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-3 sm:p-6">
+      <div className="h-64 sm:h-80">
+        <Line data={chartData} options={options} />
+      </div>
     </div>
   );
 }
@@ -239,6 +245,8 @@ export function RevenueOverviewChart({ data }: RevenueChartsProps) {
 }
 
 export function MonthlyRevenueTrendChart({ data }: RevenueChartsProps) {
+  const { getResponsiveOptions } = useResponsiveChart();
+
   const chartData = {
     labels: data.monthlyRevenueTrend.map((item) => item.month),
     datasets: [
@@ -259,8 +267,7 @@ export function MonthlyRevenueTrendChart({ data }: RevenueChartsProps) {
     ],
   };
 
-  const options = {
-    responsive: true,
+  const baseOptions = {
     plugins: {
       legend: {
         position: "top" as const,
@@ -315,9 +322,13 @@ export function MonthlyRevenueTrendChart({ data }: RevenueChartsProps) {
     },
   };
 
+  const options = getResponsiveOptions(baseOptions);
+
   return (
-    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-6">
-      <Bar data={chartData} options={options} />
+    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-3 sm:p-6">
+      <div className="h-64 sm:h-80">
+        <Bar data={chartData} options={options} />
+      </div>
     </div>
   );
 }

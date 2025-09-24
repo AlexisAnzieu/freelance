@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import { Bar, Line, Doughnut } from "react-chartjs-2";
 import { TimeTrackingAnalytics } from "@/app/lib/services/analytics";
+import { useResponsiveChart } from "./hooks/useResponsiveChart";
 
 ChartJS.register(
   CategoryScale,
@@ -32,6 +33,8 @@ interface TimeTrackingChartsProps {
 }
 
 export function HoursByProjectChart({ data }: TimeTrackingChartsProps) {
+  const { getResponsiveOptions } = useResponsiveChart();
+
   // Calculate hourly rates and sort projects by profitability
   const projectsWithRates = data.hoursByProject
     .map((item) => ({
@@ -69,8 +72,7 @@ export function HoursByProjectChart({ data }: TimeTrackingChartsProps) {
     ],
   };
 
-  const options = {
-    responsive: true,
+  const baseOptions = {
     interaction: {
       mode: "index" as const,
       intersect: false,
@@ -131,43 +133,49 @@ export function HoursByProjectChart({ data }: TimeTrackingChartsProps) {
     },
   };
 
+  const options = getResponsiveOptions(baseOptions);
+
   return (
-    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-6">
-      <div className="mb-4">
+    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-3 sm:p-6">
+      <div className="mb-3 sm:mb-4">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-medium text-gray-500">
+          <h3 className="text-xs sm:text-sm font-medium text-gray-500">
             Most Profitable Project
           </h3>
           <div className="text-right">
-            <div className="text-lg font-bold text-green-600">
+            <div className="text-sm sm:text-lg font-bold text-green-600 truncate">
               {mostProfitable?.projectName || "N/A"}
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-xs sm:text-sm text-gray-600">
               ${mostProfitable?.hourlyRate.toFixed(0) || "0"}/hr
             </div>
           </div>
         </div>
-        <div className="flex items-center space-x-4 text-xs text-gray-500">
+        <div className="flex items-center space-x-2 sm:space-x-4 text-xs text-gray-500 flex-wrap">
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-green-500 rounded mr-1"></div>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded mr-1"></div>
             Most Profitable
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-blue-500 rounded mr-1"></div>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded mr-1"></div>
             Good Rate (80%+)
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-gray-400 rounded mr-1"></div>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gray-400 rounded mr-1"></div>
             Below Average
           </div>
         </div>
       </div>
-      <Bar data={chartData} options={options} />
+      <div className="h-64 sm:h-80">
+        <Bar data={chartData} options={options} />
+      </div>
     </div>
   );
 }
 
 export function MonthlyHoursChart({ data }: TimeTrackingChartsProps) {
+  const { getResponsiveOptions } = useResponsiveChart();
+
   const chartData = {
     labels: data.hoursByMonth.map((item) => item.month),
     datasets: [
@@ -182,8 +190,7 @@ export function MonthlyHoursChart({ data }: TimeTrackingChartsProps) {
     ],
   };
 
-  const options = {
-    responsive: true,
+  const baseOptions = {
     plugins: {
       legend: {
         position: "top" as const,
@@ -208,9 +215,13 @@ export function MonthlyHoursChart({ data }: TimeTrackingChartsProps) {
     },
   };
 
+  const options = getResponsiveOptions(baseOptions);
+
   return (
-    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-6">
-      <Line data={chartData} options={options} />
+    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-3 sm:p-6">
+      <div className="h-64 sm:h-80">
+        <Line data={chartData} options={options} />
+      </div>
     </div>
   );
 }
@@ -286,6 +297,8 @@ export function ProductivityMetricsChart({ data }: TimeTrackingChartsProps) {
 }
 
 export function HoursDistributionChart({ data }: TimeTrackingChartsProps) {
+  const { getResponsiveOptions, isMobile } = useResponsiveChart();
+
   const chartData = {
     labels: data.hoursByProject.map((item) => item.projectName),
     datasets: [
@@ -320,11 +333,10 @@ export function HoursDistributionChart({ data }: TimeTrackingChartsProps) {
     ],
   };
 
-  const options = {
-    responsive: true,
+  const baseOptions = {
     plugins: {
       legend: {
-        position: "right" as const,
+        position: isMobile ? ("bottom" as const) : ("right" as const),
       },
       title: {
         display: true,
@@ -352,9 +364,13 @@ export function HoursDistributionChart({ data }: TimeTrackingChartsProps) {
     },
   };
 
+  const options = getResponsiveOptions(baseOptions);
+
   return (
-    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-6">
-      <Doughnut data={chartData} options={options} />
+    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-3 sm:p-6">
+      <div className="h-64 sm:h-80">
+        <Doughnut data={chartData} options={options} />
+      </div>
     </div>
   );
 }
