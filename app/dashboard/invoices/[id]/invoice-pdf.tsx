@@ -65,10 +65,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 32,
     paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
   },
   headerLeft: {
     flexDirection: "column",
@@ -124,7 +121,7 @@ const styles = StyleSheet.create({
   companiesSection: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 32,
+    marginBottom: 8,
     gap: 16,
   },
   companyBox: {
@@ -244,7 +241,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   logo: {
-    width: 140,
+    width: 56,
     height: 56,
     marginBottom: 12,
     objectFit: "contain",
@@ -268,12 +265,14 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
+            <Text style={styles.invoiceLabel}>INVOICE</Text>
+            <Text style={styles.invoiceTitle}>#{invoice.number}</Text>
+          </View>
+          <View style={{ alignItems: "center" }}>
             {primaryContractor?.logoUrl && (
               // eslint-disable-next-line jsx-a11y/alt-text
               <Image src={primaryContractor?.logoUrl} style={styles.logo} />
             )}
-            <Text style={styles.invoiceLabel}>INVOICE</Text>
-            <Text style={styles.invoiceTitle}>#{invoice.number}</Text>
           </View>
           <View style={styles.headerRight}>
             <View style={{ marginBottom: 12 }}>
@@ -424,7 +423,7 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
               </Text>
             </View>
 
-            <View style={styles.grandTotalRow}>
+            <View style={styles.grandTotalRow} wrap={false}>
               <Text style={styles.description}></Text>
               <Text style={styles.quantity}></Text>
               <Text style={[styles.price, styles.grandTotalLabel]}>Total</Text>
@@ -437,7 +436,7 @@ export function InvoicePDF({ invoice }: InvoicePDFProps) {
           </View>
         </View>
 
-        <View style={styles.bankingInfo}>
+        <View style={styles.bankingInfo} wrap={false}>
           <Text style={styles.bankingHeader}>Payment information</Text>
           {invoice.selectedPaymentMethod ? (
             <Text style={styles.bankingDetails}>
