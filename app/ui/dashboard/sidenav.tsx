@@ -103,26 +103,27 @@ const navigation = [
   },
 ];
 
-export default function SideNav() {
+export default function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-full flex-col bg-gradient-to-b from-gray-950 to-gray-900 px-3 py-4 md:px-6">
+    <div className="flex h-full flex-col bg-gradient-to-b from-gray-950 to-gray-900 px-3 py-4 md:px-6 pt-20 md:pt-4">
       <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
       <div className="w-32 text-blue-300 md:w-40 relative group-hover:text-blue-200 px-3 mb-4">
         <span className="text-2xl font-bold tracking-tight drop-shadow-sm">
           Freezerlance
         </span>
       </div>
-      <div className="flex grow flex-row space-x-2 md:flex-col md:space-x-0 md:space-y-3 pb-2">
+      <div className="flex grow flex-col space-y-3 pb-2">
         {navigation.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link
               key={item.name}
               href={item.href}
+              onClick={() => onNavigate?.()}
               className={clsx(
-                "flex h-[48px] grow items-center justify-center gap-3 rounded-lg p-3 text-sm font-medium transition-all duration-300 ease-in-out md:flex-none md:justify-start md:p-2 md:px-3 relative overflow-hidden group hover:scale-[1.02]",
+                "flex h-[48px] items-center justify-start gap-3 rounded-lg p-2 px-3 text-sm font-medium transition-all duration-300 ease-in-out relative overflow-hidden group hover:scale-[1.02]",
                 {
                   "bg-blue-600/20 text-blue-300 shadow-lg shadow-blue-500/20 ring-2 ring-blue-500/30 hover:bg-blue-600/30 hover:text-blue-200":
                     isActive,
@@ -140,13 +141,13 @@ export default function SideNav() {
               >
                 {item.icon}
               </div>
-              <span className="hidden md:block">{item.name}</span>
+              <span>{item.name}</span>
             </Link>
           );
         })}
       </div>
       <form action={handleSignOut}>
-        <button className="flex h-[48px] w-full items-center justify-center gap-2 rounded-md bg-gray-800/40 p-3 text-sm font-medium text-gray-300 transition-all hover:bg-red-500/20 hover:text-red-300 hover:shadow-md hover:shadow-red-500/10 hover:scale-[1.02] cursor-pointer md:justify-start md:p-2 md:px-3 mt-6 group relative overflow-hidden hover:ring-1 hover:ring-red-400/30">
+        <button className="flex h-[48px] w-full items-center justify-start gap-2 rounded-md bg-gray-800/40 p-2 px-3 text-sm font-medium text-gray-300 transition-all hover:bg-red-500/20 hover:text-red-300 hover:shadow-md hover:shadow-red-500/10 hover:scale-[1.02] cursor-pointer mt-6 group relative overflow-hidden hover:ring-1 hover:ring-red-400/30">
           <span className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/10 to-red-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -162,7 +163,7 @@ export default function SideNav() {
               d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
             />
           </svg>
-          <div className="hidden md:block">Sign Out</div>
+          <div>Sign Out</div>
         </button>
       </form>
     </div>
