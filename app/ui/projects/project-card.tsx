@@ -11,6 +11,16 @@ import TimeEntryForm from "@/app/dashboard/time-tracking/create/time-entry-form"
 
 export interface ProjectWithCompanies extends Project {
   companies: { companyName: string }[];
+  timeEntries: {
+    id: string;
+    hours: number;
+    invoiceItemId: string | null;
+    invoiceItem?: {
+      invoice?: {
+        status: string;
+      } | null;
+    } | null;
+  }[];
   _count?: {
     timeEntries: number;
     invoicedTimeEntries: number;
@@ -61,7 +71,11 @@ export default function ProjectCard({
                   {project.name}
                 </h3>
                 <span className="text-sm px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-700 border border-blue-500/10">
-                  {CURRENCIES[project.currency as keyof typeof CURRENCIES]?.symbol} {project.currency}
+                  {
+                    CURRENCIES[project.currency as keyof typeof CURRENCIES]
+                      ?.symbol
+                  }{" "}
+                  {project.currency}
                 </span>
               </div>
               <div className="flex items-center">

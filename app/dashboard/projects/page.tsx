@@ -23,7 +23,17 @@ async function getProjects() {
       timeEntries: {
         select: {
           id: true,
+          hours: true,
           invoiceItemId: true,
+          invoiceItem: {
+            select: {
+              invoice: {
+                select: {
+                  status: true,
+                },
+              },
+            },
+          },
         },
       },
     },
