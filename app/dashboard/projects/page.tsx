@@ -24,6 +24,7 @@ async function getProjects() {
         select: {
           id: true,
           hours: true,
+          hourlyRate: true,
           invoiceItemId: true,
           invoiceItem: {
             select: {

@@ -41,12 +41,22 @@ export default function ProjectTable({
     }
   };
 
-  const formatHours = (hours: number) => {
-    if (!Number.isFinite(hours)) {
+  const formatCurrencyAmount = (amount: number, currency: string) => {
+    if (!Number.isFinite(amount)) {
       return "0";
     }
 
-    return Number.isInteger(hours) ? hours.toString() : hours.toFixed(2);
+    try {
+      return new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(amount);
+    } catch (error) {
+      console.error("Failed to format currency", { amount, currency, error });
+      return amount.toFixed(2);
+    }
   };
 
   return (
@@ -72,7 +82,7 @@ export default function ProjectTable({
                   Created
                 </th>
                 <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-                  Hours (Not invoiced / Invoiced unpaid / Paid)
+                  Cost (Not invoiced / Invoiced unpaid / Paid)
                 </th>
                 <th scope="col" className="px-6 py-4 font-medium text-gray-900">
                   Actions
@@ -81,21 +91,23 @@ export default function ProjectTable({
             </thead>
             <tbody>
               {projects.map((project) => {
-                const hoursBreakdown = project.timeEntries?.reduce(
+                const costBreakdown = project.timeEntries?.reduce(
                   (acc, entry) => {
                     const entryHours = entry.hours || 0;
+                    const entryHourlyRate = entry.hourlyRate || 0;
+                    const entryCost = entryHours * entryHourlyRate;
 
                     if (!entry.invoiceItemId) {
-                      acc.notInvoiced += entryHours;
+                      acc.notInvoiced += entryCost;
                       return acc;
                     }
 
                     const invoiceStatus = entry.invoiceItem?.invoice?.status;
 
                     if (invoiceStatus === "paid") {
-                      acc.paid += entryHours;
+                      acc.paid += entryCost;
                     } else {
-                      acc.invoicedUnpaid += entryHours;
+                      acc.invoicedUnpaid += entryCost;
                     }
 
                     return acc;
@@ -152,13 +164,22 @@ export default function ProjectTable({
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-2">
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-700 border border-red-500/20">
-                          {formatHours(hoursBreakdown.notInvoiced)} h
+                          {formatCurrencyAmount(
+                            costBreakdown.notInvoiced,
+                            project.currency
+                          )}
                         </span>
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-700 border border-amber-500/20">
-                          {formatHours(hoursBreakdown.invoicedUnpaid)} h
+                          {formatCurrencyAmount(
+                            costBreakdown.invoicedUnpaid,
+                            project.currency
+                          )}
                         </span>
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
-                          {formatHours(hoursBreakdown.paid)} h
+                          {formatCurrencyAmount(
+                            costBreakdown.paid,
+                            project.currency
+                          )}
                         </span>
                       </div>
                     </td>

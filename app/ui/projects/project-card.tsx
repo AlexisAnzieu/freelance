@@ -14,6 +14,7 @@ export interface ProjectWithCompanies extends Project {
   timeEntries: {
     id: string;
     hours: number;
+    hourlyRate: number;
     invoiceItemId: string | null;
     invoiceItem?: {
       invoice?: {
