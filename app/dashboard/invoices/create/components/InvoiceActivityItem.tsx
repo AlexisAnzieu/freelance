@@ -92,8 +92,6 @@ export function InvoiceActivityItem({
           id={`unitaryPrice-${id}`}
           name="unitaryPrice"
           required
-          min="0"
-          step="0.01"
           placeholder="Enter price per unit"
           value={unitaryPrice}
           onChange={(e) => onChange(e, id)}
