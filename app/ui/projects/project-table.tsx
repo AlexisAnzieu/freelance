@@ -3,11 +3,30 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ProjectWithCompanies } from "./project-card";
 import { CURRENCIES } from "@/app/lib/constants";
 import { useModal } from "../modal-context";
 import SidePanel from "../side-panel";
 import TimeEntryForm from "@/app/dashboard/time-tracking/create/time-entry-form";
+import { Project } from "@prisma/client";
+
+export interface ProjectWithCompanies extends Project {
+  companies: { companyName: string }[];
+  timeEntries: {
+    id: string;
+    hours: number;
+    hourlyRate: number;
+    invoiceItemId: string | null;
+    invoiceItem?: {
+      invoice?: {
+        status: string;
+      } | null;
+    } | null;
+  }[];
+  _count?: {
+    timeEntries: number;
+    invoicedTimeEntries: number;
+  };
+}
 
 export default function ProjectTable({
   projects,
