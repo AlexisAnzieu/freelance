@@ -1,5 +1,5 @@
 import { CompanyEditPage } from "@/app/dashboard/_components/company-edit-page";
-import { editContractorAction } from "./actions";
+import { editCustomerAction } from "./actions";
 
 export default async function Page({
   params,
@@ -11,10 +11,10 @@ export default async function Page({
   return (
     <CompanyEditPage
       id={id}
-      type="contractor"
-      title="Contractor"
-      idFieldName="contractorId"
-      editAction={editContractorAction}
+      type="customer"
+      title="Customer"
+      idFieldName="customerId"
+      editAction={editCustomerAction}
     />
   );
 }
