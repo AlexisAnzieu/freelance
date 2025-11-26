@@ -12,24 +12,29 @@ export function DeleteButton({ itemName }: DeleteButtonProps) {
   const { showConfirm } = useModal();
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // Always prevent the default form submission
+
+    // Capture the form reference before any async operations
+    const form = e.currentTarget.closest("form");
+
     try {
       const confirmed = await showConfirm(
         `Are you sure you want to delete this ${itemName}?`,
         `Delete ${itemName}`
       );
-      if (!confirmed) {
-        e.preventDefault(); // Only prevent form submission if not confirmed
+      if (confirmed && form) {
+        // Manually submit the form if confirmed
+        form.requestSubmit();
       }
     } catch (error) {
       console.error("Error during delete operation:", error);
-      e.preventDefault(); // Prevent form submission on error
     }
   };
 
   return (
     <>
       <button
-        type="submit"
+        type="button"
         disabled={pending}
         className={`inline-flex h-8 w-8 items-center justify-center rounded-md bg-red-50 transition-all duration-200 cursor-pointer
         ${

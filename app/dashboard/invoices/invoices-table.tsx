@@ -70,6 +70,12 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
+                    Contractor
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
                     Amount
                   </th>
                   <th
@@ -102,12 +108,7 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                 {invoices.map((invoice) => (
                   <tr key={invoice.id}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
-                      <Link
-                        href={`/dashboard/invoices/${invoice.id}`}
-                        className="text-blue-600 hover:text-blue-800 transition-colors duration-150 ease-in-out font-semibold"
-                      >
-                        {invoice.number}
-                      </Link>
+                      {invoice.number}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                       {invoice.name || "-"}
@@ -116,6 +117,12 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                       {filterCompaniesByType(
                         invoice.companies,
                         COMPANY_TYPES.CUSTOMER
+                      ).map((company) => company.companyName)}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
+                      {filterCompaniesByType(
+                        invoice.companies,
+                        COMPANY_TYPES.CONTRACTOR
                       ).map((company) => company.companyName)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 font-medium">
@@ -168,6 +175,12 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                           })}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-sm space-x-2 flex">
+                      <Link
+                        href={`/dashboard/invoices/${invoice.id}`}
+                        className="rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                      >
+                        View
+                      </Link>
                       <button
                         onClick={async () => {
                           try {
