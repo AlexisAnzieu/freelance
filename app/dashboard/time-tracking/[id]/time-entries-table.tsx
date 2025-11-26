@@ -13,6 +13,7 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/solid";
 import { CURRENCIES } from "@/app/lib/constants";
+import LoadingButton from "@/app/ui/loading-button";
 
 type TimeEntryWithInvoice = TimeTrackingItem & {
   invoiceItem?:
@@ -54,24 +55,66 @@ export default function TimeEntriesTable({
   const [selectedEntries, setSelectedEntries] = useState<Set<string>>(
     new Set()
   );
+  const [selectionAnchor, setSelectionAnchor] = useState<number | null>(null);
+  const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
 
-  const handleSelect = (id: string) => {
+  const handleSelect = (
+    id: string,
+    index: number,
+    isShiftPressed: boolean,
+    shouldSelect: boolean
+  ) => {
     setSelectedEntries((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
+
+      if (isShiftPressed && selectionAnchor !== null) {
+        const start = Math.min(selectionAnchor, index);
+        const end = Math.max(selectionAnchor, index);
+
+        for (let i = start; i <= end; i++) {
+          const entryInRange = sortedEntries[i];
+          if (entryInRange.invoiceItemId) {
+            continue; // Skip non-selectable entries
+          }
+
+          if (shouldSelect) {
+            newSet.add(entryInRange.id);
+          } else {
+            newSet.delete(entryInRange.id);
+          }
+        }
       } else {
-        newSet.add(id);
+        if (shouldSelect) {
+          newSet.add(id);
+        } else {
+          newSet.delete(id);
+        }
       }
+
       return newSet;
+    });
+
+    setSelectionAnchor((prev) => {
+      if (isShiftPressed && prev !== null) {
+        return prev;
+      }
+      return index;
     });
   };
 
   const handleGenerateInvoice = async () => {
+    if (selectedEntries.size === 0 || isGeneratingInvoice) {
+      return;
+    }
+
+    setIsGeneratingInvoice(true);
     try {
       await generateInvoice(Array.from(selectedEntries));
+      router.refresh();
     } catch (error) {
       console.error("Failed to generate invoice:", error);
+    } finally {
+      setIsGeneratingInvoice(false);
     }
   };
 
@@ -117,17 +160,19 @@ export default function TimeEntriesTable({
               New Entry
             </button>
             <div className="relative group">
-              <button
+              <LoadingButton
                 onClick={handleGenerateInvoice}
                 disabled={selectedEntries.size === 0}
-                className={`px-4 py-2 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 ${
+                loading={isGeneratingInvoice}
+                loadingText="Generating..."
+                className={`${
                   selectedEntries.size === 0
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-500 text-white"
                 }`}
               >
                 Generate Invoice
-              </button>
+              </LoadingButton>
               {selectedEntries.size === 0 && (
                 <div className="absolute bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-gray-800 text-white text-sm rounded-lg shadow-lg animate-fade-in">
                   You need to select time entries to generate an invoice
@@ -168,92 +213,105 @@ export default function TimeEntriesTable({
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-100">
-              {sortedEntries.map((entry) => (
-                <tr
-                  key={entry.id}
-                  className="hover:bg-gray-50 transition-colors"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {entry.invoiceItemId ? (
-                      <CheckCircleIcon
-                        className="h-5 w-5 text-green-500"
-                        aria-label="Invoiced"
-                      />
-                    ) : (
-                      <input
-                        type="checkbox"
-                        checked={selectedEntries.has(entry.id)}
-                        onChange={() => handleSelect(entry.id)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        aria-label={`Select time entry for ${entry.description}`}
-                      />
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatDate(entry.date)}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500 max-w-xs relative group">
-                    <div className="truncate">{entry.description}</div>
-                    {entry.description && entry.description.length > 50 && (
-                      <div className="absolute z-50 invisible group-hover:visible bg-gray-900 text-white text-sm rounded-lg p-3 shadow-xl max-w-sm whitespace-normal break-words left-0 top-full mt-1">
-                        {entry.description}
-                        <div className="absolute bottom-full left-4 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"></div>
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {entry.hours}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]
-                      ?.symbol || "$"}
-                    {entry.hourlyRate}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]
-                      ?.symbol || "$"}
-                    {(entry.hours * entry.hourlyRate).toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    {entry.invoiceItem?.invoice ? (
-                      <a
-                        href={`/dashboard/invoices/${entry.invoiceItem.invoice.id}`}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {entry.invoiceItem.invoice.number} -{" "}
-                        {entry.invoiceItem.invoice.name}
-                      </a>
-                    ) : (
-                      <span className="text-gray-500">Not Invoiced</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="flex gap-4">
-                      {!entry.invoiceItem?.invoice && (
-                        <>
-                          <button
-                            onClick={() => {
-                              setSelectedEntry(entry);
-                              setIsDrawerOpen(true);
-                            }}
-                            className="text-blue-600 hover:text-blue-900 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            aria-label="Edit"
-                          >
-                            <PencilIcon className="h-5 w-5" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(entry.id)}
-                            className="text-red-600 hover:text-red-900 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500"
-                            aria-label="Delete"
-                          >
-                            <TrashIcon className="h-5 w-5" />
-                          </button>
-                        </>
+              {sortedEntries.map((entry, index) => {
+                const isSelected = selectedEntries.has(entry.id);
+
+                return (
+                  <tr
+                    key={entry.id}
+                    className={`transition-colors ${
+                      isSelected ? "bg-indigo-50" : ""
+                    } hover:bg-gray-50`}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {entry.invoiceItemId ? (
+                        <CheckCircleIcon
+                          className="h-5 w-5 text-green-500"
+                          aria-label="Invoiced"
+                        />
+                      ) : (
+                        <input
+                          type="checkbox"
+                          checked={selectedEntries.has(entry.id)}
+                          onClick={(event) =>
+                            handleSelect(
+                              entry.id,
+                              index,
+                              event.shiftKey,
+                              event.currentTarget.checked
+                            )
+                          }
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          aria-label={`Select time entry for ${entry.description}`}
+                        />
                       )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {formatDate(entry.date)}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs relative group">
+                      <div className="truncate">{entry.description}</div>
+                      {entry.description && entry.description.length > 50 && (
+                        <div className="absolute z-50 invisible group-hover:visible bg-gray-900 text-white text-sm rounded-lg p-3 shadow-xl max-w-sm whitespace-normal break-words left-0 top-full mt-1">
+                          {entry.description}
+                          <div className="absolute bottom-full left-4 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"></div>
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {entry.hours}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]
+                        ?.symbol || "$"}
+                      {entry.hourlyRate}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]
+                        ?.symbol || "$"}
+                      {(entry.hours * entry.hourlyRate).toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      {entry.invoiceItem?.invoice ? (
+                        <a
+                          href={`/dashboard/invoices/${entry.invoiceItem.invoice.id}`}
+                          className="text-blue-600 hover:underline"
+                        >
+                          {entry.invoiceItem.invoice.number} -{" "}
+                          {entry.invoiceItem.invoice.name}
+                        </a>
+                      ) : (
+                        <span className="text-gray-500">Not Invoiced</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="flex gap-4">
+                        {!entry.invoiceItem?.invoice && (
+                          <>
+                            <button
+                              onClick={() => {
+                                setSelectedEntry(entry);
+                                setIsDrawerOpen(true);
+                              }}
+                              className="text-blue-600 hover:text-blue-900 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              aria-label="Edit"
+                            >
+                              <PencilIcon className="h-5 w-5" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(entry.id)}
+                              className="text-red-600 hover:text-red-900 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500"
+                              aria-label="Delete"
+                            >
+                              <TrashIcon className="h-5 w-5" />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

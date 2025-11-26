@@ -20,7 +20,7 @@ interface InvoiceItem {
   timeEntryId?: string;
 }
 
-interface PrefillData {
+export interface PrefillData {
   customerId?: string;
   contractorId?: string;
   items?: Array<Omit<InvoiceItem, "id">> | null;

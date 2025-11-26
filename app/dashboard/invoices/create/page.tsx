@@ -1,15 +1,12 @@
 import prisma from "@/app/lib/prisma";
-import { Form } from "./create-form";
+import { Form, PrefillData } from "./create-form";
 import { auth } from "@/auth";
 import { filterCompaniesByType } from "@/app/lib/db";
 import { COMPANY_TYPES } from "@/app/lib/constants";
 
 interface SearchParams {
-  customerId?: string;
-  contractorId?: string;
-  items?: string;
-  name?: string;
-  currency?: string;
+  projectId?: string;
+  timeEntryIds?: string;
 }
 
 export default async function Page({
@@ -41,10 +38,58 @@ export default async function Page({
     COMPANY_TYPES.CONTRACTOR
   );
 
-  const { items, customerId, contractorId, name, currency } = await searchParams;
+  const { projectId, timeEntryIds } = await searchParams;
 
-  // Parse pre-filled items if they exist
-  const prefillItems = items ? JSON.parse(items) : null;
+  // Fetch project data and time entries if IDs are provided
+  let prefillData: PrefillData = {};
+
+  if (projectId) {
+    const project = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+        teamId: session.teamId,
+      },
+      include: {
+        companies: {
+          include: {
+            types: true,
+          },
+        },
+      },
+    });
+
+    if (project) {
+      const customer = project.companies.find((company) =>
+        company.types.some((type) => type.name === "customer")
+      );
+      const contractor = project.companies.find((company) =>
+        company.types.some((type) => type.name === "contractor")
+      );
+
+      prefillData = {
+        name: project.name,
+        customerId: customer?.id,
+        contractorId: contractor?.id,
+        currency: project.currency,
+      };
+    }
+  }
+
+  if (timeEntryIds) {
+    const ids = timeEntryIds.split(",");
+    const timeEntries = await prisma.timeTrackingItem.findMany({
+      where: {
+        id: { in: ids },
+        project: { teamId: session.teamId },
+      },
+    });
+    prefillData.items = timeEntries.map((entry) => ({
+      name: entry.description,
+      quantity: entry.hours,
+      unitaryPrice: entry.hourlyRate,
+      timeEntryId: entry.id,
+    }));
+  }
 
   return (
     <main>
@@ -52,13 +97,7 @@ export default async function Page({
       <Form
         customers={customers}
         contractors={contractors}
-        prefillData={{
-          name,
-          customerId,
-          contractorId,
-          currency,
-          items: prefillItems,
-        }}
+        prefillData={prefillData}
       />
     </main>
   );

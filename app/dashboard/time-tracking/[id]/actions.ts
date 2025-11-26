@@ -132,40 +132,10 @@ export async function generateInvoice(timeEntryIds: string[]) {
     throw new Error("Unauthorized: Invalid team access");
   }
 
-  // Find customer and contractor
-  const customer = project.companies.find((company) =>
-    company.types.some((type) => type.name === "customer")
-  );
-  const contractor = project.companies.find((company) =>
-    company.types.some((type) => type.name === "contractor")
-  );
-
-  if (!customer || !contractor) {
-    throw new Error("Project must have both customer and contractor");
-  }
-
-  // Create invoice items from time entries
-  const invoiceItems = timeEntries.map((entry) => ({
-    name: entry.description,
-    quantity: entry.hours,
-    unitaryPrice: entry.hourlyRate,
-  }));
-
-  // Create searchParams for invoice creation page
+  // Create searchParams for invoice creation page with only IDs
   const searchParams = new URLSearchParams();
-  searchParams.set("customerId", customer.id);
-  searchParams.set("contractorId", contractor.id);
-  searchParams.set("name", project.name);
-  searchParams.set("currency", project.currency); // Pass the project currency
-  searchParams.set(
-    "items",
-    JSON.stringify(
-      invoiceItems.map((item, index) => ({
-        ...item,
-        timeEntryId: timeEntryIds[index],
-      }))
-    )
-  );
+  searchParams.set("projectId", project.id);
+  searchParams.set("timeEntryIds", timeEntryIds.join(","));
 
   // Redirect to invoice creation page with pre-filled data
   redirect(`/dashboard/invoices/create?${searchParams.toString()}`);
