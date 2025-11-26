@@ -31,8 +31,8 @@ export function ActivitiesStep({
   errors,
 }: ActivitiesStepProps) {
   return (
-    <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-200">
-      <h2 className="text-xl font-semibold text-[#0F172A] mb-6">Activities</h2>
+    <div className="rounded-md bg-white p-5 border border-[#e8e8e8]">
+      <h2 className="text-base font-medium text-[#37352f] mb-5">Activities</h2>
       <div className="space-y-4">
         {items.map((item) => (
           <InvoiceActivityItem
@@ -49,7 +49,7 @@ export function ActivitiesStep({
         <button
           type="button"
           onClick={onAddActivity}
-          className="mt-6 inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-semibold rounded-lg text-white bg-blue-600 shadow-sm hover:bg-blue-500 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="mt-5 inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-[#2383e2] hover:bg-[#1a73d4] transition-colors"
         >
           Add Activity
         </button>
@@ -57,7 +57,7 @@ export function ActivitiesStep({
         <InvoiceSummary tax={tax} onChange={onTaxChange} errors={errors} />
 
         {errors?.items && (
-          <p className="mt-1 text-sm text-red-500">{errors.items}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.items}</p>
         )}
       </div>
     </div>

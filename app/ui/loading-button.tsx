@@ -23,14 +23,14 @@ const LoadingButton = forwardRef<HTMLButtonElement, LoadingButtonProps>(
     return (
       <button
         ref={ref}
-        className={`relative inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 ${className}`}
+        className={`relative inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded text-sm font-medium transition-colors duration-100 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#2eaadc] ${className}`}
         disabled={isDisabled}
         aria-busy={loading}
         {...rest}
       >
         {loading && (
           <svg
-            className="h-4 w-4 animate-spin text-current"
+            className="h-3.5 w-3.5 animate-spin text-current"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

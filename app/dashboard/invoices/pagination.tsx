@@ -12,7 +12,7 @@ export function Pagination({
   searchParams,
 }: PaginationProps) {
   return (
-    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-4 sm:px-6 mt-6 rounded-lg shadow-sm">
+    <div className="flex items-center justify-between border-t border-[#e8e8e8] px-4 py-3 mt-4">
       <div className="flex flex-1 justify-between sm:hidden">
         <Link
           href={{
@@ -21,7 +21,7 @@ export function Pagination({
               page: currentPage > 1 ? currentPage - 1 : 1,
             },
           }}
-          className={`relative inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:border-gray-300 ${
+          className={`inline-flex items-center rounded border border-[#e8e8e8] bg-white px-3 py-1.5 text-sm font-medium text-[#37352f] transition-colors duration-100 hover:bg-[#f7f7f5] ${
             currentPage === 1
               ? "opacity-50 cursor-not-allowed pointer-events-none"
               : ""
@@ -36,7 +36,7 @@ export function Pagination({
               page: currentPage < totalPages ? currentPage + 1 : totalPages,
             },
           }}
-          className={`relative ml-3 inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:border-gray-300 ${
+          className={`inline-flex items-center rounded border border-[#e8e8e8] bg-white px-3 py-1.5 text-sm font-medium text-[#37352f] transition-colors duration-100 hover:bg-[#f7f7f5] ${
             currentPage >= totalPages
               ? "opacity-50 cursor-not-allowed pointer-events-none"
               : ""
@@ -47,18 +47,25 @@ export function Pagination({
       </div>
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-[#787774]">
             Showing{" "}
-            <span className="font-medium">{(currentPage - 1) * 10 + 1}</span> to{" "}
-            <span className="font-medium">
+            <span className="font-medium text-[#37352f]">
+              {(currentPage - 1) * 10 + 1}
+            </span>{" "}
+            to{" "}
+            <span className="font-medium text-[#37352f]">
               {Math.min(currentPage * 10, totalPages * 10)}
             </span>{" "}
-            of <span className="font-medium">{totalPages * 10}</span> results
+            of{" "}
+            <span className="font-medium text-[#37352f]">
+              {totalPages * 10}
+            </span>{" "}
+            results
           </p>
         </div>
         <div>
           <nav
-            className="isolate inline-flex -space-x-px rounded-lg shadow-sm"
+            className="isolate inline-flex -space-x-px rounded-md"
             aria-label="Pagination"
           >
             <Link
@@ -68,10 +75,10 @@ export function Pagination({
                   page: currentPage > 1 ? currentPage - 1 : 1,
                 },
               }}
-              className={`relative inline-flex items-center rounded-l-lg px-3 py-2 text-gray-500 border border-gray-200 hover:text-gray-700 hover:border-gray-300 bg-white transition-all duration-200 ${
+              className={`inline-flex items-center rounded-l-md px-2.5 py-1.5 text-[#787774] border border-[#e8e8e8] bg-white transition-colors duration-100 ${
                 currentPage === 1
                   ? "opacity-50 cursor-not-allowed pointer-events-none"
-                  : "hover:bg-gray-50"
+                  : "hover:bg-[#f7f7f5] hover:text-[#37352f]"
               }`}
             >
               <span aria-hidden="true">&lt;</span>
@@ -82,10 +89,10 @@ export function Pagination({
                 href={{
                   query: { ...searchParams, page: i + 1 },
                 }}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                className={`inline-flex items-center px-3 py-1.5 text-sm font-medium transition-colors duration-100 ${
                   currentPage === i + 1
-                    ? "z-10 bg-blue-600 text-white border border-blue-600 hover:bg-blue-700"
-                    : "text-gray-700 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 bg-white"
+                    ? "z-10 bg-[#2eaadc] text-white border border-[#2eaadc]"
+                    : "text-[#37352f] border border-[#e8e8e8] hover:bg-[#f7f7f5] bg-white"
                 }`}
               >
                 {i + 1}
@@ -98,10 +105,10 @@ export function Pagination({
                   page: currentPage < totalPages ? currentPage + 1 : totalPages,
                 },
               }}
-              className={`relative inline-flex items-center rounded-r-lg px-3 py-2 text-gray-500 border border-gray-200 hover:text-gray-700 hover:border-gray-300 bg-white transition-all duration-200 ${
+              className={`inline-flex items-center rounded-r-md px-2.5 py-1.5 text-[#787774] border border-[#e8e8e8] bg-white transition-colors duration-100 ${
                 currentPage >= totalPages
                   ? "opacity-50 cursor-not-allowed pointer-events-none"
-                  : "hover:bg-gray-50"
+                  : "hover:bg-[#f7f7f5] hover:text-[#37352f]"
               }`}
             >
               <span aria-hidden="true">&gt;</span>

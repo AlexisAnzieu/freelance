@@ -51,10 +51,10 @@ export default async function TimeTrackingPage({
   return (
     <div className="p-2">
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link
             href="/dashboard/projects"
-            className="flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            className="flex items-center justify-center w-8 h-8 rounded-md text-[#9b9a97] hover:text-[#37352f] hover:bg-[#ebebea] transition-colors"
           >
             <svg
               className="w-5 h-5"
@@ -70,7 +70,9 @@ export default async function TimeTrackingPage({
               />
             </svg>
           </Link>
-          <h1 className="text-3xl font-bold">{project.name}</h1>
+          <h1 className="text-xl font-semibold text-[#37352f]">
+            {project.name}
+          </h1>
         </div>
       </div>
 

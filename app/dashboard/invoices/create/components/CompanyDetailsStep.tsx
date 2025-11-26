@@ -21,9 +21,9 @@ export function CompanyDetailsStep({
   onChange,
   errors,
 }: CompanyDetailsStepProps) {
-  const selectedContractor = contractors.find(c => c.id === contractorId);
+  const selectedContractor = contractors.find((c) => c.id === contractorId);
   let paymentMethods: string[] = [];
-  
+
   if (selectedContractor?.paymentMethods) {
     try {
       paymentMethods = JSON.parse(selectedContractor.paymentMethods);
@@ -32,15 +32,15 @@ export function CompanyDetailsStep({
     }
   }
   return (
-    <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-200">
-      <h2 className="text-xl font-semibold text-[#0F172A] mb-6">
+    <div className="rounded-md bg-white p-5 border border-[#e8e8e8]">
+      <h2 className="text-base font-medium text-[#37352f] mb-5">
         Company Selection
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
           <label
             htmlFor="contractorId"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-[#37352f] mb-1.5"
           >
             Contractor
           </label>
@@ -51,9 +51,9 @@ export function CompanyDetailsStep({
             value={contractorId}
             onChange={onChange}
             className={cn(
-              "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+              "block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] transition-colors focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2]",
               errors?.contractorId &&
-                "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                "border-red-500 focus:border-red-500 focus:ring-red-500"
             )}
           >
             <option value="">Select a contractor</option>
@@ -64,14 +64,14 @@ export function CompanyDetailsStep({
             ))}
           </select>
           {errors?.contractorId && (
-            <p className="mt-1 text-sm text-red-500">{errors.contractorId}</p>
+            <p className="mt-1 text-sm text-red-600">{errors.contractorId}</p>
           )}
 
           {contractorId && paymentMethods.length > 0 && (
             <div className="mt-4">
               <label
                 htmlFor="selectedPaymentMethod"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-[#37352f] mb-1.5"
               >
                 Payment Method
               </label>
@@ -81,12 +81,12 @@ export function CompanyDetailsStep({
                 required
                 value={selectedPaymentMethod}
                 onChange={onChange}
-                className="block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] transition-colors focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2]"
               >
                 <option value="">Select a payment method</option>
                 {paymentMethods.map((method, index) => (
                   <option key={index} value={method}>
-                    {method.length > 50 ? method.slice(0, 47) + '...' : method}
+                    {method.length > 50 ? method.slice(0, 47) + "..." : method}
                   </option>
                 ))}
               </select>
@@ -97,7 +97,7 @@ export function CompanyDetailsStep({
         <div>
           <label
             htmlFor="customerId"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-[#37352f] mb-1.5"
           >
             Customer
           </label>
@@ -108,9 +108,9 @@ export function CompanyDetailsStep({
             value={customerId}
             onChange={onChange}
             className={cn(
-              "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+              "block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] transition-colors focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2]",
               errors?.customerId &&
-                "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                "border-red-500 focus:border-red-500 focus:ring-red-500"
             )}
           >
             <option value="">Select a customer</option>
@@ -121,7 +121,7 @@ export function CompanyDetailsStep({
             ))}
           </select>
           {errors?.customerId && (
-            <p className="mt-1 text-sm text-red-500">{errors.customerId}</p>
+            <p className="mt-1 text-sm text-red-600">{errors.customerId}</p>
           )}
         </div>
       </div>

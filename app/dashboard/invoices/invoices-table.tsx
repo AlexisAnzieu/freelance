@@ -41,98 +41,101 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
   }
 
   return (
-    <div className="mt-8 flow-root">
-      <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div className="inline-block min-w-full py-2 align-middle">
-          <div className="overflow-hidden rounded-lg shadow-sm ring-1 ring-black/5">
-            <table className="min-w-full divide-y divide-gray-200 bg-white">
+    <div className="mt-4">
+      <div className="overflow-x-auto">
+        <div className="inline-block min-w-full align-middle">
+          <div className="overflow-hidden rounded-md border border-[#e8e8e8]">
+            <table className="min-w-full divide-y divide-[#e8e8e8]">
               <thead>
-                <tr>
+                <tr className="bg-[#f7f7f5]">
                   <th
                     scope="col"
-                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8"
+                    className="py-2.5 pl-4 pr-3 text-left text-xs font-medium text-[#787774] uppercase tracking-wider"
                   >
                     #
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    className="px-3 py-2.5 text-left text-xs font-medium text-[#787774] uppercase tracking-wider"
                   >
                     Name
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    className="px-3 py-2.5 text-left text-xs font-medium text-[#787774] uppercase tracking-wider"
                   >
                     Customer
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    className="px-3 py-2.5 text-left text-xs font-medium text-[#787774] uppercase tracking-wider"
                   >
                     Contractor
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    className="px-3 py-2.5 text-left text-xs font-medium text-[#787774] uppercase tracking-wider"
                   >
                     Amount
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    className="px-3 py-2.5 text-left text-xs font-medium text-[#787774] uppercase tracking-wider"
                   >
                     Status
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    className="px-3 py-2.5 text-left text-xs font-medium text-[#787774] uppercase tracking-wider"
                   >
                     Date
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    className="px-3 py-2.5 text-left text-xs font-medium text-[#787774] uppercase tracking-wider"
                   >
                     Due Date
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    className="px-3 py-2.5 text-left text-xs font-medium text-[#787774] uppercase tracking-wider"
                   >
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 bg-white">
+              <tbody className="divide-y divide-[#e8e8e8] bg-white">
                 {invoices.map((invoice) => (
-                  <tr key={invoice.id}>
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
+                  <tr
+                    key={invoice.id}
+                    className="hover:bg-[#f7f7f5] transition-colors duration-75"
+                  >
+                    <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-[#37352f]">
                       {invoice.number}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-[#37352f]">
                       {invoice.name || "-"}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-[#787774]">
                       {filterCompaniesByType(
                         invoice.companies,
                         COMPANY_TYPES.CUSTOMER
                       ).map((company) => company.companyName)}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-[#787774]">
                       {filterCompaniesByType(
                         invoice.companies,
                         COMPANY_TYPES.CONTRACTOR
                       ).map((company) => company.companyName)}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900 font-medium">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-[#37352f] font-medium">
                       {CURRENCIES[invoice.currency as keyof typeof CURRENCIES]
                         ?.symbol || "$"}
                       {invoice.totalAmount.toLocaleString("en-US", {
                         minimumFractionDigits: 2,
                       })}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm">
                       <form action={updateStatus} className="min-w-0">
                         <input
                           type="hidden"
@@ -143,12 +146,12 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                           name="status"
                           value={invoice.status}
                           aria-label="Invoice status"
-                          className={`block w-28 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors duration-150 ease-in-out cursor-pointer ${
+                          className={`block w-24 rounded px-2 py-1 text-xs font-medium border transition-colors duration-100 cursor-pointer focus:outline-none focus:ring-1 ${
                             {
                               draft:
-                                "bg-gray-50 text-gray-600 ring-gray-500/10",
-                              sent: "bg-blue-50 text-blue-700 ring-blue-700/10",
-                              paid: "bg-green-50 text-green-700 ring-green-600/10",
+                                "bg-[#f1f1f0] text-[#787774] border-[#e8e8e8] focus:ring-[#9b9a97]",
+                              sent: "bg-[#e8f4fd] text-[#2eaadc] border-[#d3ebf9] focus:ring-[#2eaadc]",
+                              paid: "bg-[#e8f5ee] text-[#00a67d] border-[#d3ede1] focus:ring-[#00a67d]",
                             }[invoice.status]
                           }`}
                           onChange={async (e) => {
@@ -164,20 +167,20 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                         </select>
                       </form>
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-[#787774]">
                       {format(invoice.date, "MMM d, yyyy")}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-[#787774]">
                       {invoice.status === "paid"
                         ? ""
                         : formatDistanceToNow(invoice.dueDate, {
                             addSuffix: true,
                           })}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm space-x-2 flex">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm space-x-2 flex items-center">
                       <Link
                         href={`/dashboard/invoices/${invoice.id}`}
-                        className="rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                        className="inline-flex items-center rounded px-2 py-1 text-xs font-medium text-[#37352f] bg-[#f1f1f0] hover:bg-[#e8e8e8] transition-colors duration-100"
                       >
                         View
                       </Link>
@@ -204,11 +207,9 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                           }
                         }}
                         disabled={loadingPdf === invoice.id}
-                        className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                        className="inline-flex items-center rounded px-2 py-1 text-xs font-medium text-white bg-[#2eaadc] hover:bg-[#2799c7] transition-colors duration-100 disabled:opacity-50"
                       >
-                        {loadingPdf === invoice.id
-                          ? "Generating..."
-                          : "Download PDF"}
+                        {loadingPdf === invoice.id ? "..." : "PDF"}
                       </button>
                       <form action={deleteInvoiceAction}>
                         <input

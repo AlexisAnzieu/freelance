@@ -22,9 +22,12 @@ interface InvoiceSummaryProps {
 
 export function InvoiceSummary({ tax, onChange, errors }: InvoiceSummaryProps) {
   return (
-    <div className="grid grid-cols-2 gap-4 mt-8">
+    <div className="grid grid-cols-2 gap-4 mt-6">
       <div>
-        <label htmlFor="tax" className="block text-sm font-medium mb-2">
+        <label
+          htmlFor="tax"
+          className="block text-sm font-medium text-[#37352f] mb-1.5"
+        >
           Tax Rate
         </label>
         <select
@@ -33,9 +36,9 @@ export function InvoiceSummary({ tax, onChange, errors }: InvoiceSummaryProps) {
           value={tax}
           onChange={onChange}
           className={cn(
-            "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+            "block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] transition-colors focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2]",
             errors?.tax &&
-              "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+              "border-red-500 focus:border-red-500 focus:ring-red-500"
           )}
         >
           {TAX_RATES.map(({ name, rate }) => (
@@ -45,7 +48,7 @@ export function InvoiceSummary({ tax, onChange, errors }: InvoiceSummaryProps) {
           ))}
         </select>
         {errors?.tax && (
-          <p className="mt-1 text-sm text-red-500">{errors.tax}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.tax}</p>
         )}
       </div>
     </div>

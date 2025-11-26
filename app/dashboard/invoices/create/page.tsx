@@ -93,7 +93,9 @@ export default async function Page({
 
   return (
     <main>
-      <h1 className="mb-8 text-xl md:text-2xl">Create Invoice</h1>
+      <h1 className="mb-6 text-xl font-semibold text-[#37352f]">
+        Create Invoice
+      </h1>
       <Form
         customers={customers}
         contractors={contractors}

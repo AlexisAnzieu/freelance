@@ -36,17 +36,17 @@ export function DeleteButton({ itemName }: DeleteButtonProps) {
       <button
         type="button"
         disabled={pending}
-        className={`inline-flex h-8 w-8 items-center justify-center rounded-md bg-red-50 transition-all duration-200 cursor-pointer
+        className={`inline-flex h-7 w-7 items-center justify-center rounded transition-colors duration-100 cursor-pointer
         ${
           pending
-            ? "animate-pulse cursor-wait bg-red-100 ring-red-400"
-            : "hover:bg-red-100 hover:text-red-700 hover:shadow-sm hover:ring-1 hover:ring-red-400/50 active:bg-red-200"
+            ? "animate-pulse cursor-wait bg-[#fde8e8]"
+            : "bg-[#fde8e8] hover:bg-[#fbd5d5]"
         } 
-        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-50`}
+        disabled:opacity-50 disabled:cursor-not-allowed`}
         onClick={handleDelete}
       >
         <span className="sr-only">Delete</span>
-        <TrashIcon className="h-4 w-4 text-red-600" aria-hidden="true" />
+        <TrashIcon className="h-3.5 w-3.5 text-[#eb5757]" aria-hidden="true" />
       </button>
     </>
   );

@@ -80,35 +80,50 @@ export default function ProjectTable({
 
   return (
     <>
-      <div className="relative overflow-x-auto rounded-2xl bg-white/50 backdrop-blur-xl shadow-lg border border-white/10">
+      <div className="overflow-x-auto rounded-md border border-[#e8e8e8]">
         <div className="w-full">
-          <table className="w-full text-sm text-left rtl:text-right">
-            <thead className="bg-gradient-to-r from-blue-500/10 to-purple-500/10">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-[#f7f7f5]">
               <tr>
-                <th scope="col" className="px-6 py-4 font-medium text-gray-900">
+                <th
+                  scope="col"
+                  className="px-4 py-2.5 text-xs font-medium text-[#787774] uppercase tracking-wider"
+                >
                   Name
                 </th>
-                <th scope="col" className="px-6 py-4 font-medium text-gray-900">
+                <th
+                  scope="col"
+                  className="px-4 py-2.5 text-xs font-medium text-[#787774] uppercase tracking-wider"
+                >
                   Currency
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-4 font-medium text-gray-900 w-64"
+                  className="px-4 py-2.5 text-xs font-medium text-[#787774] uppercase tracking-wider w-64"
                 >
                   Companies
                 </th>
-                <th scope="col" className="px-6 py-4 font-medium text-gray-900">
+                <th
+                  scope="col"
+                  className="px-4 py-2.5 text-xs font-medium text-[#787774] uppercase tracking-wider"
+                >
                   Created
                 </th>
-                <th scope="col" className="px-6 py-4 font-medium text-gray-900">
+                <th
+                  scope="col"
+                  className="px-4 py-2.5 text-xs font-medium text-[#787774] uppercase tracking-wider"
+                >
                   Cost (Not invoiced / Invoiced unpaid / Paid)
                 </th>
-                <th scope="col" className="px-6 py-4 font-medium text-gray-900">
+                <th
+                  scope="col"
+                  className="px-4 py-2.5 text-xs font-medium text-[#787774] uppercase tracking-wider"
+                >
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-[#e8e8e8] bg-white">
               {projects.map((project) => {
                 const costBreakdown = project.timeEntries?.reduce(
                   (acc, entry) => {
@@ -145,18 +160,18 @@ export default function ProjectTable({
                 return (
                   <tr
                     key={project.id}
-                    className="group border-t border-gray-200 hover:bg-gradient-to-br hover:from-blue-500/5 hover:via-transparent hover:to-purple-500/5 transition-colors cursor-pointer"
+                    className="hover:bg-[#f7f7f5] transition-colors duration-75 cursor-pointer"
                     onClick={() =>
                       router.push(`/dashboard/time-tracking/${project.id}`)
                     }
                   >
-                    <td className="px-6 py-4 w-40">
-                      <span className="font-semibold text-gray-900 truncate block">
+                    <td className="px-4 py-3 w-40">
+                      <span className="font-medium text-[#37352f] truncate block">
                         {project.name}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-700 border border-blue-500/10">
+                    <td className="px-4 py-3">
+                      <span className="text-xs px-2 py-0.5 rounded bg-[#e8f4fd] text-[#2eaadc] border border-[#d3ebf9]">
                         {
                           CURRENCIES[
                             project.currency as keyof typeof CURRENCIES
@@ -165,36 +180,36 @@ export default function ProjectTable({
                         {project.currency}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-2">
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1.5">
                         {project.companies.map((company, index) => (
                           <span
                             key={index}
-                            className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-700 border border-blue-500/10"
+                            className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#f1f1f0] text-[#37352f] border border-[#e8e8e8]"
                           >
                             {company.companyName}
                           </span>
                         ))}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-600">
+                    <td className="px-4 py-3 text-sm text-[#787774]">
                       {new Date(project.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-2">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-700 border border-red-500/20">
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#fde8e8] text-[#eb5757] border border-[#fbd5d5]">
                           {formatCurrencyAmount(
                             costBreakdown.notInvoiced,
                             project.currency
                           )}
                         </span>
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-700 border border-amber-500/20">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#fef3e2] text-[#ffa344] border border-[#fde8c9]">
                           {formatCurrencyAmount(
                             costBreakdown.invoicedUnpaid,
                             project.currency
                           )}
                         </span>
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#e8f5ee] text-[#00a67d] border border-[#d3ede1]">
                           {formatCurrencyAmount(
                             costBreakdown.paid,
                             project.currency
@@ -202,14 +217,14 @@ export default function ProjectTable({
                         </span>
                       </div>
                     </td>
-                    <td className="relative w-32">
-                      <div className="absolute inset-0 flex items-center justify-center gap-2">
+                    <td className="relative w-28">
+                      <div className="absolute inset-0 flex items-center justify-center gap-1">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setTimeEntryProject(project);
                           }}
-                          className="p-1.5 text-gray-400 hover:text-purple-600 transition-colors"
+                          className="p-1.5 text-[#9b9a97] hover:text-[#a463f2] transition-colors duration-100"
                           title="Add time entry"
                         >
                           <svg
@@ -229,7 +244,7 @@ export default function ProjectTable({
                         <Link
                           onClick={(e) => e.stopPropagation()}
                           href={`/dashboard/projects/${project.id}/edit`}
-                          className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
+                          className="p-1.5 text-[#9b9a97] hover:text-[#2eaadc] transition-colors duration-100"
                           title="Edit project"
                         >
                           <svg
@@ -252,7 +267,7 @@ export default function ProjectTable({
                             handleDelete(project);
                           }}
                           disabled={isDeleting === project.id}
-                          className="p-1.5 text-gray-400 hover:text-red-600 disabled:opacity-50 transition-colors"
+                          className="p-1.5 text-[#9b9a97] hover:text-[#eb5757] disabled:opacity-50 transition-colors duration-100"
                           title="Delete project"
                         >
                           <svg

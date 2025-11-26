@@ -30,14 +30,32 @@ export default async function Page() {
   const contractors = await getContractors();
 
   return (
-    <div className="p-6">
+    <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Contractors</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-[#37352f]">Contractors</h1>
+          <p className="mt-1 text-sm text-[#787774]">
+            Manage your contractor relationships
+          </p>
+        </div>
         <a
           href="/dashboard/contractors/create"
-          className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          className="inline-flex items-center gap-1.5 rounded-md bg-[#2eaadc] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#2799c7]"
         >
-          Create Contractor
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          New
         </a>
       </div>
       <CompanyTable

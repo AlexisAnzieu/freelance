@@ -71,22 +71,21 @@ export default function ProjectForm({
       {defaultValues.id && (
         <input type="hidden" name="id" value={defaultValues.id} />
       )}
-      <div className="relative rounded-2xl bg-gradient-to-b from-white/80 to-white/50 backdrop-blur-xl p-8 shadow-lg space-y-8 border border-white/10">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 opacity-50 rounded-2xl pointer-events-none" />
+      <div className="rounded-md bg-white border border-[#e8e8e8] p-5 space-y-5">
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium leading-6 bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent"
+            className="block text-sm font-medium text-[#37352f] mb-1.5"
           >
             Project Name
           </label>
-          <div className="mt-2">
+          <div className="mt-1">
             <input
               type="text"
               name="name"
               id="name"
               defaultValue={defaultValues.name}
-              className="block w-full rounded-xl border-0 py-2 px-3 text-gray-900 shadow-sm bg-white/50 backdrop-blur-sm ring-1 ring-inset ring-gray-300/50 placeholder:text-gray-400/70 focus:ring-2 focus:ring-inset focus:ring-blue-500/50 sm:text-sm sm:leading-6 transition-all duration-300"
+              className="block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2] transition-colors"
               aria-describedby="name-error"
             />
           </div>
@@ -94,7 +93,7 @@ export default function ProjectForm({
             <div
               id="name-error"
               aria-live="polite"
-              className="mt-2 text-sm text-red-500"
+              className="mt-2 text-sm text-red-600"
             >
               {state.errors.name.map((error: string) => (
                 <p key={error}>{error}</p>
@@ -106,16 +105,16 @@ export default function ProjectForm({
         <div>
           <label
             htmlFor="description"
-            className="block text-sm font-medium leading-6 bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent"
+            className="block text-sm font-medium text-[#37352f] mb-1.5"
           >
             Description
           </label>
-          <div className="mt-2">
+          <div className="mt-1">
             <textarea
               id="description"
               name="description"
               rows={3}
-              className="block w-full rounded-xl border-0 py-2 px-3 text-gray-900 shadow-sm bg-white/50 backdrop-blur-sm ring-1 ring-inset ring-gray-300/50 placeholder:text-gray-400/70 focus:ring-2 focus:ring-inset focus:ring-blue-500/50 sm:text-sm sm:leading-6 transition-all duration-300"
+              className="block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2] transition-colors resize-none"
               aria-describedby="description-error"
               defaultValue={defaultValues.description}
             />
@@ -124,7 +123,7 @@ export default function ProjectForm({
             <div
               id="description-error"
               aria-live="polite"
-              className="mt-2 text-sm text-red-500"
+              className="mt-2 text-sm text-red-600"
             >
               {state.errors.description.map((error: string) => (
                 <p key={error}>{error}</p>
@@ -136,16 +135,16 @@ export default function ProjectForm({
         <div>
           <label
             htmlFor="currency"
-            className="block text-sm font-medium leading-6 bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent"
+            className="block text-sm font-medium text-[#37352f] mb-1.5"
           >
             Currency
           </label>
-          <div className="mt-2">
+          <div className="mt-1">
             <select
               id="currency"
               name="currency"
               defaultValue={defaultValues.currency || "CAD"}
-              className="block w-full rounded-xl border-0 py-2 px-3 text-gray-900 shadow-sm bg-white/50 backdrop-blur-sm ring-1 ring-inset ring-gray-300/50 placeholder:text-gray-400/70 focus:ring-2 focus:ring-inset focus:ring-blue-500/50 sm:text-sm sm:leading-6 transition-all duration-300"
+              className="block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2] transition-colors"
               aria-describedby="currency-error"
             >
               {Object.entries(CURRENCIES).map(([code, { name }]) => (
@@ -159,7 +158,7 @@ export default function ProjectForm({
             <div
               id="currency-error"
               aria-live="polite"
-              className="mt-2 text-sm text-red-500"
+              className="mt-2 text-sm text-red-600"
             >
               {state.errors.currency.map((error: string) => (
                 <p key={error}>{error}</p>
@@ -168,15 +167,15 @@ export default function ProjectForm({
           )}
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-5">
           <div>
             <label
               htmlFor="customer-companies"
-              className="block text-sm font-medium leading-6 bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent"
+              className="block text-sm font-medium text-[#37352f] mb-1.5"
             >
               Customer Companies
             </label>
-            <div className="mt-2">
+            <div className="mt-1">
               <MultiSelect
                 options={customers.map((company) => ({
                   id: company.id,
@@ -186,8 +185,6 @@ export default function ProjectForm({
                 onChange={setSelectedCustomers}
                 name="companies"
                 placeholder="Select customer companies..."
-                gradientFrom="blue-500"
-                gradientTo="purple-500"
               />
             </div>
           </div>
@@ -195,11 +192,11 @@ export default function ProjectForm({
           <div>
             <label
               htmlFor="contractor-companies"
-              className="block text-sm font-medium leading-6 bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent"
+              className="block text-sm font-medium text-[#37352f] mb-1.5"
             >
               Contractor Companies
             </label>
-            <div className="mt-2">
+            <div className="mt-1">
               <MultiSelect
                 options={contractors.map((company) => ({
                   id: company.id,
@@ -209,8 +206,6 @@ export default function ProjectForm({
                 onChange={setSelectedContractors}
                 name="companies"
                 placeholder="Select contractor companies..."
-                gradientFrom="blue-500"
-                gradientTo="purple-500"
               />
             </div>
           </div>
@@ -219,7 +214,7 @@ export default function ProjectForm({
             <div
               id="companies-error"
               aria-live="polite"
-              className="mt-2 text-sm text-red-500"
+              className="mt-2 text-sm text-red-600"
             >
               {state.errors.companies.map((error: string) => (
                 <p key={error}>{error}</p>
@@ -229,7 +224,7 @@ export default function ProjectForm({
         </div>
 
         {state.errors?._form && (
-          <div className="rounded-md bg-red-50 p-4 mt-6">
+          <div className="rounded-md bg-red-50 border border-red-200 p-4 mt-5">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg
@@ -263,17 +258,17 @@ export default function ProjectForm({
           </div>
         )}
 
-        <div className="mt-6 flex items-center justify-end gap-x-6">
+        <div className="mt-5 flex items-center justify-end gap-x-4">
           <button
             type="button"
             onClick={() => router.back()}
-            className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700 transition-colors duration-300"
+            className="text-sm font-medium text-[#37352f] hover:bg-[#ebebea] px-3 py-2 rounded-md transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:from-blue-500 hover:to-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 transition-all duration-300 hover:scale-[1.02]"
+            className="rounded-md bg-[#2383e2] px-3 py-2 text-sm font-medium text-white hover:bg-[#1a73d4] transition-colors"
           >
             {defaultValues.id ? "Save Changes" : "Create Project"}
           </button>

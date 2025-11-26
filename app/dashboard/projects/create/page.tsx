@@ -30,17 +30,19 @@ export default async function CreatePage() {
   const companies = await getCompanies();
 
   return (
-    <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Create New Project</h1>
-        <p className="mt-1 text-sm text-gray-500">
+    <div className="p-4">
+      <div className="mb-6">
+        <h1 className="text-xl font-semibold text-[#37352f]">
+          Create New Project
+        </h1>
+        <p className="mt-1 text-sm text-[#9b9a97]">
           Create a new project to start tracking time and managing tasks
         </p>
       </div>
 
       <Suspense
         fallback={
-          <div className="h-20 w-full animate-pulse rounded-lg bg-gray-100" />
+          <div className="h-20 w-full animate-pulse rounded-md bg-[#f1f1f0]" />
         }
       >
         <ProjectForm companies={companies} action={createProject} />

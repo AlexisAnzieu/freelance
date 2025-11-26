@@ -7,7 +7,10 @@ import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { ModalProvider } from "./ui/modal-context";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Freelance tools",
@@ -22,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body
-        className={`${inter.className} h-full selection:bg-blue-100 selection:text-blue-900`}
+        className={`${inter.className} h-full bg-[#ffffff] text-[#37352f] antialiased`}
       >
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <ModalProvider>{children}</ModalProvider>

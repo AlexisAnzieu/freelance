@@ -9,7 +9,9 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <main>
-      <h1 className="mb-8 text-xl md:text-2xl">Create Contractor</h1>
+      <h1 className="mb-6 text-xl font-semibold text-[#37352f]">
+        Create Contractor
+      </h1>
       <CompanyForm title="Contractor" onSubmit={createContractor} />
     </main>
   );

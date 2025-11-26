@@ -56,9 +56,9 @@ export async function CompanyEditPage({
   }
 
   return (
-    <div className="p-6">
+    <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Edit {title}</h1>
+        <h1 className="text-2xl font-semibold text-[#37352f]">Edit {title}</h1>
       </div>
       <CompanyForm
         title={title}

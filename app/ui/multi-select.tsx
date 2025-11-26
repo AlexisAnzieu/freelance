@@ -13,8 +13,6 @@ interface MultiSelectProps {
   onChange: (value: string[]) => void;
   name: string;
   placeholder?: string;
-  gradientFrom?: string;
-  gradientTo?: string;
 }
 
 export default function MultiSelect({
@@ -23,8 +21,6 @@ export default function MultiSelect({
   onChange,
   name,
   placeholder = "Select options...",
-  gradientFrom = "blue-500",
-  gradientTo = "purple-500",
 }: MultiSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -47,23 +43,16 @@ export default function MultiSelect({
     <div className="relative" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="cursor-pointer w-full rounded-xl border-0 py-2 px-3 text-gray-900 shadow-sm bg-white/50 backdrop-blur-sm ring-1 ring-inset ring-gray-300/50 hover:ring-2 hover:ring-blue-500/30 sm:text-sm sm:leading-6 transition-all duration-300"
+        className="cursor-pointer w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] hover:bg-[#f7f6f3] transition-colors"
       >
         {value.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {value.map((id) => {
               const option = options.find((opt) => opt.id === id);
               return (
                 <span
                   key={id}
-                  className={`inline-flex items-center px-2 py-1 rounded-lg text-xs text-gray-700 ${
-                    gradientFrom === "blue-500" && gradientTo === "purple-500"
-                      ? "bg-gradient-to-r from-blue-500/10 to-purple-500/10"
-                      : gradientFrom === "purple-500" &&
-                        gradientTo === "pink-500"
-                      ? "bg-gradient-to-r from-purple-500/10 to-pink-500/10"
-                      : "bg-gradient-to-r from-blue-500/10 to-purple-500/10"
-                  }`}
+                  className="inline-flex items-center px-2 py-0.5 rounded bg-[#e8f4fd] text-[#2383e2] text-xs"
                 >
                   {option?.label}
                   <button
@@ -72,7 +61,7 @@ export default function MultiSelect({
                       e.stopPropagation();
                       onChange(value.filter((v) => v !== id));
                     }}
-                    className="ml-1 hover:text-red-500 transition-colors"
+                    className="ml-1 hover:text-red-600 transition-colors"
                   >
                     ×
                   </button>
@@ -81,15 +70,15 @@ export default function MultiSelect({
             })}
           </div>
         ) : (
-          <span className="text-gray-500">{placeholder}</span>
+          <span className="text-[#9b9a97]">{placeholder}</span>
         )}
       </div>
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full rounded-xl bg-white/90 backdrop-blur-xl shadow-lg border border-gray-200/50 py-1 max-h-60 overflow-auto">
+        <div className="absolute z-10 mt-1 w-full rounded-md bg-white border border-[#e8e8e8] py-1 max-h-60 overflow-auto shadow-sm">
           {options.map((option) => (
             <div
               key={option.id}
-              className="px-3 py-2 cursor-pointer hover:bg-blue-50/50 flex items-center gap-2"
+              className="px-3 py-2 cursor-pointer hover:bg-[#f7f6f3] flex items-center gap-2 text-sm text-[#37352f]"
               onClick={() => {
                 onChange(
                   value.includes(option.id)
@@ -102,7 +91,7 @@ export default function MultiSelect({
                 type="checkbox"
                 checked={value.includes(option.id)}
                 onChange={() => {}}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-[#e8e8e8] text-[#2383e2] focus:ring-[#2383e2]"
                 title={`Select ${option.label}`}
                 aria-label={`Select ${option.label}`}
               />

@@ -22,15 +22,15 @@ export function BasicInformationStep({
   errors,
 }: BasicInformationProps) {
   return (
-    <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-200">
-      <h2 className="text-xl font-semibold text-[#0F172A] mb-6">
+    <div className="rounded-md bg-white p-5 border border-[#e8e8e8]">
+      <h2 className="text-base font-medium text-[#37352f] mb-5">
         Invoice Details
       </h2>
       <div className="space-y-4">
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-[#37352f] mb-1.5"
           >
             Invoice Name (optional)
           </label>
@@ -41,20 +41,20 @@ export function BasicInformationStep({
             value={name}
             onChange={onChange}
             className={cn(
-              "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+              "block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] transition-colors focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2]",
               errors?.name &&
-                "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                "border-red-500 focus:border-red-500 focus:ring-red-500"
             )}
           />
           {errors?.name && (
-            <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+            <p className="mt-1 text-sm text-red-600">{errors.name}</p>
           )}
         </div>
 
         <div>
           <label
             htmlFor="currency"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-[#37352f] mb-1.5"
           >
             Currency
           </label>
@@ -64,9 +64,9 @@ export function BasicInformationStep({
             value={currency}
             onChange={onChange}
             className={cn(
-              "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+              "block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] transition-colors focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2]",
               errors?.currency &&
-                "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                "border-red-500 focus:border-red-500 focus:ring-red-500"
             )}
           >
             {Object.entries(CURRENCIES).map(([code, currency]) => (
@@ -76,13 +76,16 @@ export function BasicInformationStep({
             ))}
           </select>
           {errors?.currency && (
-            <p className="mt-1 text-sm text-red-500">{errors.currency}</p>
+            <p className="mt-1 text-sm text-red-600">{errors.currency}</p>
           )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="date" className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="date"
+              className="block text-sm font-medium text-[#37352f] mb-1.5"
+            >
               Invoice Date
             </label>
             <input
@@ -93,17 +96,20 @@ export function BasicInformationStep({
               value={date}
               onChange={onChange}
               className={cn(
-                "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+                "block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] transition-colors focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2]",
                 errors?.date &&
-                  "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                  "border-red-500 focus:border-red-500 focus:ring-red-500"
               )}
             />
             {errors?.date && (
-              <p className="mt-1 text-sm text-red-500">{errors.date}</p>
+              <p className="mt-1 text-sm text-red-600">{errors.date}</p>
             )}
           </div>
           <div>
-            <label htmlFor="dueDate" className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="dueDate"
+              className="block text-sm font-medium text-[#37352f] mb-1.5"
+            >
               Due Date
             </label>
             <input
@@ -114,13 +120,13 @@ export function BasicInformationStep({
               value={dueDate}
               onChange={onChange}
               className={cn(
-                "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+                "block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] transition-colors focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2]",
                 errors?.dueDate &&
-                  "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                  "border-red-500 focus:border-red-500 focus:ring-red-500"
               )}
             />
             {errors?.dueDate && (
-              <p className="mt-1 text-sm text-red-500">{errors.dueDate}</p>
+              <p className="mt-1 text-sm text-red-600">{errors.dueDate}</p>
             )}
           </div>
         </div>

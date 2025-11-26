@@ -15,12 +15,12 @@ export default function SignupForm() {
   }
 
   return (
-    <form action={formAction} className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
+    <form action={formAction} className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
         <div>
           <label
             htmlFor="firstName"
-            className="block text-sm font-medium text-white"
+            className="block text-sm font-medium text-[#37352f] mb-1"
           >
             First name
           </label>
@@ -29,13 +29,13 @@ export default function SignupForm() {
             name="firstName"
             type="text"
             required
-            className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-800/50 px-3 py-2 text-white placeholder-gray-400 shadow-sm backdrop-blur-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:text-sm"
+            className="block w-full rounded-md border border-[#e8e8e8] bg-white px-3 py-2 text-[#37352f] placeholder-[#9b9a97] text-sm transition-colors duration-100 focus:border-[#2eaadc] focus:outline-none focus:ring-1 focus:ring-[#2eaadc] hover:border-[#d0d0d0]"
           />
         </div>
         <div>
           <label
             htmlFor="lastName"
-            className="block text-sm font-medium text-white"
+            className="block text-sm font-medium text-[#37352f] mb-1"
           >
             Last name
           </label>
@@ -44,13 +44,16 @@ export default function SignupForm() {
             name="lastName"
             type="text"
             required
-            className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-800/50 px-3 py-2 text-white placeholder-gray-400 shadow-sm backdrop-blur-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:text-sm"
+            className="block w-full rounded-md border border-[#e8e8e8] bg-white px-3 py-2 text-[#37352f] placeholder-[#9b9a97] text-sm transition-colors duration-100 focus:border-[#2eaadc] focus:outline-none focus:ring-1 focus:ring-[#2eaadc] hover:border-[#d0d0d0]"
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-white">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-[#37352f] mb-1"
+        >
           Email address
         </label>
         <input
@@ -58,14 +61,14 @@ export default function SignupForm() {
           name="email"
           type="email"
           required
-          className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-800/50 px-3 py-2 text-white placeholder-gray-400 shadow-sm backdrop-blur-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:text-sm"
+          className="block w-full rounded-md border border-[#e8e8e8] bg-white px-3 py-2 text-[#37352f] placeholder-[#9b9a97] text-sm transition-colors duration-100 focus:border-[#2eaadc] focus:outline-none focus:ring-1 focus:ring-[#2eaadc] hover:border-[#d0d0d0]"
         />
       </div>
 
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-white"
+          className="block text-sm font-medium text-[#37352f] mb-1"
         >
           Password
         </label>
@@ -74,23 +77,23 @@ export default function SignupForm() {
           name="password"
           type="password"
           required
-          className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-800/50 px-3 py-2 text-white placeholder-gray-400 shadow-sm backdrop-blur-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:text-sm"
+          className="block w-full rounded-md border border-[#e8e8e8] bg-white px-3 py-2 text-[#37352f] placeholder-[#9b9a97] text-sm transition-colors duration-100 focus:border-[#2eaadc] focus:outline-none focus:ring-1 focus:ring-[#2eaadc] hover:border-[#d0d0d0]"
         />
       </div>
 
       <button
         disabled={isPending}
         type="submit"
-        className="flex w-full transform justify-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 px-3 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex w-full justify-center rounded-md bg-[#2eaadc] px-3 py-2 text-sm font-medium text-white transition-colors duration-100 hover:bg-[#2799c7] focus:outline-none focus:ring-1 focus:ring-[#2eaadc] disabled:cursor-not-allowed disabled:opacity-50"
       >
         Sign up
       </button>
 
-      <p className="mt-2 text-center text-sm text-gray-300">
+      <p className="text-center text-sm text-[#787774]">
         Already have an account?{" "}
         <Link
           href="/login"
-          className="font-medium text-blue-400 transition-colors duration-200 hover:text-blue-300"
+          className="font-medium text-[#2eaadc] transition-colors duration-100 hover:text-[#2799c7]"
         >
           Sign in
         </Link>

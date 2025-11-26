@@ -67,41 +67,40 @@ export function Modal({
   if (!isOpen) return null;
 
   const headerClass = twMerge(
-    "text-lg font-semibold mb-4",
-    type === "error" && "text-red-600",
-    type === "confirm" && "text-blue-600",
-    type === "info" && "text-gray-900"
+    "text-base font-semibold mb-3 text-[#37352f]",
+    type === "error" && "text-[#eb5757]",
+    type === "confirm" && "text-[#2eaadc]"
   );
 
   const confirmButtonClass = twMerge(
-    "px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105",
-    type === "error" && "bg-red-600 hover:bg-red-700 text-white",
-    type === "confirm" && "bg-blue-600 hover:bg-blue-700 text-white",
-    type === "info" && "bg-gray-900 hover:bg-gray-800 text-white"
+    "px-3 py-1.5 rounded text-sm font-medium transition-colors duration-100",
+    type === "error" && "bg-[#eb5757] hover:bg-[#d94848] text-white",
+    type === "confirm" && "bg-[#2eaadc] hover:bg-[#2799c7] text-white",
+    type === "info" && "bg-[#37352f] hover:bg-[#2b2926] text-white"
   );
 
   return createPortal(
     <div
       ref={modalRef}
       onClick={handleBackdropClick}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-[2px]"
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? "modal-title" : undefined}
     >
-      <div className="animate-modal-appear w-full max-w-md bg-gradient-to-b from-white/95 to-white/90 backdrop-blur-xl rounded-2xl shadow-xl p-6 mx-4 border border-white/20">
+      <div className="animate-modal-appear w-full max-w-md bg-white rounded-md shadow-lg p-5 mx-4 border border-[#e8e8e8]">
         {title && (
           <h2 id="modal-title" className={headerClass}>
             {title}
           </h2>
         )}
-        <div className="text-gray-600">{children}</div>
+        <div className="text-sm text-[#787774]">{children}</div>
         {(showCancel || showConfirm) && (
-          <div className="flex justify-end gap-3 mt-6">
+          <div className="flex justify-end gap-2 mt-5">
             {showCancel && (
               <button
                 onClick={onCancel || onClose}
-                className="px-4 py-2 rounded-lg font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 hover:scale-105"
+                className="px-3 py-1.5 rounded text-sm font-medium text-[#787774] hover:text-[#37352f] hover:bg-[#f1f1f0] transition-colors duration-100"
               >
                 {cancelText}
               </button>

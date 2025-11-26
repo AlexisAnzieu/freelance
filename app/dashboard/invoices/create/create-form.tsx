@@ -49,7 +49,7 @@ function SubmitButton() {
       type="submit"
       loading={pending}
       loadingText="Creating..."
-      className="bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-500"
+      className="bg-[#2383e2] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a73d4]"
     >
       Create Invoice
     </LoadingButton>
@@ -240,7 +240,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
           throw error;
         }
       }}
-      className="max-w-[1400px] mx-auto bg-[#F8FAFC] p-6"
+      className="max-w-[1400px] mx-auto bg-[#fbfbfa] p-5"
     >
       <InvoiceStepProgress
         steps={steps}
@@ -248,8 +248,8 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
         onStepChange={setCurrentStep}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-5">
           {/* Step 1: Basic Information */}
           <div
             className={`transition-all duration-300 ${

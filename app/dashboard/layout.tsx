@@ -7,15 +7,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden bg-[#ffffff]">
       {/* Floating Hamburger Button - Mobile Only */}
       <button
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className="fixed top-4 left-4 z-50 md:hidden bg-gray-900 p-3 rounded-lg shadow-lg hover:bg-gray-800 transition-all duration-200 hover:scale-105 ring-2 ring-blue-500/30"
+        className="fixed top-3 left-3 z-50 md:hidden bg-[#ffffff] p-2.5 rounded-md border border-[#e8e8e8] hover:bg-[#f7f7f5] transition-colors duration-100"
         aria-label="Toggle menu"
       >
         <svg
-          className="w-6 h-6 text-blue-300"
+          className="w-5 h-5 text-[#37352f]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -24,14 +24,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={1.5}
               d="M6 18L18 6M6 6l12 12"
             />
           ) : (
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={1.5}
               d="M4 6h16M4 12h16M4 18h16"
             />
           )}
@@ -41,7 +41,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          className="fixed inset-0 bg-black/20 z-30 md:hidden backdrop-blur-[2px]"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -50,8 +50,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div
         className={`
           fixed md:static inset-y-0 left-0 z-40
-          w-64 flex-none
-          transform transition-transform duration-300 ease-in-out
+          w-60 flex-none
+          transform transition-transform duration-200 ease-out
           ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
         `}
@@ -60,8 +60,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Main Content */}
-      <div className="flex-grow p-6 pt-20 md:overflow-y-auto md:p-12">
-        {children}
+      <div className="flex-grow pt-14 md:pt-0 md:overflow-y-auto bg-[#ffffff]">
+        <div className="max-w-5xl mx-auto px-4 py-6 md:px-12 md:py-10">
+          {children}
+        </div>
       </div>
     </div>
   );

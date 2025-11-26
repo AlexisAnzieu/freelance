@@ -119,18 +119,18 @@ export default function TimeEntriesTable({
   };
 
   return (
-    <div className="mt-6 space-y-8">
+    <div className="mt-6 space-y-6">
       {/* Summary Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <h3 className="text-sm font-medium text-gray-500">Total Hours</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white rounded-md p-5 border border-[#e8e8e8]">
+          <h3 className="text-sm font-medium text-[#9b9a97]">Total Hours</h3>
+          <p className="mt-2 text-2xl font-semibold text-[#37352f]">
             {timeEntries.reduce((sum, entry) => sum + entry.hours, 0)}
           </p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <h3 className="text-sm font-medium text-gray-500">Total Amount</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">
+        <div className="bg-white rounded-md p-5 border border-[#e8e8e8]">
+          <h3 className="text-sm font-medium text-[#9b9a97]">Total Amount</h3>
+          <p className="mt-2 text-2xl font-semibold text-[#37352f]">
             {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]?.symbol ||
               "$"}
             {timeEntries
@@ -138,24 +138,26 @@ export default function TimeEntriesTable({
               .toFixed(2)}
           </p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <h3 className="text-sm font-medium text-gray-500">Pending Entries</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">
+        <div className="bg-white rounded-md p-5 border border-[#e8e8e8]">
+          <h3 className="text-sm font-medium text-[#9b9a97]">
+            Pending Entries
+          </h3>
+          <p className="mt-2 text-2xl font-semibold text-[#37352f]">
             {timeEntries.filter((entry) => !entry.invoiceItemId).length}
           </p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="p-6 flex justify-between items-center border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900">Time Entries</h2>
-          <div className="flex gap-4 items-center">
+      <div className="bg-white rounded-md border border-[#e8e8e8]">
+        <div className="p-4 flex justify-between items-center border-b border-[#e8e8e8]">
+          <h2 className="text-base font-medium text-[#37352f]">Time Entries</h2>
+          <div className="flex gap-3 items-center">
             <button
               onClick={() => {
                 setSelectedEntry(null);
                 setIsDrawerOpen(true);
               }}
-              className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
+              className="px-3 py-1.5 rounded-md bg-[#2383e2] hover:bg-[#1a73d4] text-white text-sm font-medium transition-colors"
             >
               New Entry
             </button>
@@ -167,14 +169,14 @@ export default function TimeEntriesTable({
                 loadingText="Generating..."
                 className={`${
                   selectedEntries.size === 0
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-500 text-white"
+                    ? "bg-[#f1f1f0] text-[#9b9a97] cursor-not-allowed"
+                    : "bg-[#2383e2] hover:bg-[#1a73d4] text-white"
                 }`}
               >
                 Generate Invoice
               </LoadingButton>
               {selectedEntries.size === 0 && (
-                <div className="absolute bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-gray-800 text-white text-sm rounded-lg shadow-lg animate-fade-in">
+                <div className="absolute bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-[#37352f] text-white text-xs rounded-md animate-fade-in">
                   You need to select time entries to generate an invoice
                 </div>
               )}
@@ -183,36 +185,36 @@ export default function TimeEntriesTable({
         </div>
 
         <div className="overflow-x-visible">
-          <table className="min-w-full divide-y divide-gray-200 table-fixed">
-            <thead className="bg-gray-50">
+          <table className="min-w-full table-fixed">
+            <thead className="bg-[#f7f6f3]">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-12">
                   <span className="sr-only">Select</span>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-32">
                   Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-auto">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-auto">
                   Description
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-20">
                   Hours
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-24">
                   Rate
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-24">
                   Total
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-48">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-24">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
+            <tbody className="bg-white divide-y divide-[#e8e8e8]">
               {sortedEntries.map((entry, index) => {
                 const isSelected = selectedEntries.has(entry.id);
 
@@ -220,13 +222,13 @@ export default function TimeEntriesTable({
                   <tr
                     key={entry.id}
                     className={`transition-colors ${
-                      isSelected ? "bg-indigo-50" : ""
-                    } hover:bg-gray-50`}
+                      isSelected ? "bg-[#e8f4fd]" : ""
+                    } hover:bg-[#f7f6f3]`}
                   >
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       {entry.invoiceItemId ? (
                         <CheckCircleIcon
-                          className="h-5 w-5 text-green-500"
+                          className="h-5 w-5 text-green-600"
                           aria-label="Invoiced"
                         />
                       ) : (
@@ -242,51 +244,51 @@ export default function TimeEntriesTable({
                               event.currentTarget.checked
                             )
                           }
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 text-[#2383e2] focus:ring-[#2383e2] border-[#e8e8e8] rounded"
                           aria-label={`Select time entry for ${entry.description}`}
                         />
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-[#5f5e5b]">
                       {formatDate(entry.date)}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs relative group">
+                    <td className="px-4 py-3 text-sm text-[#37352f] max-w-xs relative group">
                       <div className="truncate">{entry.description}</div>
                       {entry.description && entry.description.length > 50 && (
-                        <div className="absolute z-50 invisible group-hover:visible bg-gray-900 text-white text-sm rounded-lg p-3 shadow-xl max-w-sm whitespace-normal break-words left-0 top-full mt-1">
+                        <div className="absolute z-50 invisible group-hover:visible bg-[#37352f] text-white text-xs rounded-md p-2.5 max-w-sm whitespace-normal break-words left-0 top-full mt-1">
                           {entry.description}
-                          <div className="absolute bottom-full left-4 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"></div>
+                          <div className="absolute bottom-full left-4 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-[#37352f]"></div>
                         </div>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-[#5f5e5b]">
                       {entry.hours}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-[#5f5e5b]">
                       {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]
                         ?.symbol || "$"}
                       {entry.hourlyRate}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-[#5f5e5b]">
                       {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]
                         ?.symbol || "$"}
                       {(entry.hours * entry.hourlyRate).toFixed(2)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm">
                       {entry.invoiceItem?.invoice ? (
                         <a
                           href={`/dashboard/invoices/${entry.invoiceItem.invoice.id}`}
-                          className="text-blue-600 hover:underline"
+                          className="text-[#2383e2] hover:underline"
                         >
                           {entry.invoiceItem.invoice.number} -{" "}
                           {entry.invoiceItem.invoice.name}
                         </a>
                       ) : (
-                        <span className="text-gray-500">Not Invoiced</span>
+                        <span className="text-[#9b9a97]">Not Invoiced</span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="flex gap-4">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm">
+                      <div className="flex gap-2">
                         {!entry.invoiceItem?.invoice && (
                           <>
                             <button
@@ -294,17 +296,17 @@ export default function TimeEntriesTable({
                                 setSelectedEntry(entry);
                                 setIsDrawerOpen(true);
                               }}
-                              className="text-blue-600 hover:text-blue-900 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="text-[#9b9a97] hover:text-[#2383e2] p-1 rounded-md hover:bg-[#ebebea] transition-colors"
                               aria-label="Edit"
                             >
-                              <PencilIcon className="h-5 w-5" />
+                              <PencilIcon className="h-4 w-4" />
                             </button>
                             <button
                               onClick={() => handleDelete(entry.id)}
-                              className="text-red-600 hover:text-red-900 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500"
+                              className="text-[#9b9a97] hover:text-red-600 p-1 rounded-md hover:bg-[#ebebea] transition-colors"
                               aria-label="Delete"
                             >
-                              <TrashIcon className="h-5 w-5" />
+                              <TrashIcon className="h-4 w-4" />
                             </button>
                           </>
                         )}
@@ -326,7 +328,7 @@ export default function TimeEntriesTable({
           setSelectedEntry(null);
         }}
       >
-        <div className="px-6">
+        <div className="px-4">
           <TimeEntryForm
             key={selectedEntry?.id || "new-entry"}
             projectId={projectId}

@@ -58,17 +58,17 @@ export default async function Page() {
   const projects = await getProjects();
 
   return (
-    <div className="p-6">
-      <div className="mb-8 flex justify-between items-start">
+    <div>
+      <div className="mb-6 flex justify-between items-start">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-semibold text-[#37352f]">Projects</h1>
+          <p className="mt-1 text-sm text-[#787774]">
             Manage your projects and track time for each one
           </p>
         </div>
         <a
           href="/dashboard/projects/create"
-          className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300"
+          className="inline-flex items-center gap-1.5 rounded-md bg-[#2eaadc] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#2799c7]"
         >
           <svg
             className="w-4 h-4"
@@ -83,7 +83,7 @@ export default async function Page() {
               d="M12 4v16m8-8H4"
             />
           </svg>
-          Create Project
+          New
         </a>
       </div>
 

@@ -4,11 +4,71 @@
 
 @source "../node_modules/@uploadthing/react/dist"; 
 
+/* Notion-style CSS Variables */
+:root {
+  --notion-bg: #ffffff;
+  --notion-bg-secondary: #fbfbfa;
+  --notion-bg-hover: #efefef;
+  --notion-bg-active: #e8e8e8;
+  --notion-text: #37352f;
+  --notion-text-secondary: #787774;
+  --notion-text-muted: #9b9a97;
+  --notion-border: #e8e8e8;
+  --notion-border-light: #f1f1f0;
+  --notion-accent: #2eaadc;
+  --notion-accent-hover: #2799c7;
+  --notion-red: #eb5757;
+  --notion-green: #00a67d;
+  --notion-blue: #2eaadc;
+  --notion-orange: #ffa344;
+  --notion-purple: #a463f2;
+}
+
+.dark {
+  --notion-bg: #191919;
+  --notion-bg-secondary: #202020;
+  --notion-bg-hover: #2b2b2b;
+  --notion-bg-active: #363636;
+  --notion-text: #ffffffcf;
+  --notion-text-secondary: #9b9a97;
+  --notion-text-muted: #5a5a5a;
+  --notion-border: #2f2f2f;
+  --notion-border-light: #252525;
+}
+
+/* Base styles for Notion look */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Notion-style scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d3d3d3;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ababab;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
 
 @keyframes modalAppear {
   from {
     opacity: 0;
-    transform: scale(0.95) translateY(10px);
+    transform: scale(0.98) translateY(4px);
   }
   to {
     opacity: 1;
@@ -17,24 +77,80 @@
 }
 
 .animate-modal-appear {
-  animation: modalAppear 0.2s ease-out forwards;
+  animation: modalAppear 0.15s ease-out forwards;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.15s ease-out;
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.2s ease-out;
+  animation: fadeIn 0.1s ease-out;
+}
+
+/* Notion-style focus ring */
+.notion-focus:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--notion-accent), 0 0 0 1px var(--notion-accent);
+}
+
+/* Notion-style input */
+.notion-input {
+  background: var(--notion-bg);
+  border: 1px solid var(--notion-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 14px;
+  color: var(--notion-text);
+  transition: border-color 0.1s ease, box-shadow 0.1s ease;
+}
+
+.notion-input:hover {
+  border-color: #d0d0d0;
+}
+
+.notion-input:focus {
+  outline: none;
+  border-color: var(--notion-accent);
+  box-shadow: 0 0 0 1px var(--notion-accent);
+}
+
+/* Notion-style button */
+.notion-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: background-color 0.1s ease;
+  cursor: pointer;
+}
+
+.notion-button-primary {
+  background-color: var(--notion-accent);
+  color: white;
+}
+
+.notion-button-primary:hover {
+  background-color: var(--notion-accent-hover);
+}
+
+.notion-button-secondary {
+  background-color: transparent;
+  color: var(--notion-text);
+}
+
+.notion-button-secondary:hover {
+  background-color: var(--notion-bg-hover);
 }

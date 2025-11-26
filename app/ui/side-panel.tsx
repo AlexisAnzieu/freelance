@@ -47,7 +47,7 @@ export default function SidePanel({
     >
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-500 ${
+        className={`fixed inset-0 bg-black/20 backdrop-blur-[2px] transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0"
         }`}
         onClick={onClose}
@@ -57,27 +57,27 @@ export default function SidePanel({
       <div className="fixed inset-y-0 right-0 flex max-w-full">
         <div
           ref={panelRef}
-          className={`w-screen max-w-2xl transform bg-white shadow-2xl transition-transform duration-500 ease-in-out ${
+          className={`w-screen max-w-xl transform bg-white border-l border-[#e8e8e8] transition-transform duration-300 ease-out ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
           <div className="flex h-full flex-col">
-            <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-6 sm:px-6">
+            <div className="border-b border-[#e8e8e8] px-4 py-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-base font-semibold leading-6 text-white">
+                <h2 className="text-base font-semibold text-[#37352f]">
                   {title}
                 </h2>
                 <button
                   type="button"
-                  className="rounded-md bg-blue-600/50 p-2 text-white hover:bg-blue-500/50 hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-white transition-colors duration-200"
+                  className="rounded p-1.5 text-[#9b9a97] hover:bg-[#f1f1f0] hover:text-[#37352f] transition-colors duration-100"
                   onClick={onClose}
                 >
                   <span className="sr-only">Close panel</span>
                   <svg
-                    className="h-6 w-6"
+                    className="h-5 w-5"
                     fill="none"
                     viewBox="0 0 24 24"
-                    strokeWidth="2"
+                    strokeWidth="1.5"
                     stroke="currentColor"
                   >
                     <path
@@ -89,7 +89,7 @@ export default function SidePanel({
                 </button>
               </div>
             </div>
-            <div className="relative flex-1 overflow-y-auto p-6">
+            <div className="relative flex-1 overflow-y-auto p-5">
               <div className="h-full">{children}</div>
             </div>
           </div>

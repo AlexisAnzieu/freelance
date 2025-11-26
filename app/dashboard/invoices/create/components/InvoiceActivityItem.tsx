@@ -25,11 +25,11 @@ export function InvoiceActivityItem({
   };
 
   return (
-    <div className="grid grid-cols-12 gap-4">
+    <div className="grid grid-cols-12 gap-3">
       <div className="col-span-6">
         <label
           htmlFor={`name-${id}`}
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-medium text-[#37352f] mb-1.5"
         >
           Description
         </label>
@@ -42,19 +42,19 @@ export function InvoiceActivityItem({
           value={name}
           onChange={(e) => onChange(e, id)}
           className={cn(
-            "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+            "block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] transition-colors focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2]",
             getItemError("name") &&
-              "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+              "border-red-500 focus:border-red-500 focus:ring-red-500"
           )}
         />
         {getItemError("name") && (
-          <p className="mt-1 text-sm text-red-500">{getItemError("name")}</p>
+          <p className="mt-1 text-sm text-red-600">{getItemError("name")}</p>
         )}
       </div>
       <div className="col-span-3">
         <label
           htmlFor={`quantity-${id}`}
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-medium text-[#37352f] mb-1.5"
         >
           Quantity
         </label>
@@ -69,13 +69,13 @@ export function InvoiceActivityItem({
           value={quantity}
           onChange={(e) => onChange(e, id)}
           className={cn(
-            "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+            "block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] transition-colors focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2]",
             getItemError("quantity") &&
-              "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+              "border-red-500 focus:border-red-500 focus:ring-red-500"
           )}
         />
         {getItemError("quantity") && (
-          <p className="mt-1 text-sm text-red-500">
+          <p className="mt-1 text-sm text-red-600">
             {getItemError("quantity")}
           </p>
         )}
@@ -83,7 +83,7 @@ export function InvoiceActivityItem({
       <div className="col-span-3">
         <label
           htmlFor={`unitaryPrice-${id}`}
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-medium text-[#37352f] mb-1.5"
         >
           Unit Price
         </label>
@@ -97,13 +97,13 @@ export function InvoiceActivityItem({
           value={unitaryPrice}
           onChange={(e) => onChange(e, id)}
           className={cn(
-            "block w-full rounded-lg border-gray-200 bg-white py-2.5 px-4 text-gray-700 shadow-sm transition-colors duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20",
+            "block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-sm text-[#37352f] transition-colors focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2]",
             getItemError("unitaryPrice") &&
-              "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+              "border-red-500 focus:border-red-500 focus:ring-red-500"
           )}
         />
         {getItemError("unitaryPrice") && (
-          <p className="mt-1 text-sm text-red-500">
+          <p className="mt-1 text-sm text-red-600">
             {getItemError("unitaryPrice")}
           </p>
         )}

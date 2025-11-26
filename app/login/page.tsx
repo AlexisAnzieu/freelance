@@ -4,17 +4,17 @@ import LoginForm from "./components/login-form";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 backdrop-blur-lg bg-white/10 p-8 rounded-xl shadow-2xl border border-white/20">
+    <div className="min-h-screen flex items-center justify-center bg-[#ffffff] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-sm w-full space-y-6">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-white">
+          <h2 className="text-center text-2xl font-semibold text-[#37352f]">
             Welcome Back
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-300">
-            {"Don't have an account?"}
+          <p className="mt-2 text-center text-sm text-[#787774]">
+            {"Don't have an account? "}
             <Link
               href="/signup"
-              className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
+              className="text-[#2eaadc] hover:text-[#2799c7] transition-colors duration-100"
             >
               Sign up here
             </Link>
@@ -24,7 +24,7 @@ export default function LoginPage() {
         <Suspense
           fallback={
             <div className="animate-pulse flex justify-center">
-              <div className="h-32 w-full bg-gray-700/50 rounded"></div>
+              <div className="h-32 w-full bg-[#f1f1f0] rounded"></div>
             </div>
           }
         >

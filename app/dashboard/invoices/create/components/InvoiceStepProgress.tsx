@@ -15,7 +15,7 @@ export function InvoiceStepProgress({
   onStepChange,
 }: InvoiceStepProgressProps) {
   return (
-    <nav aria-label="Progress" className="mb-8 w-1/2 mx-auto ">
+    <nav aria-label="Progress" className="mb-6 w-1/2 mx-auto">
       <div className="relative">
         {/* Step Indicators */}
         <ol role="list" className="relative flex justify-between">
@@ -27,17 +27,17 @@ export function InvoiceStepProgress({
                 className="relative flex flex-col items-center"
               >
                 <span
-                  className={`h-8 w-8 flex items-center justify-center rounded-full border-2 transition-all duration-200 ease-in-out cursor-pointer ${
+                  className={`h-7 w-7 flex items-center justify-center rounded-full border-2 transition-colors cursor-pointer ${
                     currentStep > step.id
-                      ? "border-blue-600 bg-blue-600 hover:bg-blue-700"
+                      ? "border-[#2383e2] bg-[#2383e2] hover:bg-[#1a73d4]"
                       : currentStep === step.id
-                      ? "border-blue-600 bg-blue-600 hover:bg-blue-700"
-                      : "border-gray-300 bg-white"
+                      ? "border-[#2383e2] bg-[#2383e2] hover:bg-[#1a73d4]"
+                      : "border-[#e8e8e8] bg-white hover:bg-[#f7f6f3]"
                   }`}
                 >
                   {currentStep > step.id ? (
                     <svg
-                      className="h-5 w-5 text-white"
+                      className="h-4 w-4 text-white"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -49,16 +49,16 @@ export function InvoiceStepProgress({
                       />
                     </svg>
                   ) : currentStep === step.id ? (
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-xs font-medium text-white">
                       {step.id}
                     </span>
                   ) : (
-                    <span className="text-sm font-semibold text-gray-500">
+                    <span className="text-xs font-medium text-[#9b9a97]">
                       {step.id}
                     </span>
                   )}
                 </span>
-                <span className="mt-2 text-sm font-medium text-gray-700">
+                <span className="mt-1.5 text-xs font-medium text-[#37352f]">
                   {step.name}
                 </span>
               </button>

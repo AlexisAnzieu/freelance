@@ -66,27 +66,42 @@ export default async function Page(props: {
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-          <h1 className="text-xl font-semibold text-gray-900">Invoices</h1>
-          <p className="mt-2 text-sm text-gray-700">
-            A list of all invoices including their ID, customer, amount, and
-            status.
-          </p>
-        </div>
-        <div className="mt-4 sm:flex sm:items-center sm:space-x-4">
-          <Search />
-          <div className="mt-4 sm:mt-0">
+    <div>
+      {/* Notion-style page header */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-[#37352f]">Invoices</h1>
+            <p className="mt-1 text-sm text-[#787774]">
+              A list of all invoices including their ID, customer, amount, and
+              status.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Search />
             <Link
               href="/dashboard/invoices/create"
-              className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="inline-flex items-center gap-1.5 rounded-md bg-[#2eaadc] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#2799c7]"
             >
-              Create Invoice
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              New
             </Link>
           </div>
         </div>
       </div>
+
       <InvoicesTable invoices={invoices} />
       <Pagination
         totalPages={totalPages}
