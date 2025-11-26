@@ -102,7 +102,7 @@ export function CompanyForm({
               htmlFor="contactName"
               className="block text-sm font-medium mb-2"
             >
-              Contact Name (optional)
+              Contact Name
             </label>
             <input
               type="text"
@@ -131,7 +131,7 @@ export function CompanyForm({
 
           <div>
             <label htmlFor="phone" className="block text-sm font-medium mb-2">
-              Phone (optional)
+              Phone
             </label>
             <input
               type="tel"
