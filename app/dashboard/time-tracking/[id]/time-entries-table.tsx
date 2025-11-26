@@ -233,11 +233,12 @@ export default function TimeEntriesTable({
                         <input
                           type="checkbox"
                           checked={selectedEntries.has(entry.id)}
-                          onClick={(event) =>
+                          onChange={(event) =>
                             handleSelect(
                               entry.id,
                               index,
-                              event.shiftKey,
+                              event.nativeEvent instanceof MouseEvent &&
+                                event.nativeEvent.shiftKey,
                               event.currentTarget.checked
                             )
                           }
