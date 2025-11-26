@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useFormStatus } from "react-dom";
 import { CompanyWithTypes } from "@/app/lib/db";
 import { createInvoice, getNextInvoiceNumber } from "./actions";
 import { InvoiceStepProgress } from "./components/InvoiceStepProgress";
@@ -11,6 +12,7 @@ import { InvoicePreview } from "./components/InvoicePreview";
 import { invoiceSchema } from "./schemas/invoice";
 import { formatZodErrors, ValidationErrors } from "./utils/format-errors";
 import { DEFAULT_TAX_RATE } from "./components/InvoiceSummary";
+import LoadingButton from "@/app/ui/loading-button";
 
 interface InvoiceItem {
   id: string;
@@ -39,6 +41,20 @@ const steps = [
   { id: 2, name: "Company Details" },
   { id: 3, name: "Activities" },
 ];
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <LoadingButton
+      type="submit"
+      loading={pending}
+      loadingText="Creating..."
+      className="bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-500"
+    >
+      Create Invoice
+    </LoadingButton>
+  );
+}
 
 export function Form({ customers, contractors, prefillData }: FormProps) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -282,12 +298,7 @@ export function Form({ customers, contractors, prefillData }: FormProps) {
               errors={errors}
             />
             <div className="mt-6 flex items-center justify-end gap-x-6">
-              <button
-                type="submit"
-                className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-blue-500 hover:shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-              >
-                Create Invoice
-              </button>
+              <SubmitButton />
             </div>
           </div>
         </div>
