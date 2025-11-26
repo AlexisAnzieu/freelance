@@ -61,9 +61,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Main Content */}
       <div className="flex-grow pt-14 md:pt-0 md:overflow-y-auto bg-[#ffffff]">
-        <div className="max-w-5xl mx-auto px-4 py-6 md:px-12 md:py-10">
-          {children}
-        </div>
+        <div className="w-full px-4 py-6 md:px-8 md:py-8">{children}</div>
       </div>
     </div>
   );

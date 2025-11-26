@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { type Company } from "@prisma/client";
 import { DeleteButton } from "@/app/ui/delete-button";
@@ -32,7 +33,7 @@ export function CompanyTable({
               Location
             </th>
             <th className="px-4 py-2.5 text-left text-xs font-medium text-[#787774] uppercase tracking-wider">
-              Actions
+              <span className="sr-only">Delete</span>
             </th>
           </tr>
         </thead>
@@ -45,10 +46,13 @@ export function CompanyTable({
             return (
               <tr
                 key={company.id}
-                className="hover:bg-[#f7f7f5] transition-colors duration-75"
+                className="hover:bg-[#f7f7f5] transition-colors duration-75 cursor-pointer group"
               >
                 <td className="px-4 py-3 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
+                  <Link
+                    href={`/dashboard/${type}s/${company.id}/edit`}
+                    className="flex items-center gap-3"
+                  >
                     {company.logoUrl ? (
                       <Image
                         src={company.logoUrl}
@@ -65,39 +69,51 @@ export function CompanyTable({
                     <div className="text-sm font-medium text-[#37352f]">
                       {company.companyName}
                     </div>
-                  </div>
+                  </Link>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
-                  <div className="text-sm text-[#37352f]">
-                    {company.contactName}
-                  </div>
-                  {company.phone && (
-                    <div className="text-xs text-[#9b9a97]">
-                      {company.phone}
-                    </div>
-                  )}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap">
-                  <div className="text-sm text-[#37352f]">{company.email}</div>
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap">
-                  <div className="text-sm text-[#37352f]">
-                    {company.city}, {company.country}
-                  </div>
-                  {company.state && (
-                    <div className="text-xs text-[#9b9a97]">
-                      {company.state}
-                    </div>
-                  )}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap flex items-center gap-2">
-                  <a
+                  <Link
                     href={`/dashboard/${type}s/${company.id}/edit`}
-                    className="inline-flex items-center rounded px-2 py-1 text-xs font-medium text-[#37352f] bg-[#f1f1f0] hover:bg-[#e8e8e8] transition-colors duration-100"
+                    className="block"
                   >
-                    Edit
-                  </a>
-                  <form action={deleteAction} className="inline-block">
+                    <div className="text-sm text-[#37352f]">
+                      {company.contactName}
+                    </div>
+                    {company.phone && (
+                      <div className="text-xs text-[#9b9a97]">
+                        {company.phone}
+                      </div>
+                    )}
+                  </Link>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <Link
+                    href={`/dashboard/${type}s/${company.id}/edit`}
+                    className="block text-sm text-[#37352f]"
+                  >
+                    {company.email}
+                  </Link>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <Link
+                    href={`/dashboard/${type}s/${company.id}/edit`}
+                    className="block"
+                  >
+                    <div className="text-sm text-[#37352f]">
+                      {company.city}, {company.country}
+                    </div>
+                    {company.state && (
+                      <div className="text-xs text-[#9b9a97]">
+                        {company.state}
+                      </div>
+                    )}
+                  </Link>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <form
+                    action={deleteAction}
+                    className="inline-block opacity-0 group-hover:opacity-100 transition-opacity duration-100"
+                  >
                     <input
                       type="hidden"
                       name={`${type}Id`}

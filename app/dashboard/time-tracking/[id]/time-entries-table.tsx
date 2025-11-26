@@ -184,32 +184,32 @@ export default function TimeEntriesTable({
           </div>
         </div>
 
-        <div className="overflow-x-visible">
-          <table className="min-w-full table-fixed">
+        <div className="overflow-x-auto">
+          <table className="w-full">
             <thead className="bg-[#f7f6f3]">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-12">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider whitespace-nowrap">
                   <span className="sr-only">Select</span>
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-32">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider whitespace-nowrap">
                   Date
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-auto">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider">
                   Description
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-20">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider whitespace-nowrap">
                   Hours
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-24">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider whitespace-nowrap">
                   Rate
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-24">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider whitespace-nowrap">
                   Total
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-48">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider whitespace-nowrap">
                   Status
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider w-24">
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider whitespace-nowrap">
                   Actions
                 </th>
               </tr>

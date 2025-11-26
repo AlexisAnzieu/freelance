@@ -99,7 +99,7 @@ export default function ProjectTable({
                 </th>
                 <th
                   scope="col"
-                  className="px-4 py-2.5 text-xs font-medium text-[#787774] uppercase tracking-wider w-64"
+                  className="px-4 py-2.5 text-xs font-medium text-[#787774] uppercase tracking-wider"
                 >
                   Companies
                 </th>

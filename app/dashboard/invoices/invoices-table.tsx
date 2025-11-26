@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { format, formatDistanceToNow } from "date-fns";
 import { Invoice } from "@prisma/client";
 import { useState } from "react";
@@ -27,6 +27,7 @@ interface InvoicesTableProps {
 }
 
 export function InvoicesTable({ invoices }: InvoicesTableProps) {
+  const router = useRouter();
   const [loadingPdf, setLoadingPdf] = useState<string | null>(null);
 
   async function updateStatus(formData: FormData) {
@@ -100,7 +101,7 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                     scope="col"
                     className="px-3 py-2.5 text-left text-xs font-medium text-[#787774] uppercase tracking-wider"
                   >
-                    Actions
+                    <span className="sr-only">Actions</span>
                   </th>
                 </tr>
               </thead>
@@ -108,7 +109,10 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                 {invoices.map((invoice) => (
                   <tr
                     key={invoice.id}
-                    className="hover:bg-[#f7f7f5] transition-colors duration-75"
+                    onClick={() =>
+                      router.push(`/dashboard/invoices/${invoice.id}`)
+                    }
+                    className="hover:bg-[#f7f7f5] transition-colors duration-75 cursor-pointer group"
                   >
                     <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium text-[#37352f]">
                       {invoice.number}
@@ -135,7 +139,10 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                         minimumFractionDigits: 2,
                       })}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3 text-sm">
+                    <td
+                      className="whitespace-nowrap px-3 py-3 text-sm"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <form action={updateStatus} className="min-w-0">
                         <input
                           type="hidden"
@@ -177,48 +184,88 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                             addSuffix: true,
                           })}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3 text-sm space-x-2 flex items-center">
-                      <Link
-                        href={`/dashboard/invoices/${invoice.id}`}
-                        className="inline-flex items-center rounded px-2 py-1 text-xs font-medium text-[#37352f] bg-[#f1f1f0] hover:bg-[#e8e8e8] transition-colors duration-100"
-                      >
-                        View
-                      </Link>
-                      <button
-                        onClick={async () => {
-                          try {
-                            setLoadingPdf(invoice.id);
-                            const blob = await pdf(
-                              <InvoicePDF invoice={invoice} />
-                            ).toBlob();
-                            const url = URL.createObjectURL(blob);
-                            const link = document.createElement("a");
-                            link.href = url;
-                            link.download = `invoice-${invoice.number}.pdf`;
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                            URL.revokeObjectURL(url);
-                          } catch (error) {
-                            console.error("Failed to generate PDF:", error);
-                            alert("Failed to generate PDF. Please try again.");
-                          } finally {
-                            setLoadingPdf(null);
-                          }
-                        }}
-                        disabled={loadingPdf === invoice.id}
-                        className="inline-flex items-center rounded px-2 py-1 text-xs font-medium text-white bg-[#2eaadc] hover:bg-[#2799c7] transition-colors duration-100 disabled:opacity-50"
-                      >
-                        {loadingPdf === invoice.id ? "..." : "PDF"}
-                      </button>
-                      <form action={deleteInvoiceAction}>
-                        <input
-                          type="hidden"
-                          name="invoiceId"
-                          value={invoice.id}
-                        />
-                        <DeleteButton itemName="invoice" />
-                      </form>
+                    <td
+                      className="whitespace-nowrap px-3 py-3 text-sm"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-100">
+                        <button
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            try {
+                              setLoadingPdf(invoice.id);
+                              const blob = await pdf(
+                                <InvoicePDF invoice={invoice} />
+                              ).toBlob();
+                              const url = URL.createObjectURL(blob);
+                              const link = document.createElement("a");
+                              link.href = url;
+                              link.download = `invoice-${invoice.number}.pdf`;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                              URL.revokeObjectURL(url);
+                            } catch (error) {
+                              console.error("Failed to generate PDF:", error);
+                              alert(
+                                "Failed to generate PDF. Please try again."
+                              );
+                            } finally {
+                              setLoadingPdf(null);
+                            }
+                          }}
+                          disabled={loadingPdf === invoice.id}
+                          className="inline-flex items-center justify-center w-7 h-7 rounded text-[#787774] hover:text-[#37352f] hover:bg-[#e8e8e8] transition-colors duration-100 disabled:opacity-50"
+                          title="Download PDF"
+                        >
+                          {loadingPdf === invoice.id ? (
+                            <svg
+                              className="w-4 h-4 animate-spin"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                          ) : (
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+                              />
+                            </svg>
+                          )}
+                        </button>
+                        <form
+                          action={deleteInvoiceAction}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <input
+                            type="hidden"
+                            name="invoiceId"
+                            value={invoice.id}
+                          />
+                          <DeleteButton itemName="invoice" />
+                        </form>
+                      </div>
                     </td>
                   </tr>
                 ))}

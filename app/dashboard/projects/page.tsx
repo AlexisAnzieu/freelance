@@ -39,7 +39,7 @@ async function getProjects() {
       },
     },
     orderBy: {
-      createdAt: "desc",
+      name: "asc",
     },
   });
 
