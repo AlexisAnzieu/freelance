@@ -4,8 +4,13 @@ import { Suspense } from "react";
 import { Skeleton } from "@/app/ui/skeletons";
 import Link from "next/link";
 import TimeEntriesTable from "./time-entries-table";
+import { calculateCostBreakdown } from "@/app/lib/utils";
 
-async function getProjectWithTimeEntries(id: string) {
+const ITEMS_PER_PAGE = 20;
+
+async function getProjectWithPaginatedTimeEntries(id: string, page: number) {
+  const skip = (page - 1) * ITEMS_PER_PAGE;
+
   const project = await prisma.project.findFirst({
     where: { id },
     include: {
@@ -17,6 +22,11 @@ async function getProjectWithTimeEntries(id: string) {
             },
           },
         },
+        orderBy: {
+          date: "desc",
+        },
+        skip,
+        take: ITEMS_PER_PAGE,
       },
     },
   });
@@ -25,13 +35,54 @@ async function getProjectWithTimeEntries(id: string) {
     throw new Error("Project not found");
   }
 
-  return project;
+  // Get total count and summary data separately
+  const [totalCount, allEntriesForStats] = await Promise.all([
+    prisma.timeTrackingItem.count({
+      where: { projectId: id },
+    }),
+    prisma.timeTrackingItem.findMany({
+      where: { projectId: id },
+      include: {
+        invoiceItem: {
+          include: {
+            invoice: true,
+          },
+        },
+      },
+    }),
+  ]);
+
+  // Calculate summary statistics from all entries
+  const costBreakdown = calculateCostBreakdown(allEntriesForStats);
+  const totalHours = allEntriesForStats.reduce(
+    (sum, entry) => sum + entry.hours,
+    0
+  );
+  const totalShadowHours = allEntriesForStats.reduce(
+    (sum, entry) => sum + (entry.shadowHours || 0),
+    0
+  );
+  const hasShadowHours = allEntriesForStats.some((e) => e.shadowHours);
+
+  return {
+    project,
+    totalCount,
+    totalPages: Math.ceil(totalCount / ITEMS_PER_PAGE),
+    summary: {
+      totalHours,
+      totalShadowHours,
+      hasShadowHours,
+      costBreakdown,
+    },
+  };
 }
 
 export default async function TimeTrackingPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const session = await auth();
 
@@ -40,7 +91,11 @@ export default async function TimeTrackingPage({
   }
 
   const { id } = await params;
-  const project = await getProjectWithTimeEntries(id);
+  const resolvedSearchParams = await searchParams;
+  const currentPage = Number(resolvedSearchParams?.page) || 1;
+
+  const { project, totalCount, totalPages, summary } =
+    await getProjectWithPaginatedTimeEntries(id, currentPage);
 
   if (project.teamId !== session.teamId) {
     throw new Error("Unauthorized: Invalid team access");
@@ -81,6 +136,10 @@ export default async function TimeTrackingPage({
           timeEntries={timeEntries}
           projectCurrency={project.currency}
           projectId={project.id}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          summary={summary}
         />
       </Suspense>
     </div>

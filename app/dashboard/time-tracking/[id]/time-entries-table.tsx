@@ -1,13 +1,9 @@
 "use client";
 
 import { Invoice, InvoiceItem, TimeTrackingItem } from "@prisma/client";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { deleteTimeEntry, generateInvoice } from "./actions";
-import {
-  formatDate,
-  calculateCostBreakdown,
-  formatCurrencyAmount,
-} from "@/app/lib/utils";
+import { formatDate, formatCurrencyAmount } from "@/app/lib/utils";
 import { useState } from "react";
 import SidePanel from "@/app/ui/side-panel";
 import TimeEntryForm from "../../../dashboard/time-tracking/create/time-entry-form";
@@ -18,6 +14,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { CURRENCIES } from "@/app/lib/constants";
 import LoadingButton from "@/app/ui/loading-button";
+import Link from "next/link";
 
 type TimeEntryWithInvoice = TimeTrackingItem & {
   invoiceItem?:
@@ -27,25 +24,46 @@ type TimeEntryWithInvoice = TimeTrackingItem & {
     | null;
 };
 
+interface CostBreakdown {
+  notInvoiced: number;
+  invoicedUnpaid: number;
+  paid: number;
+}
+
+interface Summary {
+  totalHours: number;
+  totalShadowHours: number;
+  hasShadowHours: boolean;
+  costBreakdown: CostBreakdown;
+}
+
 interface Props {
   timeEntries: TimeEntryWithInvoice[];
   projectCurrency: string;
   projectId: string;
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+  summary: Summary;
 }
 
 export default function TimeEntriesTable({
   timeEntries,
   projectCurrency,
   projectId,
+  currentPage,
+  totalPages,
+  totalCount,
+  summary,
 }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] =
     useState<TimeEntryWithInvoice | null>(null);
 
-  const sortedEntries = [...timeEntries].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  // Entries are already sorted and paginated from the server
+  const paginatedEntries = timeEntries;
 
   const handleDelete = async (id: string) => {
     try {
@@ -76,8 +94,8 @@ export default function TimeEntriesTable({
         const end = Math.max(selectionAnchor, index);
 
         for (let i = start; i <= end; i++) {
-          const entryInRange = sortedEntries[i];
-          if (entryInRange.invoiceItemId) {
+          const entryInRange = paginatedEntries[i];
+          if (!entryInRange || entryInRange.invoiceItemId) {
             continue; // Skip non-selectable entries
           }
 
@@ -122,7 +140,8 @@ export default function TimeEntriesTable({
     }
   };
 
-  const costBreakdown = calculateCostBreakdown(timeEntries);
+  const { costBreakdown, totalHours, totalShadowHours, hasShadowHours } =
+    summary;
   const totalCost =
     costBreakdown.notInvoiced +
     costBreakdown.invoicedUnpaid +
@@ -153,18 +172,13 @@ export default function TimeEntriesTable({
           </div>
           <div className="space-y-1">
             <div className="flex items-baseline gap-2">
-              <p className="text-3xl font-bold text-[#37352f]">
-                {timeEntries.reduce((sum, entry) => sum + entry.hours, 0)}
-              </p>
+              <p className="text-3xl font-bold text-[#37352f]">{totalHours}</p>
               <span className="text-xs text-[#9b9a97]">billable</span>
             </div>
-            {timeEntries.some((e) => e.shadowHours) && (
+            {hasShadowHours && (
               <div className="flex items-baseline gap-2">
                 <p className="text-lg font-semibold text-[#787774]">
-                  {timeEntries.reduce(
-                    (sum, entry) => sum + (entry.shadowHours || 0),
-                    0
-                  )}
+                  {totalShadowHours}
                 </p>
                 <span className="text-xs text-[#9b9a97]">actual</span>
               </div>
@@ -312,7 +326,7 @@ export default function TimeEntriesTable({
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-[#e8e8e8]">
-              {sortedEntries.map((entry, index) => {
+              {paginatedEntries.map((entry, index) => {
                 const isSelected = selectedEntries.has(entry.id);
 
                 return (
@@ -422,6 +436,74 @@ export default function TimeEntriesTable({
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="px-4 py-3 border-t border-[#e8e8e8] flex items-center justify-between">
+            <div className="text-sm text-[#787774]">
+              Showing {(currentPage - 1) * 20 + 1} to{" "}
+              {Math.min(currentPage * 20, totalCount)} of {totalCount} entries
+            </div>
+            <div className="flex items-center gap-2">
+              <Link
+                href={`${pathname}?page=${Math.max(currentPage - 1, 1)}`}
+                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                  currentPage === 1
+                    ? "bg-[#f1f1f0] text-[#9b9a97] pointer-events-none"
+                    : "bg-white border border-[#e8e8e8] text-[#37352f] hover:bg-[#f7f6f3]"
+                }`}
+              >
+                Previous
+              </Link>
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter((page) => {
+                    // Show first page, last page, current page, and pages around current
+                    return (
+                      page === 1 ||
+                      page === totalPages ||
+                      Math.abs(page - currentPage) <= 1
+                    );
+                  })
+                  .map((page, idx, array) => {
+                    // Add ellipsis if there's a gap
+                    const showEllipsisBefore =
+                      idx > 0 && page - array[idx - 1] > 1;
+                    return (
+                      <span key={page} className="flex items-center">
+                        {showEllipsisBefore && (
+                          <span className="px-2 text-[#9b9a97]">...</span>
+                        )}
+                        <Link
+                          href={`${pathname}?page=${page}`}
+                          className={`w-8 h-8 flex items-center justify-center text-sm rounded-md transition-colors ${
+                            currentPage === page
+                              ? "bg-[#2383e2] text-white"
+                              : "bg-white border border-[#e8e8e8] text-[#37352f] hover:bg-[#f7f6f3]"
+                          }`}
+                        >
+                          {page}
+                        </Link>
+                      </span>
+                    );
+                  })}
+              </div>
+              <Link
+                href={`${pathname}?page=${Math.min(
+                  currentPage + 1,
+                  totalPages
+                )}`}
+                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                  currentPage === totalPages
+                    ? "bg-[#f1f1f0] text-[#9b9a97] pointer-events-none"
+                    : "bg-white border border-[#e8e8e8] text-[#37352f] hover:bg-[#f7f6f3]"
+                }`}
+              >
+                Next
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
 
       <SidePanel
