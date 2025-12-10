@@ -141,7 +141,7 @@ export default function TimeEntryForm({
           className="block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-[#37352f] text-sm focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2] transition-colors"
         />
         <p className="mt-1 text-xs text-[#9b9a97]">
-          Actual time spent (won't appear on invoices)
+          Actual time spent (won&apos;t appear on invoices)
         </p>
       </div>
 
