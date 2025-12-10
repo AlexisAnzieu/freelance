@@ -8,6 +8,7 @@ interface TimeEntryFormData {
   date: Date;
   description: string;
   hours: number;
+  shadowHours?: number | null;
   hourlyRate: number;
   projectId: string;
 }
@@ -16,6 +17,7 @@ export async function createTimeEntry({
   date,
   description,
   hours,
+  shadowHours,
   hourlyRate,
   projectId,
 }: TimeEntryFormData) {
@@ -31,6 +33,7 @@ export async function createTimeEntry({
       date,
       description,
       hours,
+      shadowHours,
       hourlyRate,
       projectId,
     },

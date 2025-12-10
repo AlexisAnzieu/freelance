@@ -11,6 +11,7 @@ export async function updateTimeEntry(
     date: Date;
     description: string;
     hours: number;
+    shadowHours?: number | null;
     hourlyRate: number;
   }
 ) {
@@ -44,6 +45,7 @@ export async function updateTimeEntry(
       date: data.date,
       description: data.description,
       hours: data.hours,
+      shadowHours: data.shadowHours,
       hourlyRate: data.hourlyRate,
     },
   });

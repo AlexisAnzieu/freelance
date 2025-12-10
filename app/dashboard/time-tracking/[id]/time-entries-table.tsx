@@ -151,9 +151,25 @@ export default function TimeEntriesTable({
               />
             </svg>
           </div>
-          <p className="text-3xl font-bold text-[#37352f]">
-            {timeEntries.reduce((sum, entry) => sum + entry.hours, 0)}
-          </p>
+          <div className="space-y-1">
+            <div className="flex items-baseline gap-2">
+              <p className="text-3xl font-bold text-[#37352f]">
+                {timeEntries.reduce((sum, entry) => sum + entry.hours, 0)}
+              </p>
+              <span className="text-xs text-[#9b9a97]">billable</span>
+            </div>
+            {timeEntries.some((e) => e.shadowHours) && (
+              <div className="flex items-baseline gap-2">
+                <p className="text-lg font-semibold text-[#787774]">
+                  {timeEntries.reduce(
+                    (sum, entry) => sum + (entry.shadowHours || 0),
+                    0
+                  )}
+                </p>
+                <span className="text-xs text-[#9b9a97]">actual</span>
+              </div>
+            )}
+          </div>
         </div>
         <div className="bg-gradient-to-br from-white to-[#fafafa] rounded-lg p-6 border border-[#e8e8e8] shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-3">
@@ -276,7 +292,10 @@ export default function TimeEntriesTable({
                   Description
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider whitespace-nowrap">
-                  Hours
+                  Billable Hours
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider whitespace-nowrap">
+                  Actual Hours
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-[#9b9a97] uppercase tracking-wider whitespace-nowrap">
                   Rate
@@ -341,6 +360,13 @@ export default function TimeEntriesTable({
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-[#5f5e5b]">
                       {entry.hours}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-[#787774]">
+                      {entry.shadowHours ? (
+                        <span className="font-medium">{entry.shadowHours}</span>
+                      ) : (
+                        <span className="text-[#9b9a97] italic">-</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-[#5f5e5b]">
                       {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]
@@ -418,6 +444,7 @@ export default function TimeEntriesTable({
                     date: selectedEntry.date,
                     description: selectedEntry.description,
                     hours: selectedEntry.hours,
+                    shadowHours: selectedEntry.shadowHours,
                     hourlyRate: selectedEntry.hourlyRate,
                   }
                 : undefined

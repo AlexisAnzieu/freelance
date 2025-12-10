@@ -15,6 +15,7 @@ interface Props {
     date: Date;
     description: string;
     hours: number;
+    shadowHours?: number | null;
     hourlyRate: number;
   };
 }
@@ -33,10 +34,12 @@ export default function TimeEntryForm({
     setSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
+    const shadowHoursValue = formData.get("shadowHours") as string;
     const data = {
       date: new Date(formData.get("date") as string),
       description: formData.get("description") as string,
       hours: parseFloat(formData.get("hours") as string),
+      shadowHours: shadowHoursValue ? parseFloat(shadowHoursValue) : null,
       hourlyRate: parseFloat(formData.get("hourlyRate") as string),
       projectId,
     };
@@ -106,7 +109,7 @@ export default function TimeEntryForm({
           htmlFor="hours"
           className="block text-sm font-medium text-[#37352f] mb-1.5"
         >
-          Hours
+          Billable Hours
         </label>
         <input
           type="number"
@@ -118,6 +121,28 @@ export default function TimeEntryForm({
           defaultValue={initialData?.hours}
           className="block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-[#37352f] text-sm focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2] transition-colors"
         />
+      </div>
+
+      <div>
+        <label
+          htmlFor="shadowHours"
+          className="block text-sm font-medium text-[#37352f] mb-1.5"
+        >
+          Actual Hours (Internal)
+        </label>
+        <input
+          type="number"
+          name="shadowHours"
+          id="shadowHours"
+          step="0.25"
+          min="0"
+          defaultValue={initialData?.shadowHours ?? undefined}
+          placeholder="Optional - for internal tracking"
+          className="block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-[#37352f] text-sm focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2] transition-colors"
+        />
+        <p className="mt-1 text-xs text-[#9b9a97]">
+          Actual time spent (won't appear on invoices)
+        </p>
       </div>
 
       <div>
