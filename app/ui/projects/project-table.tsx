@@ -8,6 +8,7 @@ import { useModal } from "../modal-context";
 import SidePanel from "../side-panel";
 import TimeEntryForm from "@/app/dashboard/time-tracking/create/time-entry-form";
 import { Project } from "@prisma/client";
+import { calculateCostBreakdown, formatCurrencyAmount } from "@/app/lib/utils";
 
 export interface ProjectWithCompanies extends Project {
   companies: { companyName: string }[];
@@ -60,24 +61,6 @@ export default function ProjectTable({
     }
   };
 
-  const formatCurrencyAmount = (amount: number, currency: string) => {
-    if (!Number.isFinite(amount)) {
-      return "0";
-    }
-
-    try {
-      return new Intl.NumberFormat(undefined, {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(amount);
-    } catch (error) {
-      console.error("Failed to format currency", { amount, currency, error });
-      return amount.toFixed(2);
-    }
-  };
-
   return (
     <>
       <div className="overflow-x-auto rounded-md border border-[#e8e8e8]">
@@ -113,7 +96,7 @@ export default function ProjectTable({
                   scope="col"
                   className="px-4 py-2.5 text-xs font-medium text-[#787774] uppercase tracking-wider"
                 >
-                  Cost (Not invoiced / Invoiced unpaid / Paid)
+                  Revenue (Not invoiced / Invoiced unpaid / Paid)
                 </th>
                 <th
                   scope="col"
@@ -125,37 +108,9 @@ export default function ProjectTable({
             </thead>
             <tbody className="divide-y divide-[#e8e8e8] bg-white">
               {projects.map((project) => {
-                const costBreakdown = project.timeEntries?.reduce(
-                  (acc, entry) => {
-                    const entryHours = entry.hours || 0;
-                    const entryHourlyRate = entry.hourlyRate || 0;
-                    const entryCost = entryHours * entryHourlyRate;
-
-                    if (!entry.invoiceItemId) {
-                      acc.notInvoiced += entryCost;
-                      return acc;
-                    }
-
-                    const invoiceStatus = entry.invoiceItem?.invoice?.status;
-
-                    if (invoiceStatus === "paid") {
-                      acc.paid += entryCost;
-                    } else {
-                      acc.invoicedUnpaid += entryCost;
-                    }
-
-                    return acc;
-                  },
-                  {
-                    notInvoiced: 0,
-                    invoicedUnpaid: 0,
-                    paid: 0,
-                  }
-                ) || {
-                  notInvoiced: 0,
-                  invoicedUnpaid: 0,
-                  paid: 0,
-                };
+                const costBreakdown = calculateCostBreakdown(
+                  project.timeEntries || []
+                );
 
                 return (
                   <tr

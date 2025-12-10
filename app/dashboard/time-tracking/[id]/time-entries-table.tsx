@@ -3,7 +3,11 @@
 import { Invoice, InvoiceItem, TimeTrackingItem } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { deleteTimeEntry, generateInvoice } from "./actions";
-import { formatDate } from "@/app/lib/utils";
+import {
+  formatDate,
+  calculateCostBreakdown,
+  formatCurrencyAmount,
+} from "@/app/lib/utils";
 import { useState } from "react";
 import SidePanel from "@/app/ui/side-panel";
 import TimeEntryForm from "../../../dashboard/time-tracking/create/time-entry-form";
@@ -118,6 +122,12 @@ export default function TimeEntriesTable({
     }
   };
 
+  const costBreakdown = calculateCostBreakdown(timeEntries);
+  const totalCost =
+    costBreakdown.notInvoiced +
+    costBreakdown.invoicedUnpaid +
+    costBreakdown.paid;
+
   return (
     <div className="mt-6 space-y-6">
       {/* Summary Statistics */}
@@ -129,21 +139,28 @@ export default function TimeEntriesTable({
           </p>
         </div>
         <div className="bg-white rounded-md p-5 border border-[#e8e8e8]">
-          <h3 className="text-sm font-medium text-[#9b9a97]">Total Amount</h3>
-          <p className="mt-2 text-2xl font-semibold text-[#37352f]">
-            {CURRENCIES[projectCurrency as keyof typeof CURRENCIES]?.symbol ||
-              "$"}
-            {timeEntries
-              .reduce((sum, entry) => sum + entry.hours * entry.hourlyRate, 0)
-              .toFixed(2)}
-          </p>
+          <h3 className="text-sm font-medium text-[#9b9a97]">
+            Revenue (Not invoiced / Invoiced unpaid / Paid)
+          </h3>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#fde8e8] text-[#eb5757] border border-[#fbd5d5]">
+              {formatCurrencyAmount(costBreakdown.notInvoiced, projectCurrency)}
+            </span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#fef3e2] text-[#ffa344] border border-[#fde8c9]">
+              {formatCurrencyAmount(
+                costBreakdown.invoicedUnpaid,
+                projectCurrency
+              )}
+            </span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#e8f5ee] text-[#00a67d] border border-[#d3ede1]">
+              {formatCurrencyAmount(costBreakdown.paid, projectCurrency)}
+            </span>
+          </div>
         </div>
         <div className="bg-white rounded-md p-5 border border-[#e8e8e8]">
-          <h3 className="text-sm font-medium text-[#9b9a97]">
-            Pending Entries
-          </h3>
+          <h3 className="text-sm font-medium text-[#9b9a97]">Total Revenue</h3>
           <p className="mt-2 text-2xl font-semibold text-[#37352f]">
-            {timeEntries.filter((entry) => !entry.invoiceItemId).length}
+            {formatCurrencyAmount(totalCost, projectCurrency)}
           </p>
         </div>
       </div>
