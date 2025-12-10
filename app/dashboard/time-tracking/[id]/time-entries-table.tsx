@@ -132,34 +132,95 @@ export default function TimeEntriesTable({
     <div className="mt-6 space-y-6">
       {/* Summary Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-md p-5 border border-[#e8e8e8]">
-          <h3 className="text-sm font-medium text-[#9b9a97]">Total Hours</h3>
-          <p className="mt-2 text-2xl font-semibold text-[#37352f]">
+        <div className="bg-gradient-to-br from-white to-[#fafafa] rounded-lg p-6 border border-[#e8e8e8] shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-semibold text-[#9b9a97] uppercase tracking-wide">
+              Total Hours
+            </h3>
+            <svg
+              className="w-5 h-5 text-[#2383e2]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <p className="text-3xl font-bold text-[#37352f]">
             {timeEntries.reduce((sum, entry) => sum + entry.hours, 0)}
           </p>
         </div>
-        <div className="bg-white rounded-md p-5 border border-[#e8e8e8]">
-          <h3 className="text-sm font-medium text-[#9b9a97]">
-            Revenue (Not invoiced / Invoiced unpaid / Paid)
-          </h3>
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#fde8e8] text-[#eb5757] border border-[#fbd5d5]">
-              {formatCurrencyAmount(costBreakdown.notInvoiced, projectCurrency)}
-            </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#fef3e2] text-[#ffa344] border border-[#fde8c9]">
-              {formatCurrencyAmount(
-                costBreakdown.invoicedUnpaid,
-                projectCurrency
-              )}
-            </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[#e8f5ee] text-[#00a67d] border border-[#d3ede1]">
-              {formatCurrencyAmount(costBreakdown.paid, projectCurrency)}
-            </span>
+        <div className="bg-gradient-to-br from-white to-[#fafafa] rounded-lg p-6 border border-[#e8e8e8] shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-semibold text-[#9b9a97] uppercase tracking-wide">
+              Revenue Breakdown
+            </h3>
+            <svg
+              className="w-5 h-5 text-[#2383e2]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
+            </svg>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-[#787774]">Not invoiced</span>
+              <span className="text-sm font-semibold text-[#eb5757]">
+                {formatCurrencyAmount(
+                  costBreakdown.notInvoiced,
+                  projectCurrency
+                )}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-[#787774]">Invoiced unpaid</span>
+              <span className="text-sm font-semibold text-[#ffa344]">
+                {formatCurrencyAmount(
+                  costBreakdown.invoicedUnpaid,
+                  projectCurrency
+                )}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-[#787774]">Paid</span>
+              <span className="text-sm font-semibold text-[#00a67d]">
+                {formatCurrencyAmount(costBreakdown.paid, projectCurrency)}
+              </span>
+            </div>
           </div>
         </div>
-        <div className="bg-white rounded-md p-5 border border-[#e8e8e8]">
-          <h3 className="text-sm font-medium text-[#9b9a97]">Total Revenue</h3>
-          <p className="mt-2 text-2xl font-semibold text-[#37352f]">
+        <div className="bg-gradient-to-br from-white to-[#fafafa] rounded-lg p-6 border border-[#e8e8e8] shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-semibold text-[#9b9a97] uppercase tracking-wide">
+              Total Revenue
+            </h3>
+            <svg
+              className="w-5 h-5 text-[#00a67d]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <p className="text-3xl font-bold text-[#37352f]">
             {formatCurrencyAmount(totalCost, projectCurrency)}
           </p>
         </div>
