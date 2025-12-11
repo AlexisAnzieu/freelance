@@ -81,7 +81,7 @@ export function ShadowHoursByProjectChart({ data }: TimeTrackingChartsProps) {
       },
       title: {
         display: true,
-        text: "Actual Hours Worked - Hours vs Rate (bubble size = revenue)",
+        text: "Hours vs Rate (bubble size = revenue)",
         font: {
           size: 16,
           weight: "bold" as const,
@@ -259,6 +259,126 @@ export function ProjectsByHourlyRateList({ data }: TimeTrackingChartsProps) {
           );
         })}
         {projectsWithRates.length === 0 && (
+          <p className="text-sm text-[#9b9a97] text-center py-4">
+            No time entries found
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function ProjectsByEfficiencyList({ data }: TimeTrackingChartsProps) {
+  // Calculate efficiency (billed hours / shadow hours * 100) and sort by descending efficiency
+  const projectsWithEfficiency = data.hoursByProject
+    .map((item) => ({
+      ...item,
+      efficiency:
+        item.shadowHours > 0 ? (item.billedHours / item.shadowHours) * 100 : 0,
+    }))
+    .sort((a, b) => b.efficiency - a.efficiency);
+
+  return (
+    <div>
+      <h3 className="text-base font-semibold text-[#37352f] mb-4">
+        Projects by Efficiency
+      </h3>
+      <div className="space-y-3 max-h-72 overflow-y-auto">
+        {projectsWithEfficiency.map((project, index) => {
+          const color = getProjectColorByHex(project.projectColor);
+          // Color code efficiency: green >= 100%, yellow 80-99%, red < 80%
+          const efficiencyColor =
+            project.efficiency >= 100
+              ? "text-[#00a67d]"
+              : project.efficiency >= 80
+              ? "text-[#ffa344]"
+              : "text-[#eb5757]";
+          return (
+            <div
+              key={project.projectName}
+              className="flex items-center justify-between p-3 rounded-md border border-[#e8e8e8] hover:bg-[#f7f6f3] transition-colors"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-sm font-medium text-[#9b9a97] w-6">
+                  #{index + 1}
+                </span>
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: color.border }}
+                />
+                <span className="text-sm font-medium text-[#37352f] truncate">
+                  {project.projectName}
+                </span>
+              </div>
+              <div className="flex items-center gap-4 flex-shrink-0">
+                <div className="text-right">
+                  <p className={`text-sm font-semibold ${efficiencyColor}`}>
+                    {project.efficiency.toFixed(0)}%
+                  </p>
+                  <p className="text-xs text-[#9b9a97]">
+                    {project.billedHours.toFixed(1)}h /{" "}
+                    {project.shadowHours.toFixed(1)}h
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        {projectsWithEfficiency.length === 0 && (
+          <p className="text-sm text-[#9b9a97] text-center py-4">
+            No time entries found
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function ProjectsByRevenueList({ data }: TimeTrackingChartsProps) {
+  // Sort projects by revenue descending
+  const projectsByRevenue = [...data.hoursByProject].sort(
+    (a, b) => b.revenue - a.revenue
+  );
+
+  return (
+    <div>
+      <h3 className="text-base font-semibold text-[#37352f] mb-4">
+        Projects by Revenue
+      </h3>
+      <div className="space-y-3 max-h-72 overflow-y-auto">
+        {projectsByRevenue.map((project, index) => {
+          const color = getProjectColorByHex(project.projectColor);
+          return (
+            <div
+              key={project.projectName}
+              className="flex items-center justify-between p-3 rounded-md border border-[#e8e8e8] hover:bg-[#f7f6f3] transition-colors"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-sm font-medium text-[#9b9a97] w-6">
+                  #{index + 1}
+                </span>
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: color.border }}
+                />
+                <span className="text-sm font-medium text-[#37352f] truncate">
+                  {project.projectName}
+                </span>
+              </div>
+              <div className="flex items-center gap-4 flex-shrink-0">
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-[#2eaadc]">
+                    ${project.revenue.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-[#9b9a97]">
+                    {project.billedHours.toFixed(1)}h billed
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        {projectsByRevenue.length === 0 && (
           <p className="text-sm text-[#9b9a97] text-center py-4">
             No time entries found
           </p>
