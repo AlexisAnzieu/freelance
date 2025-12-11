@@ -17,10 +17,14 @@ export interface RevenueAnalytics {
 
 export interface TimeTrackingAnalytics {
   totalHours: number;
-  hoursByProject: { projectName: string; hours: number; revenue: number }[];
-  hoursByMonth: { month: string; hours: number }[];
+  hoursByProject: {
+    projectName: string;
+    shadowHours: number;
+    billedHours: number;
+    revenue: number;
+  }[];
+  hoursByMonth: { month: string; shadowHours: number; billedHours: number }[];
   averageHourlyRate: number;
-  utilizationRate: number;
 }
 
 export interface ProjectAnalytics {
@@ -173,7 +177,6 @@ export async function getTimeTrackingAnalytics(
   contractorId?: string
 ): Promise<TimeTrackingAnalytics> {
   const now = new Date();
-  const sixMonthsAgo = subMonths(now, 6);
 
   // Get time tracking data with project information, optionally filtered by contractor
   const timeEntries = await prisma.timeTrackingItem.findMany({
@@ -189,7 +192,6 @@ export async function getTimeTrackingAnalytics(
           },
         }),
       },
-      date: { gte: sixMonthsAgo },
     },
     include: {
       project: true,
@@ -206,43 +208,52 @@ export async function getTimeTrackingAnalytics(
     0
   );
 
-  // Hours by project with revenue (using shadowHours only)
+  // Hours by project with revenue (tracking both shadow and billed hours)
   const projectGroups = timeEntries.reduce((acc, entry) => {
     const projectName = entry.project.name;
     if (!acc[projectName]) {
-      acc[projectName] = { hours: 0, revenue: 0 };
+      acc[projectName] = { shadowHours: 0, billedHours: 0, revenue: 0 };
     }
-    acc[projectName].hours += entry.shadowHours ?? 0;
+    acc[projectName].shadowHours += entry.shadowHours ?? entry.hours;
+    acc[projectName].billedHours += entry.hours;
 
-    // Add revenue if this time entry is invoiced
-    if (entry.invoiceItem?.invoice?.status === "paid") {
-      acc[projectName].revenue += (entry.shadowHours ?? 0) * entry.hourlyRate;
-    }
+    acc[projectName].revenue += entry.hours * entry.hourlyRate;
 
     return acc;
-  }, {} as Record<string, { hours: number; revenue: number }>);
+  }, {} as Record<string, { shadowHours: number; billedHours: number; revenue: number }>);
 
   const hoursByProject = Object.entries(projectGroups).map(
     ([projectName, data]) => ({
       projectName,
-      hours: data.hours,
+      shadowHours: data.shadowHours,
+      billedHours: data.billedHours,
       revenue: data.revenue,
     })
   );
 
-  // Hours by month (using shadowHours only)
+  // Hours by month (tracking both shadow and billed hours)
   const hoursByMonth = [];
   for (let i = 5; i >= 0; i--) {
     const monthStart = startOfMonth(subMonths(now, i));
     const monthEnd = endOfMonth(subMonths(now, i));
 
-    const monthHours = timeEntries
-      .filter((entry) => entry.date >= monthStart && entry.date <= monthEnd)
-      .reduce((sum, entry) => sum + (entry.shadowHours ?? 0), 0);
+    const monthEntries = timeEntries.filter(
+      (entry) => entry.date >= monthStart && entry.date <= monthEnd
+    );
+
+    const shadowHours = monthEntries.reduce(
+      (sum, entry) => sum + (entry.shadowHours ?? entry.hours),
+      0
+    );
+    const billedHours = monthEntries.reduce(
+      (sum, entry) => sum + entry.hours,
+      0
+    );
 
     hoursByMonth.push({
       month: format(monthStart, "MMM yyyy"),
-      hours: monthHours,
+      shadowHours,
+      billedHours,
     });
   }
 
@@ -253,89 +264,10 @@ export async function getTimeTrackingAnalytics(
   );
   const averageHourlyRate = totalHours > 0 ? totalRevenue / totalHours : 0;
 
-  // Utilization rate (assuming 40 hours per week as target)
-  const weeksInPeriod = 26; // 6 months
-  const targetHours = weeksInPeriod * 40;
-  const utilizationRate = (totalHours / targetHours) * 100;
-
   return {
     totalHours,
     hoursByProject,
     hoursByMonth,
     averageHourlyRate,
-    utilizationRate,
-  };
-}
-
-export async function getProjectAnalytics(
-  teamId: string
-): Promise<ProjectAnalytics> {
-  const projects = await prisma.project.findMany({
-    where: { teamId },
-    include: {
-      timeEntries: {
-        include: {
-          invoiceItem: {
-            include: {
-              invoice: true,
-            },
-          },
-        },
-      },
-      companies: true,
-    },
-  });
-
-  // Project profitability
-  const projectProfitability = projects.map((project) => {
-    const totalHours = project.timeEntries.reduce(
-      (sum, entry) => sum + entry.hours,
-      0
-    );
-    const revenue = project.timeEntries
-      .filter((entry) => entry.invoiceItem?.invoice?.status === "paid")
-      .reduce((sum, entry) => sum + entry.hours * entry.hourlyRate, 0);
-
-    // Simple profit calculation (revenue - cost, assuming hourly rate covers all costs)
-    const profit = revenue;
-    const profitMargin = revenue > 0 ? (profit / revenue) * 100 : 0;
-
-    return {
-      projectName: project.name,
-      revenue,
-      hours: totalHours,
-      profit,
-      profitMargin,
-    };
-  });
-
-  // Projects by company
-  const companyGroups = projects.reduce((acc, project) => {
-    project.companies.forEach((company) => {
-      if (!acc[company.companyName]) {
-        acc[company.companyName] = { projectCount: 0, revenue: 0 };
-      }
-      acc[company.companyName].projectCount += 1;
-
-      const projectRevenue = project.timeEntries
-        .filter((entry) => entry.invoiceItem?.invoice?.status === "paid")
-        .reduce((sum, entry) => sum + entry.hours * entry.hourlyRate, 0);
-
-      acc[company.companyName].revenue += projectRevenue;
-    });
-    return acc;
-  }, {} as Record<string, { projectCount: number; revenue: number }>);
-
-  const projectsByCompany = Object.entries(companyGroups).map(
-    ([companyName, data]) => ({
-      companyName,
-      projectCount: data.projectCount,
-      revenue: data.revenue,
-    })
-  );
-
-  return {
-    projectProfitability,
-    projectsByCompany,
   };
 }

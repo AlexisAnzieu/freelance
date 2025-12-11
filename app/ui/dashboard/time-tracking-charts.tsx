@@ -12,7 +12,7 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
-import { Bar, Line, Doughnut } from "react-chartjs-2";
+import { Bubble, Line, Doughnut } from "react-chartjs-2";
 import { TimeTrackingAnalytics } from "@/app/lib/services/analytics";
 import { useResponsiveChart } from "./hooks/useResponsiveChart";
 
@@ -32,58 +32,68 @@ interface TimeTrackingChartsProps {
   data: TimeTrackingAnalytics;
 }
 
-export function HoursByProjectChart({ data }: TimeTrackingChartsProps) {
+export function ShadowHoursByProjectChart({ data }: TimeTrackingChartsProps) {
   const { getResponsiveOptions } = useResponsiveChart();
 
-  // Calculate hourly rates and sort projects by profitability
+  // Calculate hourly rates and sort projects by shadow hours
   const projectsWithRates = data.hoursByProject
     .map((item) => ({
       ...item,
-      hourlyRate: item.hours > 0 ? item.revenue / item.hours : 0,
+      hourlyRate: item.shadowHours > 0 ? item.revenue / item.shadowHours : 0,
     }))
-    .sort((a, b) => b.hourlyRate - a.hourlyRate); // Sort by hourly rate descending
+    .sort((a, b) => b.shadowHours - a.shadowHours);
 
-  // Find the most profitable project
-  const mostProfitable = projectsWithRates[0];
+  // Normalize bubble sizes (radius between 5 and 30)
+  const maxRevenue = Math.max(...projectsWithRates.map((p) => p.revenue), 1);
+  const minRadius = 5;
+  const maxRadius = 30;
+
+  // Color palette for projects
+  const colors = [
+    { bg: "rgba(239, 68, 68, 0.7)", border: "rgba(239, 68, 68, 1)" },
+    { bg: "rgba(249, 115, 22, 0.7)", border: "rgba(249, 115, 22, 1)" },
+    { bg: "rgba(234, 179, 8, 0.7)", border: "rgba(234, 179, 8, 1)" },
+    { bg: "rgba(34, 197, 94, 0.7)", border: "rgba(34, 197, 94, 1)" },
+    { bg: "rgba(6, 182, 212, 0.7)", border: "rgba(6, 182, 212, 1)" },
+    { bg: "rgba(59, 130, 246, 0.7)", border: "rgba(59, 130, 246, 1)" },
+    { bg: "rgba(147, 51, 234, 0.7)", border: "rgba(147, 51, 234, 1)" },
+    { bg: "rgba(236, 72, 153, 0.7)", border: "rgba(236, 72, 153, 1)" },
+    { bg: "rgba(107, 114, 128, 0.7)", border: "rgba(107, 114, 128, 1)" },
+    { bg: "rgba(20, 184, 166, 0.7)", border: "rgba(20, 184, 166, 1)" },
+  ];
 
   const chartData = {
-    labels: projectsWithRates.map((item) => item.projectName),
-    datasets: [
-      {
-        label: "Hourly Rate ($/hr)",
-        data: projectsWithRates.map((item) => item.hourlyRate),
-        backgroundColor: projectsWithRates.map(
-          (item, index) =>
-            index === 0
-              ? "rgba(34, 197, 94, 0.9)" // Green for most profitable
-              : item.hourlyRate >= mostProfitable.hourlyRate * 0.8
-              ? "rgba(59, 130, 246, 0.8)" // Blue for good rates
-              : "rgba(156, 163, 175, 0.6)" // Gray for lower rates
-        ),
-        borderColor: projectsWithRates.map((item, index) =>
-          index === 0
-            ? "rgba(34, 197, 94, 1)"
-            : item.hourlyRate >= mostProfitable.hourlyRate * 0.8
-            ? "rgba(59, 130, 246, 1)"
-            : "rgba(156, 163, 175, 1)"
-        ),
-        borderWidth: 2,
-      },
-    ],
+    datasets: projectsWithRates.map((item, index) => ({
+      label: item.projectName,
+      data: [
+        {
+          x: item.shadowHours,
+          y: item.hourlyRate,
+          r:
+            minRadius +
+            ((item.revenue / maxRevenue) * (maxRadius - minRadius) ||
+              minRadius),
+        },
+      ],
+      backgroundColor: colors[index % colors.length].bg,
+      borderColor: colors[index % colors.length].border,
+      borderWidth: 2,
+    })),
   };
 
   const baseOptions = {
     interaction: {
-      mode: "index" as const,
-      intersect: false,
+      mode: "nearest" as const,
+      intersect: true,
     },
     plugins: {
       legend: {
-        position: "top" as const,
+        display: true,
+        position: "bottom" as const,
       },
       title: {
         display: true,
-        text: "Project Profitability - Hourly Rate Analysis",
+        text: "Actual Hours Worked - Hours vs Rate (bubble size = revenue)",
         font: {
           size: 16,
           weight: "bold" as const,
@@ -91,18 +101,27 @@ export function HoursByProjectChart({ data }: TimeTrackingChartsProps) {
       },
       tooltip: {
         callbacks: {
-          afterLabel: function (context: { dataIndex: number }) {
-            const project = projectsWithRates[context.dataIndex];
+          label: function (context: {
+            dataset: { label: string };
+            parsed: { x: number; y: number };
+            raw: { r: number };
+          }) {
+            const project = projectsWithRates.find(
+              (p) => p.projectName === context.dataset.label
+            );
+            if (!project) return "";
             return [
-              `Hours: ${project.hours.toFixed(1)}h`,
-              `Revenue: $${project.revenue.toLocaleString()}`,
+              `${project.projectName}`,
+              `Actual Hours: ${project.shadowHours.toFixed(1)}h`,
+              `Billed Hours: ${project.billedHours.toFixed(1)}h`,
               `Efficiency: ${
-                project.hourlyRate >= mostProfitable.hourlyRate * 0.8
-                  ? "High"
-                  : project.hourlyRate >= mostProfitable.hourlyRate * 0.5
-                  ? "Medium"
-                  : "Low"
-              }`,
+                project.shadowHours > 0
+                  ? ((project.billedHours / project.shadowHours) * 100).toFixed(
+                      0
+                    )
+                  : 0
+              }%`,
+              `Revenue: $${project.revenue.toLocaleString()}`,
             ];
           },
         },
@@ -112,17 +131,15 @@ export function HoursByProjectChart({ data }: TimeTrackingChartsProps) {
       x: {
         title: {
           display: true,
-          text: "Projects (Sorted by Profitability)",
+          text: "Actual Hours Worked",
         },
-        ticks: {
-          maxRotation: 45,
-        },
+        beginAtZero: true,
       },
       y: {
         beginAtZero: true,
         title: {
           display: true,
-          text: "Hourly Rate ($)",
+          text: "Effective Rate ($)",
         },
         ticks: {
           callback: function (value: string | number) {
@@ -136,39 +153,8 @@ export function HoursByProjectChart({ data }: TimeTrackingChartsProps) {
   const options = getResponsiveOptions(baseOptions);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-3 sm:p-6">
-      <div className="mb-3 sm:mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-xs sm:text-sm font-medium text-gray-500">
-            Most Profitable Project
-          </h3>
-          <div className="text-right">
-            <div className="text-sm sm:text-lg font-bold text-green-600 truncate">
-              {mostProfitable?.projectName || "N/A"}
-            </div>
-            <div className="text-xs sm:text-sm text-gray-600">
-              ${mostProfitable?.hourlyRate.toFixed(0) || "0"}/hr
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center space-x-2 sm:space-x-4 text-xs text-gray-500 flex-wrap">
-          <div className="flex items-center">
-            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded mr-1"></div>
-            Most Profitable
-          </div>
-          <div className="flex items-center">
-            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded mr-1"></div>
-            Good Rate (80%+)
-          </div>
-          <div className="flex items-center">
-            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gray-400 rounded mr-1"></div>
-            Below Average
-          </div>
-        </div>
-      </div>
-      <div className="h-64 sm:h-80">
-        <Bar data={chartData} options={options} />
-      </div>
+    <div className="h-64 sm:h-80">
+      <Bubble data={chartData} options={options} />
     </div>
   );
 }
@@ -180,8 +166,16 @@ export function MonthlyHoursChart({ data }: TimeTrackingChartsProps) {
     labels: data.hoursByMonth.map((item) => item.month),
     datasets: [
       {
-        label: "Hours Worked",
-        data: data.hoursByMonth.map((item) => item.hours),
+        label: "Billed Hours",
+        data: data.hoursByMonth.map((item) => item.billedHours),
+        borderColor: "rgb(59, 130, 246)",
+        backgroundColor: "rgba(59, 130, 246, 0.1)",
+        tension: 0.4,
+        fill: true,
+      },
+      {
+        label: "Actual Hours Worked",
+        data: data.hoursByMonth.map((item) => item.shadowHours),
         borderColor: "rgb(168, 85, 247)",
         backgroundColor: "rgba(168, 85, 247, 0.1)",
         tension: 0.4,
@@ -197,7 +191,7 @@ export function MonthlyHoursChart({ data }: TimeTrackingChartsProps) {
       },
       title: {
         display: true,
-        text: "Monthly Hours Tracked",
+        text: "Monthly Hours Tracked - Billed vs Actual",
         font: {
           size: 16,
           weight: "bold" as const,
@@ -226,76 +220,6 @@ export function MonthlyHoursChart({ data }: TimeTrackingChartsProps) {
   );
 }
 
-export function ProductivityMetricsChart({ data }: TimeTrackingChartsProps) {
-  const chartData = {
-    labels: ["Total Hours", "Avg Hourly Rate", "Utilization Rate %"],
-    datasets: [
-      {
-        label: "Productivity Metrics",
-        data: [data.totalHours, data.averageHourlyRate, data.utilizationRate],
-        backgroundColor: [
-          "rgba(245, 101, 101, 0.8)",
-          "rgba(59, 130, 246, 0.8)",
-          "rgba(16, 185, 129, 0.8)",
-        ],
-        borderColor: [
-          "rgba(245, 101, 101, 1)",
-          "rgba(59, 130, 246, 1)",
-          "rgba(16, 185, 129, 1)",
-        ],
-        borderWidth: 2,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      title: {
-        display: true,
-        text: "Productivity Overview",
-        font: {
-          size: 16,
-          weight: "bold" as const,
-        },
-      },
-      tooltip: {
-        callbacks: {
-          label: function (context: { label: string; parsed: { y: number } }) {
-            const label = context.label;
-            const value = context.parsed.y;
-
-            if (label === "Utilization Rate %") {
-              return `${label}: ${value.toFixed(1)}%`;
-            } else if (label === "Avg Hourly Rate") {
-              return `${label}: $${value.toFixed(2)}`;
-            }
-            return `${label}: ${value.toFixed(1)}`;
-          },
-        },
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: "Value",
-        },
-      },
-    },
-  };
-
-  return (
-    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-6">
-      <Bar data={chartData} options={options} />
-    </div>
-  );
-}
-
 export function HoursDistributionChart({ data }: TimeTrackingChartsProps) {
   const { getResponsiveOptions, isMobile } = useResponsiveChart();
 
@@ -303,7 +227,7 @@ export function HoursDistributionChart({ data }: TimeTrackingChartsProps) {
     labels: data.hoursByProject.map((item) => item.projectName),
     datasets: [
       {
-        data: data.hoursByProject.map((item) => item.hours),
+        data: data.hoursByProject.map((item) => item.shadowHours),
         backgroundColor: [
           "rgba(239, 68, 68, 0.8)",
           "rgba(245, 101, 101, 0.8)",
@@ -340,7 +264,7 @@ export function HoursDistributionChart({ data }: TimeTrackingChartsProps) {
       },
       title: {
         display: true,
-        text: "Hours Distribution by Project",
+        text: "Actual Hours Distribution by Project",
         font: {
           size: 16,
           weight: "bold" as const,
@@ -352,7 +276,7 @@ export function HoursDistributionChart({ data }: TimeTrackingChartsProps) {
             const label = context.label || "";
             const value = context.parsed;
             const total = data.hoursByProject.reduce(
-              (sum, item) => sum + item.hours,
+              (sum, item) => sum + item.shadowHours,
               0
             );
             const percentage =

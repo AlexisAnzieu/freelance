@@ -5,7 +5,7 @@ import {
 } from "@/app/lib/services/analytics";
 import { MonthlyRevenueTrendChart } from "@/app/ui/dashboard/revenue-charts";
 import {
-  HoursByProjectChart,
+  ShadowHoursByProjectChart,
   MonthlyHoursChart,
   HoursDistributionChart,
 } from "@/app/ui/dashboard/time-tracking-charts";
@@ -139,7 +139,7 @@ export default async function EnhancedDashboard({
           Time Tracking
         </h2>
         <div className="rounded-md border border-[#e8e8e8] bg-white p-4 mb-4">
-          <HoursByProjectChart data={timeTrackingData} />
+          <ShadowHoursByProjectChart data={timeTrackingData} />
         </div>
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <div className="rounded-md border border-[#e8e8e8] bg-white p-4">
