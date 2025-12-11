@@ -125,7 +125,11 @@ export default async function TimeTrackingPage({
               />
             </svg>
           </Link>
-          <h1 className="text-xl font-semibold text-[#37352f]">
+          <h1 className="text-xl font-semibold text-[#37352f] flex items-center gap-2">
+            <span
+              className="w-3 h-3 rounded-full flex-shrink-0"
+              style={{ backgroundColor: project.color }}
+            />
             {project.name}
           </h1>
         </div>

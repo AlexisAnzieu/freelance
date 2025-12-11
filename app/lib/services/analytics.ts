@@ -49,6 +49,7 @@ export interface TimeTrackingAnalytics {
   totalHours: number;
   hoursByProject: {
     projectName: string;
+    projectColor: string;
     shadowHours: number;
     billedHours: number;
     revenue: number;
@@ -267,8 +268,14 @@ export async function getTimeTrackingAnalytics(
   // Hours by project with revenue (tracking both shadow and billed hours)
   const projectGroups = timeEntries.reduce((acc, entry) => {
     const projectName = entry.project.name;
+    const projectColor = entry.project.color;
     if (!acc[projectName]) {
-      acc[projectName] = { shadowHours: 0, billedHours: 0, revenue: 0 };
+      acc[projectName] = {
+        shadowHours: 0,
+        billedHours: 0,
+        revenue: 0,
+        color: projectColor,
+      };
     }
     acc[projectName].shadowHours += entry.shadowHours ?? entry.hours;
     acc[projectName].billedHours += entry.hours;
@@ -276,11 +283,12 @@ export async function getTimeTrackingAnalytics(
     acc[projectName].revenue += entry.hours * entry.hourlyRate;
 
     return acc;
-  }, {} as Record<string, { shadowHours: number; billedHours: number; revenue: number }>);
+  }, {} as Record<string, { shadowHours: number; billedHours: number; revenue: number; color: string }>);
 
   const hoursByProject = Object.entries(projectGroups).map(
     ([projectName, data]) => ({
       projectName,
+      projectColor: data.color,
       shadowHours: data.shadowHours,
       billedHours: data.billedHours,
       revenue: data.revenue,

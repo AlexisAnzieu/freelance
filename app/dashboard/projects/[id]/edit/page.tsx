@@ -69,13 +69,21 @@ export default async function EditProjectPage({
     id: project.id,
     name: project.name,
     description: project.description || "",
+    currency: project.currency,
+    color: project.color,
     companies: project.companies,
   };
 
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Edit Project</h1>
+        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <span
+            className="w-4 h-4 rounded-full flex-shrink-0"
+            style={{ backgroundColor: project.color }}
+          />
+          {project.name}
+        </h1>
         <p className="mt-1 text-sm text-gray-500">
           Update project details and associated companies
         </p>

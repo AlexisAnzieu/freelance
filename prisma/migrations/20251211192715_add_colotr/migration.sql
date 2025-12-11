@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Project` ADD COLUMN `color` VARCHAR(191) NOT NULL DEFAULT '#3B82F6';

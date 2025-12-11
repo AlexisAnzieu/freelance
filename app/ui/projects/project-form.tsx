@@ -7,6 +7,7 @@ import { filterCompaniesByType } from "@/app/lib/db";
 import { useActionState } from "react";
 import { useState, useEffect } from "react";
 import MultiSelect from "@/app/ui/multi-select";
+import ColorPicker from "@/app/ui/color-picker";
 
 interface ProjectFormState {
   errors?: {
@@ -14,6 +15,7 @@ interface ProjectFormState {
     description?: string[];
     companies?: string[];
     currency?: string[];
+    color?: string[];
     _form?: string[];
   };
   redirect?: string;
@@ -30,6 +32,7 @@ interface ProjectFormProps {
     name?: string;
     description?: string;
     currency?: string;
+    color?: string;
     companies?: CompanyWithTypes[];
   };
 }
@@ -58,6 +61,9 @@ export default function ProjectForm({
       defaultValues.companies,
       COMPANY_TYPES.CONTRACTOR
     ).map((company) => company.id)
+  );
+  const [selectedColor, setSelectedColor] = useState<string>(
+    defaultValues.color || ""
   );
 
   useEffect(() => {
@@ -161,6 +167,30 @@ export default function ProjectForm({
               className="mt-2 text-sm text-red-600"
             >
               {state.errors.currency.map((error: string) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-[#37352f] mb-1.5">
+            Project Color
+          </label>
+          <div className="mt-1">
+            <ColorPicker
+              value={selectedColor}
+              onChange={setSelectedColor}
+              name="color"
+            />
+          </div>
+          {state.errors?.color && (
+            <div
+              id="color-error"
+              aria-live="polite"
+              className="mt-2 text-sm text-red-600"
+            >
+              {state.errors.color.map((error: string) => (
                 <p key={error}>{error}</p>
               ))}
             </div>

@@ -9,6 +9,7 @@ const UpdateProject = z.object({
   name: z.string().min(1, "Project name is required"),
   description: z.string(),
   currency: z.string().default("CAD"),
+  color: z.string().optional(),
   companies: z.array(z.string()),
 });
 
@@ -17,6 +18,7 @@ interface ProjectFormState {
     name?: string[];
     description?: string[];
     currency?: string[];
+    color?: string[];
     companies?: string[];
     _form?: string[];
   };
@@ -41,6 +43,7 @@ export async function updateProject(
       name: formData.get("name"),
       description: formData.get("description"),
       currency: formData.get("currency"),
+      color: formData.get("color"),
       companies: formData.getAll("companies"),
     });
 
@@ -50,7 +53,8 @@ export async function updateProject(
       };
     }
 
-    const { name, description, currency, companies } = validatedFields.data;
+    const { name, description, currency, color, companies } =
+      validatedFields.data;
 
     const projectId = formData.get("id")?.toString();
     if (!projectId) {
@@ -69,6 +73,7 @@ export async function updateProject(
         name,
         description,
         currency,
+        color,
         companies: {
           set: companies.map((id) => ({ id })),
         },

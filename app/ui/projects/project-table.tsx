@@ -121,9 +121,15 @@ export default function ProjectTable({
                     }
                   >
                     <td className="px-4 py-3 w-40">
-                      <span className="font-medium text-[#37352f] truncate block">
-                        {project.name}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="w-3 h-3 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: project.color }}
+                        />
+                        <span className="font-medium text-[#37352f] truncate block">
+                          {project.name}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-4 py-3">
                       <span className="text-xs px-2 py-0.5 rounded bg-[#e8f4fd] text-[#2eaadc] border border-[#d3ebf9]">

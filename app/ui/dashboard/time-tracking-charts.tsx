@@ -15,6 +15,7 @@ import {
 import { Bubble, Line, Doughnut } from "react-chartjs-2";
 import { TimeTrackingAnalytics } from "@/app/lib/services/analytics";
 import { useResponsiveChart } from "./hooks/useResponsiveChart";
+import { getProjectColorByHex } from "@/app/lib/constants";
 
 ChartJS.register(
   CategoryScale,
@@ -48,37 +49,26 @@ export function ShadowHoursByProjectChart({ data }: TimeTrackingChartsProps) {
   const minRadius = 5;
   const maxRadius = 30;
 
-  // Color palette for projects
-  const colors = [
-    { bg: "rgba(239, 68, 68, 0.7)", border: "rgba(239, 68, 68, 1)" },
-    { bg: "rgba(249, 115, 22, 0.7)", border: "rgba(249, 115, 22, 1)" },
-    { bg: "rgba(234, 179, 8, 0.7)", border: "rgba(234, 179, 8, 1)" },
-    { bg: "rgba(34, 197, 94, 0.7)", border: "rgba(34, 197, 94, 1)" },
-    { bg: "rgba(6, 182, 212, 0.7)", border: "rgba(6, 182, 212, 1)" },
-    { bg: "rgba(59, 130, 246, 0.7)", border: "rgba(59, 130, 246, 1)" },
-    { bg: "rgba(147, 51, 234, 0.7)", border: "rgba(147, 51, 234, 1)" },
-    { bg: "rgba(236, 72, 153, 0.7)", border: "rgba(236, 72, 153, 1)" },
-    { bg: "rgba(107, 114, 128, 0.7)", border: "rgba(107, 114, 128, 1)" },
-    { bg: "rgba(20, 184, 166, 0.7)", border: "rgba(20, 184, 166, 1)" },
-  ];
-
   const chartData = {
-    datasets: projectsWithRates.map((item, index) => ({
-      label: item.projectName,
-      data: [
-        {
-          x: item.shadowHours,
-          y: item.hourlyRate,
-          r:
-            minRadius +
-            ((item.revenue / maxRevenue) * (maxRadius - minRadius) ||
-              minRadius),
-        },
-      ],
-      backgroundColor: colors[index % colors.length].bg,
-      borderColor: colors[index % colors.length].border,
-      borderWidth: 2,
-    })),
+    datasets: projectsWithRates.map((item) => {
+      const color = getProjectColorByHex(item.projectColor);
+      return {
+        label: item.projectName,
+        data: [
+          {
+            x: item.shadowHours,
+            y: item.hourlyRate,
+            r:
+              minRadius +
+              ((item.revenue / maxRevenue) * (maxRadius - minRadius) ||
+                minRadius),
+          },
+        ],
+        backgroundColor: color.bg,
+        borderColor: color.border,
+        borderWidth: 2,
+      };
+    }),
   };
 
   const baseOptions = {
@@ -221,35 +211,17 @@ export function MonthlyHoursChart({ data }: TimeTrackingChartsProps) {
 export function HoursDistributionChart({ data }: TimeTrackingChartsProps) {
   const { getResponsiveOptions, isMobile } = useResponsiveChart();
 
+  const projectColors = data.hoursByProject.map((item) =>
+    getProjectColorByHex(item.projectColor)
+  );
+
   const chartData = {
     labels: data.hoursByProject.map((item) => item.projectName),
     datasets: [
       {
         data: data.hoursByProject.map((item) => item.shadowHours),
-        backgroundColor: [
-          "rgba(239, 68, 68, 0.8)",
-          "rgba(245, 101, 101, 0.8)",
-          "rgba(249, 115, 22, 0.8)",
-          "rgba(251, 191, 36, 0.8)",
-          "rgba(34, 197, 94, 0.8)",
-          "rgba(16, 185, 129, 0.8)",
-          "rgba(6, 182, 212, 0.8)",
-          "rgba(59, 130, 246, 0.8)",
-          "rgba(147, 51, 234, 0.8)",
-          "rgba(168, 85, 247, 0.8)",
-        ],
-        borderColor: [
-          "rgba(239, 68, 68, 1)",
-          "rgba(245, 101, 101, 1)",
-          "rgba(249, 115, 22, 1)",
-          "rgba(251, 191, 36, 1)",
-          "rgba(34, 197, 94, 1)",
-          "rgba(16, 185, 129, 1)",
-          "rgba(6, 182, 212, 1)",
-          "rgba(59, 130, 246, 1)",
-          "rgba(147, 51, 234, 1)",
-          "rgba(168, 85, 247, 1)",
-        ],
+        backgroundColor: projectColors.map((c) => c.bg),
+        borderColor: projectColors.map((c) => c.border),
         borderWidth: 2,
       },
     ],
