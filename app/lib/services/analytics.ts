@@ -201,19 +201,22 @@ export async function getTimeTrackingAnalytics(
     },
   });
 
-  const totalHours = timeEntries.reduce((sum, entry) => sum + entry.hours, 0);
+  const totalHours = timeEntries.reduce(
+    (sum, entry) => sum + (entry.shadowHours ?? 0),
+    0
+  );
 
-  // Hours by project with revenue
+  // Hours by project with revenue (using shadowHours only)
   const projectGroups = timeEntries.reduce((acc, entry) => {
     const projectName = entry.project.name;
     if (!acc[projectName]) {
       acc[projectName] = { hours: 0, revenue: 0 };
     }
-    acc[projectName].hours += entry.hours;
+    acc[projectName].hours += entry.shadowHours ?? 0;
 
     // Add revenue if this time entry is invoiced
     if (entry.invoiceItem?.invoice?.status === "paid") {
-      acc[projectName].revenue += entry.hours * entry.hourlyRate;
+      acc[projectName].revenue += (entry.shadowHours ?? 0) * entry.hourlyRate;
     }
 
     return acc;
@@ -227,7 +230,7 @@ export async function getTimeTrackingAnalytics(
     })
   );
 
-  // Hours by month
+  // Hours by month (using shadowHours only)
   const hoursByMonth = [];
   for (let i = 5; i >= 0; i--) {
     const monthStart = startOfMonth(subMonths(now, i));
@@ -235,7 +238,7 @@ export async function getTimeTrackingAnalytics(
 
     const monthHours = timeEntries
       .filter((entry) => entry.date >= monthStart && entry.date <= monthEnd)
-      .reduce((sum, entry) => sum + entry.hours, 0);
+      .reduce((sum, entry) => sum + (entry.shadowHours ?? 0), 0);
 
     hoursByMonth.push({
       month: format(monthStart, "MMM yyyy"),
@@ -243,9 +246,9 @@ export async function getTimeTrackingAnalytics(
     });
   }
 
-  // Average hourly rate
+  // Average hourly rate (using shadowHours only)
   const totalRevenue = timeEntries.reduce(
-    (sum, entry) => sum + entry.hours * entry.hourlyRate,
+    (sum, entry) => sum + (entry.shadowHours ?? 0) * entry.hourlyRate,
     0
   );
   const averageHourlyRate = totalHours > 0 ? totalRevenue / totalHours : 0;
