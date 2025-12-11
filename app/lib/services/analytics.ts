@@ -1,5 +1,35 @@
 import prisma from "@/app/lib/prisma";
-import { startOfMonth, endOfMonth, subMonths, format } from "date-fns";
+import {
+  startOfMonth,
+  endOfMonth,
+  subMonths,
+  format,
+  differenceInMonths,
+} from "date-fns";
+
+export interface DateFilter {
+  startDate: Date;
+  endDate: Date;
+}
+
+// Helper function to calculate months between two dates
+function getMonthsBetween(startDate: Date, endDate: Date): number {
+  const months = differenceInMonths(endDate, startDate) + 1;
+  return Math.max(months, 1); // At least 1 month
+}
+
+// Helper function to calculate date range from start and end dates
+export function getDateRangeFromDates(
+  startDate?: string,
+  endDate?: string
+): DateFilter {
+  const now = new Date();
+
+  return {
+    startDate: startDate ? new Date(startDate) : subMonths(now, 6),
+    endDate: endDate ? new Date(endDate) : now,
+  };
+}
 
 export interface RevenueAnalytics {
   totalRevenue: number;
@@ -44,11 +74,14 @@ export interface ProjectAnalytics {
 
 export async function getRevenueAnalytics(
   teamId: string,
-  contractorId?: string
+  contractorId?: string,
+  dateFilter?: DateFilter
 ): Promise<RevenueAnalytics> {
   const now = new Date();
+  const filterStartDate = dateFilter?.startDate;
+  const filterEndDate = dateFilter?.endDate;
 
-  // Get all invoices for the team, optionally filtered by contractor
+  // Get all invoices for the team, optionally filtered by contractor and date
   const invoices = await prisma.invoice.findMany({
     where: {
       teamId,
@@ -60,6 +93,13 @@ export async function getRevenueAnalytics(
           },
         },
       }),
+      ...(filterStartDate &&
+        filterEndDate && {
+          date: {
+            gte: filterStartDate,
+            lte: filterEndDate,
+          },
+        }),
     },
     orderBy: { date: "asc" },
   });
@@ -69,11 +109,17 @@ export async function getRevenueAnalytics(
     .filter((invoice) => invoice.status === "paid")
     .reduce((sum, invoice) => sum + invoice.totalAmount, 0);
 
-  // Monthly revenue for the last 6 months
+  // Monthly revenue for the filtered period (or last 6 months if no filter)
   const monthlyRevenue = [];
-  for (let i = 5; i >= 0; i--) {
-    const monthStart = startOfMonth(subMonths(now, i));
-    const monthEnd = endOfMonth(subMonths(now, i));
+  const monthsToShow =
+    filterStartDate && filterEndDate
+      ? getMonthsBetween(filterStartDate, filterEndDate)
+      : 6;
+  const referenceDate = filterEndDate || now;
+
+  for (let i = monthsToShow - 1; i >= 0; i--) {
+    const monthStart = startOfMonth(subMonths(referenceDate, i));
+    const monthEnd = endOfMonth(subMonths(referenceDate, i));
 
     const monthInvoices = invoices.filter(
       (invoice) =>
@@ -136,11 +182,11 @@ export async function getRevenueAnalytics(
       ? ((currentYearRevenue - previousYearRevenue) / previousYearRevenue) * 100
       : 0;
 
-  // Monthly revenue trend with paid and unpaid breakdown for the last 6 months
+  // Monthly revenue trend with paid and unpaid breakdown for the filtered period
   const monthlyRevenueTrend = [];
-  for (let i = 5; i >= 0; i--) {
-    const monthStart = startOfMonth(subMonths(now, i));
-    const monthEnd = endOfMonth(subMonths(now, i));
+  for (let i = monthsToShow - 1; i >= 0; i--) {
+    const monthStart = startOfMonth(subMonths(referenceDate, i));
+    const monthEnd = endOfMonth(subMonths(referenceDate, i));
 
     const monthInvoices = invoices.filter(
       (invoice) => invoice.date >= monthStart && invoice.date <= monthEnd
@@ -174,11 +220,14 @@ export async function getRevenueAnalytics(
 
 export async function getTimeTrackingAnalytics(
   teamId: string,
-  contractorId?: string
+  contractorId?: string,
+  dateFilter?: DateFilter
 ): Promise<TimeTrackingAnalytics> {
   const now = new Date();
+  const filterStartDate = dateFilter?.startDate;
+  const filterEndDate = dateFilter?.endDate;
 
-  // Get time tracking data with project information, optionally filtered by contractor
+  // Get time tracking data with project information, optionally filtered by contractor and date
   const timeEntries = await prisma.timeTrackingItem.findMany({
     where: {
       project: {
@@ -192,6 +241,13 @@ export async function getTimeTrackingAnalytics(
           },
         }),
       },
+      ...(filterStartDate &&
+        filterEndDate && {
+          date: {
+            gte: filterStartDate,
+            lte: filterEndDate,
+          },
+        }),
     },
     include: {
       project: true,
@@ -233,9 +289,15 @@ export async function getTimeTrackingAnalytics(
 
   // Hours by month (tracking both shadow and billed hours)
   const hoursByMonth = [];
-  for (let i = 5; i >= 0; i--) {
-    const monthStart = startOfMonth(subMonths(now, i));
-    const monthEnd = endOfMonth(subMonths(now, i));
+  const monthsToShow =
+    filterStartDate && filterEndDate
+      ? getMonthsBetween(filterStartDate, filterEndDate)
+      : 6;
+  const referenceDate = filterEndDate || now;
+
+  for (let i = monthsToShow - 1; i >= 0; i--) {
+    const monthStart = startOfMonth(subMonths(referenceDate, i));
+    const monthEnd = endOfMonth(subMonths(referenceDate, i));
 
     const monthEntries = timeEntries.filter(
       (entry) => entry.date >= monthStart && entry.date <= monthEnd

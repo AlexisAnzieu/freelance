@@ -212,10 +212,8 @@ export function MonthlyHoursChart({ data }: TimeTrackingChartsProps) {
   const options = getResponsiveOptions(baseOptions);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-3 sm:p-6">
-      <div className="h-64 sm:h-80">
-        <Line data={chartData} options={options} />
-      </div>
+    <div className="h-64 sm:h-80">
+      <Line data={chartData} options={options} />
     </div>
   );
 }
@@ -291,10 +289,8 @@ export function HoursDistributionChart({ data }: TimeTrackingChartsProps) {
   const options = getResponsiveOptions(baseOptions);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm ring-1 ring-gray-900/5 p-3 sm:p-6">
-      <div className="h-64 sm:h-80">
-        <Doughnut data={chartData} options={options} />
-      </div>
+    <div className="h-64 sm:h-80">
+      <Doughnut data={chartData} options={options} />
     </div>
   );
 }

@@ -2,6 +2,8 @@ import { auth } from "@/auth";
 import {
   getRevenueAnalytics,
   getTimeTrackingAnalytics,
+  getDateRangeFromDates,
+  DateFilter,
 } from "@/app/lib/services/analytics";
 import { MonthlyRevenueTrendChart } from "@/app/ui/dashboard/revenue-charts";
 import {
@@ -9,7 +11,7 @@ import {
   MonthlyHoursChart,
   HoursDistributionChart,
 } from "@/app/ui/dashboard/time-tracking-charts";
-import { ContractorFilter } from "@/app/ui/dashboard/contractor-filter";
+import { DashboardFilters } from "@/app/ui/dashboard/dashboard-filters";
 import prisma from "@/app/lib/prisma";
 
 interface StatCardProps {
@@ -49,7 +51,10 @@ function StatCard({ title, value, color, icon }: StatCardProps) {
   );
 }
 
-async function getDashboardData(contractorId?: string) {
+async function getDashboardData(
+  contractorId?: string,
+  dateFilter?: DateFilter
+) {
   const session = await auth();
 
   if (!session?.teamId) {
@@ -57,8 +62,8 @@ async function getDashboardData(contractorId?: string) {
   }
 
   const [revenueData, timeTrackingData, contractors] = await Promise.all([
-    getRevenueAnalytics(session.teamId, contractorId),
-    getTimeTrackingAnalytics(session.teamId, contractorId),
+    getRevenueAnalytics(session.teamId, contractorId, dateFilter),
+    getTimeTrackingAnalytics(session.teamId, contractorId, dateFilter),
     prisma.company.findMany({
       where: {
         teamId: session.teamId,
@@ -78,13 +83,19 @@ async function getDashboardData(contractorId?: string) {
 
 interface EnhancedDashboardProps {
   contractorId?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export default async function EnhancedDashboard({
   contractorId,
+  startDate,
+  endDate,
 }: EnhancedDashboardProps) {
+  const dateFilter = getDateRangeFromDates(startDate, endDate);
   const { revenueData, timeTrackingData, contractors } = await getDashboardData(
-    contractorId
+    contractorId,
+    dateFilter
   );
 
   const totalRevenue = revenueData.revenueByStatus.reduce(
@@ -103,7 +114,7 @@ export default async function EnhancedDashboard({
             Comprehensive business insights
           </p>
         </div>
-        <ContractorFilter contractors={contractors} />
+        <DashboardFilters contractors={contractors} />
       </div>
 
       {/* Revenue Overview */}
