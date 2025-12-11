@@ -10,9 +10,8 @@ import {
   Title,
   Tooltip,
   Legend,
-  ArcElement,
 } from "chart.js";
-import { Bubble, Line, Doughnut } from "react-chartjs-2";
+import { Bubble, Line } from "react-chartjs-2";
 import { TimeTrackingAnalytics } from "@/app/lib/services/analytics";
 import { useResponsiveChart } from "./hooks/useResponsiveChart";
 import { getProjectColorByHex } from "@/app/lib/constants";
@@ -25,8 +24,7 @@ ChartJS.register(
   PointElement,
   Title,
   Tooltip,
-  Legend,
-  ArcElement
+  Legend
 );
 
 interface TimeTrackingChartsProps {
@@ -213,61 +211,59 @@ export function MonthlyHoursChart({ data }: TimeTrackingChartsProps) {
   );
 }
 
-export function HoursDistributionChart({ data }: TimeTrackingChartsProps) {
-  const { getResponsiveOptions, isMobile } = useResponsiveChart();
-
-  const projectColors = data.hoursByProject.map((item) =>
-    getProjectColorByHex(item.projectColor)
-  );
-
-  const chartData = {
-    labels: data.hoursByProject.map((item) => item.projectName),
-    datasets: [
-      {
-        data: data.hoursByProject.map((item) => item.shadowHours),
-        backgroundColor: projectColors.map((c) => c.bg),
-        borderColor: projectColors.map((c) => c.border),
-        borderWidth: 2,
-      },
-    ],
-  };
-
-  const baseOptions = {
-    plugins: {
-      legend: {
-        position: isMobile ? ("bottom" as const) : ("right" as const),
-      },
-      title: {
-        display: true,
-        text: "Actual Hours Distribution by Project",
-        font: {
-          size: 16,
-          weight: "bold" as const,
-        },
-      },
-      tooltip: {
-        callbacks: {
-          label: function (context: { label: string; parsed: number }) {
-            const label = context.label || "";
-            const value = context.parsed;
-            const total = data.hoursByProject.reduce(
-              (sum, item) => sum + item.shadowHours,
-              0
-            );
-            const percentage =
-              total > 0 ? ((value / total) * 100).toFixed(1) : "0";
-            return `${label}: ${value.toFixed(1)}h (${percentage}%)`;
-          },
-        },
-      },
-    },
-  };
-
-  const options = getResponsiveOptions(baseOptions);
+export function ProjectsByHourlyRateList({ data }: TimeTrackingChartsProps) {
+  // Calculate hourly rates and sort by descending rate
+  const projectsWithRates = data.hoursByProject
+    .map((item) => ({
+      ...item,
+      hourlyRate: item.shadowHours > 0 ? item.revenue / item.shadowHours : 0,
+    }))
+    .sort((a, b) => b.hourlyRate - a.hourlyRate);
 
   return (
-    <div className="h-64 sm:h-80">
-      <Doughnut data={chartData} options={options} />
+    <div>
+      <h3 className="text-base font-semibold text-[#37352f] mb-4">
+        Projects by Hourly Rate
+      </h3>
+      <div className="space-y-3 max-h-72 overflow-y-auto">
+        {projectsWithRates.map((project, index) => {
+          const color = getProjectColorByHex(project.projectColor);
+          return (
+            <div
+              key={project.projectName}
+              className="flex items-center justify-between p-3 rounded-md border border-[#e8e8e8] hover:bg-[#f7f6f3] transition-colors"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-sm font-medium text-[#9b9a97] w-6">
+                  #{index + 1}
+                </span>
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: color.border }}
+                />
+                <span className="text-sm font-medium text-[#37352f] truncate">
+                  {project.projectName}
+                </span>
+              </div>
+              <div className="flex items-center gap-4 flex-shrink-0">
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-[#00a67d]">
+                    ${project.hourlyRate.toFixed(2)}/h
+                  </p>
+                  <p className="text-xs text-[#9b9a97]">
+                    {project.shadowHours.toFixed(1)}h worked
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        {projectsWithRates.length === 0 && (
+          <p className="text-sm text-[#9b9a97] text-center py-4">
+            No time entries found
+          </p>
+        )}
+      </div>
     </div>
   );
 }

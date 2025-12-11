@@ -9,7 +9,7 @@ import { MonthlyRevenueTrendChart } from "@/app/ui/dashboard/revenue-charts";
 import {
   ShadowHoursByProjectChart,
   MonthlyHoursChart,
-  HoursDistributionChart,
+  ProjectsByHourlyRateList,
 } from "@/app/ui/dashboard/time-tracking-charts";
 import { DashboardFilters } from "@/app/ui/dashboard/dashboard-filters";
 import prisma from "@/app/lib/prisma";
@@ -157,7 +157,7 @@ export default async function EnhancedDashboard({
             <MonthlyHoursChart data={timeTrackingData} />
           </div>
           <div className="rounded-md border border-[#e8e8e8] bg-white p-4">
-            <HoursDistributionChart data={timeTrackingData} />
+            <ProjectsByHourlyRateList data={timeTrackingData} />
           </div>
         </div>
       </div>
