@@ -15,7 +15,7 @@ interface Props {
     date: Date;
     description: string;
     hours: number;
-    shadowHours?: number | null;
+    shadowHours: number;
     hourlyRate: number;
   };
 }
@@ -35,11 +35,12 @@ export default function TimeEntryForm({
 
     const formData = new FormData(e.currentTarget);
     const shadowHoursValue = formData.get("shadowHours") as string;
+    const hoursValue = parseFloat(formData.get("hours") as string);
     const data = {
       date: new Date(formData.get("date") as string),
       description: formData.get("description") as string,
-      hours: parseFloat(formData.get("hours") as string),
-      shadowHours: shadowHoursValue ? parseFloat(shadowHoursValue) : null,
+      hours: hoursValue,
+      shadowHours: shadowHoursValue ? parseFloat(shadowHoursValue) : hoursValue,
       hourlyRate: parseFloat(formData.get("hourlyRate") as string),
       projectId,
     };
@@ -136,8 +137,8 @@ export default function TimeEntryForm({
           id="shadowHours"
           step="0.25"
           min="0"
-          defaultValue={initialData?.shadowHours ?? undefined}
-          placeholder="Optional - for internal tracking"
+          defaultValue={initialData?.shadowHours}
+          placeholder="Defaults to billable hours if empty"
           className="block w-full rounded-md border border-[#e8e8e8] bg-[#fbfbfa] py-2 px-3 text-[#37352f] text-sm focus:border-[#2383e2] focus:outline-none focus:ring-1 focus:ring-[#2383e2] transition-colors"
         />
         <p className="mt-1 text-xs text-[#9b9a97]">

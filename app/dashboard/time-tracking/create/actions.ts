@@ -8,7 +8,7 @@ interface TimeEntryFormData {
   date: Date;
   description: string;
   hours: number;
-  shadowHours?: number | null;
+  shadowHours: number;
   hourlyRate: number;
   projectId: string;
 }

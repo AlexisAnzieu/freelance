@@ -100,6 +100,10 @@ export function ShadowHoursByProjectChart({ data }: TimeTrackingChartsProps) {
               (p) => p.projectName === context.dataset.label
             );
             if (!project) return "";
+            const realRate =
+              project.shadowHours > 0
+                ? project.revenue / project.shadowHours
+                : 0;
             return [
               `${project.projectName}`,
               `Actual Hours: ${project.shadowHours.toFixed(1)}h`,
@@ -112,6 +116,7 @@ export function ShadowHoursByProjectChart({ data }: TimeTrackingChartsProps) {
                   : 0
               }%`,
               `Revenue: $${project.revenue.toLocaleString()}`,
+              `Real Rate: $${realRate.toFixed(2)}/h`,
             ];
           },
         },

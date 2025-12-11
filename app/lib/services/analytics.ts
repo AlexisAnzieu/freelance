@@ -56,6 +56,7 @@ export interface TimeTrackingAnalytics {
   }[];
   hoursByMonth: { month: string; shadowHours: number; billedHours: number }[];
   averageHourlyRate: number;
+  realHourlyRate: number;
 }
 
 export interface ProjectAnalytics {
@@ -265,7 +266,7 @@ export async function getTimeTrackingAnalytics(
   });
 
   const totalHours = timeEntries.reduce(
-    (sum, entry) => sum + (entry.shadowHours ?? 0),
+    (sum, entry) => sum + entry.shadowHours,
     0
   );
 
@@ -281,7 +282,7 @@ export async function getTimeTrackingAnalytics(
         color: projectColor,
       };
     }
-    acc[projectName].shadowHours += entry.shadowHours ?? entry.hours;
+    acc[projectName].shadowHours += entry.shadowHours;
     acc[projectName].billedHours += entry.hours;
 
     acc[projectName].revenue += entry.hours * entry.hourlyRate;
@@ -316,7 +317,7 @@ export async function getTimeTrackingAnalytics(
     );
 
     const shadowHours = monthEntries.reduce(
-      (sum, entry) => sum + (entry.shadowHours ?? entry.hours),
+      (sum, entry) => sum + entry.shadowHours,
       0
     );
     const billedHours = monthEntries.reduce(
@@ -333,15 +334,23 @@ export async function getTimeTrackingAnalytics(
 
   // Average hourly rate (using shadowHours only)
   const totalRevenue = timeEntries.reduce(
-    (sum, entry) => sum + (entry.shadowHours ?? 0) * entry.hourlyRate,
+    (sum, entry) => sum + entry.shadowHours * entry.hourlyRate,
     0
   );
   const averageHourlyRate = totalHours > 0 ? totalRevenue / totalHours : 0;
+
+  // Real hourly rate based on actual revenue (billedHours * hourlyRate) divided by shadowHours
+  const actualRevenue = timeEntries.reduce(
+    (sum, entry) => sum + entry.hours * entry.hourlyRate,
+    0
+  );
+  const realHourlyRate = totalHours > 0 ? actualRevenue / totalHours : 0;
 
   return {
     totalHours,
     hoursByProject,
     hoursByMonth,
     averageHourlyRate,
+    realHourlyRate,
   };
 }
