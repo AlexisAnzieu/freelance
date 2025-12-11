@@ -228,20 +228,24 @@ export async function getTimeTrackingAnalytics(
   const filterStartDate = dateFilter?.startDate;
   const filterEndDate = dateFilter?.endDate;
 
-  // Get time tracking data with project information, optionally filtered by contractor and date
+  // Get time tracking data with project information, optionally filtered by contractor (via invoice) and date
   const timeEntries = await prisma.timeTrackingItem.findMany({
     where: {
       project: {
         teamId,
-        ...(contractorId && {
-          companies: {
-            some: {
-              id: contractorId,
-              types: { some: { name: "contractor" } },
+      },
+      ...(contractorId && {
+        invoiceItem: {
+          invoice: {
+            companies: {
+              some: {
+                id: contractorId,
+                types: { some: { name: "contractor" } },
+              },
             },
           },
-        }),
-      },
+        },
+      }),
       ...(filterStartDate &&
         filterEndDate && {
           date: {
