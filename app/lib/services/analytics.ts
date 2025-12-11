@@ -39,13 +39,24 @@ export interface ProjectAnalytics {
 }
 
 export async function getRevenueAnalytics(
-  teamId: string
+  teamId: string,
+  contractorId?: string
 ): Promise<RevenueAnalytics> {
   const now = new Date();
 
-  // Get all invoices for the team
+  // Get all invoices for the team, optionally filtered by contractor
   const invoices = await prisma.invoice.findMany({
-    where: { teamId },
+    where: {
+      teamId,
+      ...(contractorId && {
+        companies: {
+          some: {
+            id: contractorId,
+            types: { some: { name: "contractor" } },
+          },
+        },
+      }),
+    },
     orderBy: { date: "asc" },
   });
 
@@ -158,15 +169,26 @@ export async function getRevenueAnalytics(
 }
 
 export async function getTimeTrackingAnalytics(
-  teamId: string
+  teamId: string,
+  contractorId?: string
 ): Promise<TimeTrackingAnalytics> {
   const now = new Date();
   const sixMonthsAgo = subMonths(now, 6);
 
-  // Get time tracking data with project information
+  // Get time tracking data with project information, optionally filtered by contractor
   const timeEntries = await prisma.timeTrackingItem.findMany({
     where: {
-      project: { teamId },
+      project: {
+        teamId,
+        ...(contractorId && {
+          companies: {
+            some: {
+              id: contractorId,
+              types: { some: { name: "contractor" } },
+            },
+          },
+        }),
+      },
       date: { gte: sixMonthsAgo },
     },
     include: {

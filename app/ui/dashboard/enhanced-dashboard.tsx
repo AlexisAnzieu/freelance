@@ -9,6 +9,8 @@ import {
   MonthlyHoursChart,
   HoursDistributionChart,
 } from "@/app/ui/dashboard/time-tracking-charts";
+import { ContractorFilter } from "@/app/ui/dashboard/contractor-filter";
+import prisma from "@/app/lib/prisma";
 
 interface StatCardProps {
   title: string;
@@ -47,26 +49,43 @@ function StatCard({ title, value, color, icon }: StatCardProps) {
   );
 }
 
-async function getDashboardData() {
+async function getDashboardData(contractorId?: string) {
   const session = await auth();
 
   if (!session?.teamId) {
     throw new Error("Unauthorized: No team access");
   }
 
-  const [revenueData, timeTrackingData] = await Promise.all([
-    getRevenueAnalytics(session.teamId),
-    getTimeTrackingAnalytics(session.teamId),
+  const [revenueData, timeTrackingData, contractors] = await Promise.all([
+    getRevenueAnalytics(session.teamId, contractorId),
+    getTimeTrackingAnalytics(session.teamId, contractorId),
+    prisma.company.findMany({
+      where: {
+        teamId: session.teamId,
+        types: { some: { name: "contractor" } },
+      },
+      select: { id: true, companyName: true },
+      orderBy: { companyName: "asc" },
+    }),
   ]);
 
   return {
     revenueData,
     timeTrackingData,
+    contractors,
   };
 }
 
-export default async function EnhancedDashboard() {
-  const { revenueData, timeTrackingData } = await getDashboardData();
+interface EnhancedDashboardProps {
+  contractorId?: string;
+}
+
+export default async function EnhancedDashboard({
+  contractorId,
+}: EnhancedDashboardProps) {
+  const { revenueData, timeTrackingData, contractors } = await getDashboardData(
+    contractorId
+  );
 
   const totalRevenue = revenueData.revenueByStatus.reduce(
     (total: number, item: { amount: number }) => total + item.amount,
@@ -77,11 +96,14 @@ export default async function EnhancedDashboard() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[#37352f]">Dashboard</h1>
-        <p className="text-sm text-[#787774] mt-1">
-          Comprehensive business insights
-        </p>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-[#37352f]">Dashboard</h1>
+          <p className="text-sm text-[#787774] mt-1">
+            Comprehensive business insights
+          </p>
+        </div>
+        <ContractorFilter contractors={contractors} />
       </div>
 
       {/* Revenue Overview */}
